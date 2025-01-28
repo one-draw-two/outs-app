@@ -1,0 +1,23 @@
+@font-face {
+  font-family: 'NotoSansCondensed';
+  font-weight: 400;
+  font-display: block;
+  font-style: normal;
+  src: url('~/assets/fonts/NotoSansMono_SemiCondensed-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'NotoSansCondensed';
+  font-weight: 900;
+  font-display: block;
+  font-style: normal;
+  src: url('~/assets/fonts/NotoSansMono_SemiCondensed-Black.ttf') format('truetype');
+}
+
+@theme {
+  --font-noto: 'NotoSansCondensed';
+}
+
+h1 {
+  @apply font-noto font-[900];
+}
