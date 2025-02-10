@@ -19,6 +19,18 @@ export default defineNuxtConfig({
     },
     build: {
       target: 'esnext', // Add this to support modern JavaScript features
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('@powersync/web') || id.includes('@powersync/common') || id.includes('@journeyapps/wa-sqlite')) {
+              return 'powersync'
+            }
+            if (id.includes('@powersync/vue')) {
+              return 'powersync-vue'
+            }
+          },
+        },
+      },
     },
   },
   css: ['~/assets/styles/main.css', '~/assets/styles/type.css'],
