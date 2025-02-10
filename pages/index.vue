@@ -40,4 +40,13 @@ watch(
   },
   { immediate: true }
 )
+
+watch(
+  error,
+  (to) => {
+    console.log('Error YOYYOY')
+    console.log(to)
+  },
+  { immediate: true }
+)
 </script>

@@ -8,7 +8,7 @@ export default defineNuxtConfig({
   spaLoadingTemplate: false,
   devtools: { enabled: false },
   vite: {
-    plugins: [tailwindcss(), topLevelAwait()],
+    plugins: [tailwindcss(), wasm(), topLevelAwait()],
     optimizeDeps: {
       exclude: ['@journeyapps/wa-sqlite', '@powersync/web'],
       include: ['@powersync/web > js-logger'], // <-- Include `js-logger` when it isn't installed and imported.
@@ -22,8 +22,11 @@ export default defineNuxtConfig({
       rollupOptions: {
         output: {
           manualChunks(id) {
-            if (id.includes('@powersync/web') || id.includes('@powersync/common') || id.includes('@journeyapps/wa-sqlite')) {
+            if (id.includes('@powersync/web') || id.includes('@powersync/common')) {
               return 'powersync'
+            }
+            if (id.includes('@journeyapps/wa-sqlite')) {
+              return 'powersync-wa-sqlite'
             }
             if (id.includes('@powersync/vue')) {
               return 'powersync-vue'

@@ -1,5 +1,9 @@
 # Outs-Nuxt
 
+## Notes:
+
+- Apple iOs usage statistics: https://developer.apple.com/support/app-store/?utm_source=chatgpt.com (~70% of users are using iOs 18+)
+
 ## Bundle Logs
 
 - Initial with TW4: 82.69kb. Package updates: 82.55kb

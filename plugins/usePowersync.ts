@@ -4,6 +4,9 @@ import { Connector } from '~/powersync/Connector'
 import { AppSchema } from '~/powersync/AppSchema'
 import { opfsNotSupportedMessage, purgeVFS, listVfsEntries } from '~/powersync/utils'
 
+// ToDo: Need to adjust the plag between iOs and Android properly
+// https://github.com/powersync-ja/powersync-js/blob/main/demos/example-capacitor/src/components/providers/SystemProvider.tsx
+
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig()
   const isPlatformCapacitor = config.public.platform === 'cap' // Set in package.json (build:s > nuxt generate) script
