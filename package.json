@@ -4,8 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "build:cap": "NUXT_PUBLIC_PLATFORM=cap nuxt build",
-    "build:s": "pnpm build:cap && pnpm generate && pnpm cap:sync",
+    "build:s": "pnpm build && NUXT_PUBLIC_PLATFORM=cap pnpm generate && pnpm cap:sync",
     "build:a": "npx nuxi analyze",
     "dev": "NODE_ENV=development nuxt dev",
     "generate": "nuxt generate",

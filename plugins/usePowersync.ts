@@ -6,7 +6,7 @@ import { opfsNotSupportedMessage, purgeVFS, listVfsEntries } from '~/powersync/u
 
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig()
-  const isPlatformCapacitor = config.public.platform === 'cap'
+  const isPlatformCapacitor = config.public.platform === 'cap' // Set in package.json (build:s > nuxt generate) script
   const db = new PowerSyncDatabase({
     schema: AppSchema,
     database: isPlatformCapacitor
