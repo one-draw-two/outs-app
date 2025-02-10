@@ -4,13 +4,25 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
+    "build:cap": "NUXT_PUBLIC_PLATFORM=cap nuxt build",
+    "build:s": "pnpm build:cap && pnpm generate && pnpm cap:sync",
     "build:a": "npx nuxi analyze",
     "dev": "NODE_ENV=development nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "cap:android:sync": "npx cap sync android",
+    "cap:android:open": "npx cap open android",
+    "cap:android:icons": "npx cordova-res android --skip-config --copy",
+    "cap:ios:sync": "npx cap sync ios",
+    "cap:ios:open": "npx cap open ios",
+    "cap:ios:icons": "npx cordova-res ios --skip-config --copy",
+    "cap:sync": "npx cap sync android && npx cap sync ios"
   },
   "dependencies": {
+    "@capacitor/android": "^7.0.1",
+    "@capacitor/core": "^7.0.1",
+    "@capacitor/ios": "^7.0.1",
     "@powersync/vue": "^0.2.3",
     "@powersync/web": "^1.13.1",
     "@tailwindcss/vite": "^4.0.5",
@@ -20,6 +32,7 @@
     "vue-router": "latest"
   },
   "devDependencies": {
+    "@capacitor/cli": "^7.0.1",
     "vite-plugin-top-level-await": "^1.4.4",
     "vite-plugin-wasm": "^3.4.1"
   }

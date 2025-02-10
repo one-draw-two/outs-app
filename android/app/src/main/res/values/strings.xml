@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">outstanding</string>
+    <string name="title_activity_main">outstanding</string>
+    <string name="package_name">out.stand.ing</string>
+    <string name="custom_url_scheme">out.stand.ing</string>
+</resources>
