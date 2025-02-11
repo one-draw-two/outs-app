@@ -7,6 +7,11 @@ export default defineNuxtConfig({
   ssr: false,
   spaLoadingTemplate: false,
   devtools: { enabled: false },
+  app: {
+    head: {
+      title: 'Outstanding', // default title
+    },
+  },
   vite: {
     plugins: [tailwindcss(), wasm(), topLevelAwait()],
     optimizeDeps: {

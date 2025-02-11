@@ -11,3 +11,4 @@
 - With PowerSync OPFS and two OPFS viewer functions (not used atm): 467.38kb
 - Feat: Capacitor added (only android), together with a build flag to detect web or cap: 467.68kb
 - Feat: Capacitor iOs added and the PS conditional db logic fixed to separate between Android (IndexDB) vs Web + iOs (OPFS): 470.88kb
+- Wip: Initial seasons selector logic in Nuxt (to further test PS interactions): 473.14kb
