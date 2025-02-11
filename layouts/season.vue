@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container mt-48">
     <SeasonPicker />
     <slot />
   </div>
