@@ -1,5 +1,5 @@
 <template>
-  <h1>Hello index</h1>
+  <h1>Hello index lets test</h1>
   <button class="bg-blue-500" @click="listVFS">List VFS</button>
   <button class="bg-red-500" @click="deleteVFS">Delete VFS</button>
 </template>
