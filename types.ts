@@ -35,3 +35,11 @@ export interface Round extends Base {
   stagePositionIndex: number
   id: string // PS
 }
+
+export interface Stage_Populated extends Stage {
+  rounds: Round[]
+}
+
+export interface Season_Populated extends Omit<Season, 'stages'> {
+  stages: Stage_Populated[]
+}
