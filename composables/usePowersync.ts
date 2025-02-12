@@ -1,6 +1,18 @@
 import { useQuery } from '@powersync/vue'
 import type { Season, Season_Populated, Stage, Round } from '~/types'
 
+export const useSeasons = () => {
+  const query = ref('SELECT * FROM seasons')
+  const { data: seasons, isLoading, isFetching, error } = useQuery<Season>(query, [], {})
+
+  return {
+    seasons,
+    isLoading,
+    isFetching,
+    error,
+  }
+}
+
 export const useSeasonWithStages = (seasonId: string) => {
   const isLoading = ref(true)
   const selectedSeason = ref<Season_Populated | null>(null)

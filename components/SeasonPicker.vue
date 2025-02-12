@@ -8,19 +8,9 @@
 </template>
 
 <script setup lang="ts">
-import { useQuery } from '@powersync/vue'
+const { seasons, isLoading, isFetching, error } = useSeasons()
 
-const query = ref('SELECT * from seasons')
-const { data: seasons, isLoading, isFetching, error } = useQuery(query, [], {})
-
-watch(
-  seasons,
-  (to) => {
-    console.log('Seasons')
-    console.log(to)
-  },
-  { immediate: true }
-)
+useLoadingWatcher(isLoading, seasons, 'Seasons')
 
 const change = (event: any) => navigateTo(event.target.value ? { name: 'season-id', params: { id: event.target.value } } : '/')
 </script>

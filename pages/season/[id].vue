@@ -11,11 +11,5 @@ useHead({ title: `Season ${route.params.id}` })
 
 const { selectedSeason, isLoading } = useSeasonWithStages(route.params.id as string)
 
-watch(
-  isLoading,
-  (loading) => {
-    if (!loading) console.log('Season fully populated:', selectedSeason.value)
-  },
-  { immediate: true }
-)
+useLoadingWatcher(isLoading, selectedSeason, 'Season fully populated')
 </script>
