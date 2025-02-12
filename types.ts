@@ -1,10 +1,8 @@
-import { Bson } from 'mongo'
-
 interface Base {
-  _id: Bson.ObjectId
+  id: string
   name: string
   status: string
-  createdAt: Date
+  _createdAt: Date
 }
 
 export interface User extends Base {
@@ -13,27 +11,26 @@ export interface User extends Base {
 }
 
 export interface Subscription extends Base {
-  _user: Bson.ObjectId
-  _season: Bson.ObjectId
+  _user: string
+  _season: string
 }
 
 export interface Season extends Base {
-  _currentRound: Bson.ObjectId
+  _currentRound: string
   bgUrl: string
   stages?: string
 }
 
 export interface Stage extends Base {
-  _season: Bson.ObjectId
-  seasonPositionIndex: number
+  _season: string
+  sePI: number
 }
 
 export interface Round extends Base {
-  _season: Bson.ObjectId
-  _stage: Bson.ObjectId
-  seasonPositionIndex: number
-  stagePositionIndex: number
-  id: string // PS
+  _season: string
+  _stage: string
+  sePI: number
+  stPI: number
 }
 
 export interface Stage_Populated extends Stage {

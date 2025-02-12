@@ -13,3 +13,4 @@
 - Feat: Capacitor iOs added and the PS conditional db logic fixed to separate between Android (IndexDB) vs Web + iOs (OPFS): 470.88kb
 - Wip: Initial seasons selector logic in Nuxt (to further test PS interactions): 473.14kb
 - Refactor: Parallel PS queries are now available via a composable: 473.19kb. With more composables: 473.26kb
+- Feat: Round-id page added and NanoId conversion is finished: 474kb
