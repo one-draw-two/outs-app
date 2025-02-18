@@ -1,6 +1,5 @@
 import { Capacitor } from '@capacitor/core'
 import { PowerSyncDatabase, WASQLiteOpenFactory, WASQLiteVFS } from '@powersync/web'
-import { createPowerSyncPlugin } from '@powersync/vue'
 import { Connector } from '~/powersync/Connector'
 import { AppSchema } from '~/powersync/AppSchema'
 import { opfsNotSupportedMessage, purgeVFS, listVfsEntries } from '~/powersync/utils'
@@ -32,10 +31,6 @@ export default defineNuxtPlugin((nuxtApp) => {
   const connector = new Connector()
   db.connect(connector)
 
-  console.log('SEBZE', db)
-  console.log(db)
-
-  nuxtApp.vueApp.use(createPowerSyncPlugin({ database: db }))
   nuxtApp.provide('db', db)
 
   nuxtApp.vueApp.config.globalProperties.$vfsPurge = isUseIndexDB ? opfsNotSupportedMessage : () => purgeVFS(db)

@@ -15,3 +15,4 @@
 - Refactor: Parallel PS queries are now available via a composable: 473.19kb. With more composables: 473.26kb
 - Feat: Round-id page added and NanoId conversion is finished: 474kb
 - Wip: Match-id page added and pre re-factoring PS queries based on relationships and PS bucket definitions: 475.51kb
+- Refactor: '@powersync/vue' package removed in order to use vanilla web tools: 473.96kb

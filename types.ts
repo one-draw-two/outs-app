@@ -31,6 +31,7 @@ export interface Round extends Base {
   _stage: string
   sePI: number
   stPI: number
+  challenges?: any
 }
 
 export interface Stage_Populated extends Stage {

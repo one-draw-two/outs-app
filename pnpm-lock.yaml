@@ -17,9 +17,6 @@ importers:
       '@capacitor/ios':
         specifier: ^7.0.1
         version: 7.0.1(@capacitor/core@7.0.1)
-      '@powersync/vue':
-        specifier: ^0.2.3
-        version: 0.2.3(@powersync/common@1.24.0)(vue@3.5.13(typescript@5.7.3))
       '@powersync/web':
         specifier: ^1.14.0
         version: 1.14.0(@journeyapps/wa-sqlite@1.2.0)(@powersync/common@1.24.0)
@@ -611,12 +608,6 @@ packages:
 
   '@powersync/common@1.24.0':
     resolution: {integrity: sha512-SIbODmf5YSUECGa9PhtpBBmJciMomoCyziek10J2W8SiUib1UCJpuBLqZdOous0tdgBUcrYZGe7IJ0OhfYRqSg==}
-
-  '@powersync/vue@0.2.3':
-    resolution: {integrity: sha512-tQUJRuRxx3yNeAnjHCBLSMHAQdjsBbOkzhqCstULm9i8MYu24SayU2YTeBdhWCgZovHrsTAiT59dV/CtRYdu+g==}
-    peerDependencies:
-      '@powersync/common': ^1.21.0
-      vue: '*'
 
   '@powersync/web@1.14.0':
     resolution: {integrity: sha512-3B7hcWL2fw95HKAPdkFMF5Cu1wNI9pu9Qoe67/U9IycfaaLOErebsxW4Exg3MKwXw32vClOdoNlPN3l3lS+HYw==}
@@ -4213,11 +4204,6 @@ snapshots:
   '@powersync/common@1.24.0':
     dependencies:
       js-logger: 1.6.1
-
-  '@powersync/vue@0.2.3(@powersync/common@1.24.0)(vue@3.5.13(typescript@5.7.3))':
-    dependencies:
-      '@powersync/common': 1.24.0
-      vue: 3.5.13(typescript@5.7.3)
 
   '@powersync/web@1.14.0(@journeyapps/wa-sqlite@1.2.0)(@powersync/common@1.24.0)':
     dependencies:

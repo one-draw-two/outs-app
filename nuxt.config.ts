@@ -33,9 +33,6 @@ export default defineNuxtConfig({
             if (id.includes('@journeyapps/wa-sqlite')) {
               return 'powersync-wa-sqlite'
             }
-            if (id.includes('@powersync/vue')) {
-              return 'powersync-vue'
-            }
           },
         },
       },

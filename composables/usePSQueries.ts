@@ -1,16 +1,8 @@
-import { useQuery } from '@powersync/vue'
 import type { Season, Season_Populated, Stage, Round, Challenge, RealFixture } from '~/types'
 
 export const useSeasons = () => {
-  const query = ref('SELECT * FROM seasons')
-  const { data: seasons, isLoading, isFetching, error } = useQuery<Season>(query, [], {})
-
-  return {
-    seasons,
-    isLoading,
-    isFetching,
-    error,
-  }
+  const { data: seasons, isLoading, error } = usePSWatch<Season>('SELECT * FROM seasons', [], new AbortController())
+  return { seasons, isLoading, error }
 }
 
 export const useSeasonWithStages = (seasonId: string) => {
@@ -18,20 +10,16 @@ export const useSeasonWithStages = (seasonId: string) => {
   const selectedSeason = ref<Season_Populated | null>(null)
 
   // Get season
-  const seasonQuery = ref('SELECT * FROM seasons WHERE id = ?')
-  const { data: seasons, isFetching: seasonFetching } = useQuery<Season>(seasonQuery, [seasonId])
+  const { data: seasons } = usePSWatch<Season>('SELECT * FROM seasons WHERE id = ?', [seasonId])
 
   // Get stages
-  const stagesQuery = ref('SELECT * FROM stages WHERE _season = ? ORDER BY sePI ASC')
-  const { data: stages, isFetching: stagesFetching } = useQuery<Stage>(stagesQuery, [seasonId])
+  const { data: stages } = usePSWatch<Stage>('SELECT * FROM stages WHERE _season = ? ORDER BY sePI ASC', [seasonId])
 
   // Get rounds
-  const roundsQuery = ref('SELECT * FROM rounds WHERE _season = ? ORDER BY sePI ASC')
-  const { data: rounds, isFetching: roundsFetching } = useQuery<Round>(roundsQuery, [seasonId])
+  const { data: rounds } = usePSWatch<Round>('SELECT * FROM rounds WHERE _season = ? ORDER BY sePI ASC', [seasonId])
 
   watchEffect(() => {
-    // Check if all data is available AND not fetching
-    if (!seasonFetching.value && !stagesFetching.value && !roundsFetching.value && seasons.value?.[0] && stages.value?.length >= 0 && rounds.value?.length >= 0) {
+    if (seasons.value?.[0] && stages.value && rounds.value) {
       const season = seasons.value[0]
 
       const populatedStages = stages.value.map((stage) => ({
@@ -53,27 +41,30 @@ export const useSeasonWithStages = (seasonId: string) => {
 }
 
 export const usePopulatedRound = (roundId: string) => {
-  const roundQuery = ref('SELECT * FROM rounds WHERE id = ?')
-  const { data: rounds, isFetching: roundsFetching } = useQuery<Round>(roundQuery, [roundId])
+  const isLoading = ref(true)
+  const selectedRound = ref<Round | null>(null)
 
-  const challengesQuery = ref('SELECT * FROM challenges WHERE _round = ? ORDER BY "order" ASC')
-  const { data: challenges, isFetching: challengesFetching } = useQuery<Challenge>(challengesQuery, [roundId])
+  // Get round
+  const { data: rounds } = usePSWatch<Round>('SELECT * FROM rounds WHERE id = ?', [roundId])
 
-  const { result: selectedRound, isLoading } = usePSFlagger({
-    fetchingStates: [roundsFetching, challengesFetching],
-    dataArrays: [rounds, challenges],
-    transform: (roundsData: Round[], challengesData: Challenge[]) => {
-      const transformedChallenges =
-        challengesData?.map((challenge) => ({
-          ...challenge,
-          fixtureSlots: JSON.parse(challenge.fixtureSlots as string),
-        })) || []
+  // Get challenges
+  const { data: challenges } = usePSWatch<Challenge>('SELECT * FROM challenges WHERE _round = ? ORDER BY "order" ASC', [roundId])
 
-      return {
-        ...roundsData[0],
+  watchEffect(() => {
+    if (rounds.value?.[0] && challenges.value) {
+      const transformedChallenges = challenges.value.map((challenge) => ({
+        ...challenge,
+        fixtureSlots: JSON.parse(challenge.fixtureSlots as string),
+      }))
+
+      selectedRound.value = {
+        ...rounds.value[0],
         challenges: transformedChallenges,
       }
-    },
+      isLoading.value = false
+    } else {
+      isLoading.value = true
+    }
   })
 
   return {
@@ -83,17 +74,18 @@ export const usePopulatedRound = (roundId: string) => {
 }
 
 export const usePopulatedRealFixture = (rfId: string) => {
-  const realFixtureQuery = ref('SELECT * FROM "real_fixtures" WHERE id = ?')
-  const { data: realFixtures, isFetching: realFixturesFetching } = useQuery<RealFixture>(realFixtureQuery, [rfId])
+  const isLoading = ref(true)
+  const selectedRealFixture = ref<RealFixture | null>(null)
 
-  const { result: selectedRealFixture, isLoading } = usePSFlagger({
-    fetchingStates: [realFixturesFetching],
-    dataArrays: [realFixtures],
-    transform: (realFixturesData: RealFixture[]) => {
-      return {
-        ...realFixturesData[0],
-      }
-    },
+  const { data: realFixtures } = usePSWatch<RealFixture>('SELECT * FROM "real_fixtures" WHERE id = ?', [rfId])
+
+  watchEffect(() => {
+    if (realFixtures.value?.[0]) {
+      selectedRealFixture.value = realFixtures.value[0]
+      isLoading.value = false
+    } else {
+      isLoading.value = true
+    }
   })
 
   return {
