@@ -32,7 +32,11 @@ export default defineNuxtPlugin((nuxtApp) => {
   const connector = new Connector()
   db.connect(connector)
 
+  console.log('SEBZE', db)
+  console.log(db)
+
   nuxtApp.vueApp.use(createPowerSyncPlugin({ database: db }))
+  nuxtApp.provide('db', db)
 
   nuxtApp.vueApp.config.globalProperties.$vfsPurge = isUseIndexDB ? opfsNotSupportedMessage : () => purgeVFS(db)
   nuxtApp.vueApp.config.globalProperties.$vfsList = isUseIndexDB ? opfsNotSupportedMessage : listVfsEntries

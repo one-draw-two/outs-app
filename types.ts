@@ -40,3 +40,23 @@ export interface Stage_Populated extends Stage {
 export interface Season_Populated extends Omit<Season, 'stages'> {
   stages: Stage_Populated[]
 }
+
+export interface Challenge extends Base {
+  _round: string
+  family: string
+  type: string
+  order: number
+  fixtureSlots: string | FixtureSlot[]
+  roundGoalCount: number | null
+}
+
+export interface FixtureSlot extends Base {
+  _realFixture: string
+  slotIndex: number
+}
+
+export interface RealFixture extends Base {
+  matchLabel: string
+  _homeTeam: string
+  _awayTeam: string
+}

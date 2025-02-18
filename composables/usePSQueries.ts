@@ -1,5 +1,5 @@
 import { useQuery } from '@powersync/vue'
-import type { Season, Season_Populated, Stage, Round } from '~/types'
+import type { Season, Season_Populated, Stage, Round, Challenge, RealFixture } from '~/types'
 
 export const useSeasons = () => {
   const query = ref('SELECT * FROM seasons')
@@ -31,14 +31,7 @@ export const useSeasonWithStages = (seasonId: string) => {
 
   watchEffect(() => {
     // Check if all data is available AND not fetching
-    if (
-      !seasonFetching.value &&
-      !stagesFetching.value &&
-      !roundsFetching.value &&
-      seasons.value?.[0] &&
-      stages.value?.length >= 0 &&
-      rounds.value?.length >= 0
-    ) {
+    if (!seasonFetching.value && !stagesFetching.value && !roundsFetching.value && seasons.value?.[0] && stages.value?.length >= 0 && rounds.value?.length >= 0) {
       const season = seasons.value[0]
 
       const populatedStages = stages.value.map((stage) => ({
@@ -60,26 +53,51 @@ export const useSeasonWithStages = (seasonId: string) => {
 }
 
 export const usePopulatedRound = (roundId: string) => {
-  const isLoading = ref(true)
-  const selectedRound = ref<Round | null>(null)
-
   const roundQuery = ref('SELECT * FROM rounds WHERE id = ?')
   const { data: rounds, isFetching: roundsFetching } = useQuery<Round>(roundQuery, [roundId])
 
-  watchEffect(() => {
-    // Check if all data is available AND not fetching
-    if (!roundsFetching.value && rounds.value?.length >= 0) {
-      const round = rounds.value[0]
+  const challengesQuery = ref('SELECT * FROM challenges WHERE _round = ? ORDER BY "order" ASC')
+  const { data: challenges, isFetching: challengesFetching } = useQuery<Challenge>(challengesQuery, [roundId])
 
-      selectedRound.value = { ...round }
-      isLoading.value = false
-    } else {
-      isLoading.value = true
-    }
+  const { result: selectedRound, isLoading } = usePSFlagger({
+    fetchingStates: [roundsFetching, challengesFetching],
+    dataArrays: [rounds, challenges],
+    transform: (roundsData: Round[], challengesData: Challenge[]) => {
+      const transformedChallenges =
+        challengesData?.map((challenge) => ({
+          ...challenge,
+          fixtureSlots: JSON.parse(challenge.fixtureSlots as string),
+        })) || []
+
+      return {
+        ...roundsData[0],
+        challenges: transformedChallenges,
+      }
+    },
   })
 
   return {
     selectedRound,
+    isLoading,
+  }
+}
+
+export const usePopulatedRealFixture = (rfId: string) => {
+  const realFixtureQuery = ref('SELECT * FROM "real_fixtures" WHERE id = ?')
+  const { data: realFixtures, isFetching: realFixturesFetching } = useQuery<RealFixture>(realFixtureQuery, [rfId])
+
+  const { result: selectedRealFixture, isLoading } = usePSFlagger({
+    fetchingStates: [realFixturesFetching],
+    dataArrays: [realFixtures],
+    transform: (realFixturesData: RealFixture[]) => {
+      return {
+        ...realFixturesData[0],
+      }
+    },
+  })
+
+  return {
+    selectedRealFixture,
     isLoading,
   }
 }
