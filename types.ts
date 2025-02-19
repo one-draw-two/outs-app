@@ -57,7 +57,6 @@ export interface FixtureSlot extends Base {
 }
 
 export interface RealFixture extends Base {
-  matchLabel: string
   _homeTeam: string
   _awayTeam: string
 }

@@ -48,11 +48,43 @@ const challenges = new Table(
 
 const real_fixtures = new Table(
   {
-    matchLabel: column.text,
     name: column.text,
     status: column.text,
     _homeTeam: column.text,
     _awayTeam: column.text,
+  },
+  { indexes: {} }
+)
+
+const real_teams = new Table(
+  {
+    name: column.text,
+    shortCode: column.text,
+  },
+  { indexes: {} }
+)
+
+const real_players = new Table(
+  {
+    name: column.text,
+    age: column.integer,
+    nationality: column.text,
+    _team: column.text,
+  },
+  { indexes: {} }
+)
+
+const real_events = new Table(
+  {
+    _realFixture: column.text,
+    _team: column.text,
+    _player: column.text,
+    _assist: column.text,
+    type: column.text,
+    detail: column.text,
+    comments: column.text,
+    time: column.integer,
+    timeExtra: column.integer,
   },
   { indexes: {} }
 )
@@ -74,6 +106,9 @@ export const AppSchema = new Schema({
   rounds,
   challenges,
   real_fixtures,
+  real_teams,
+  real_players,
+  real_events,
   // subscriptions,
 })
 
@@ -84,6 +119,10 @@ export type StageRecord = Database['stages']
 export type RoundRecord = Database['rounds']
 
 export type ChallengeRecord = Database['challenges']
+
 export type RealFixtureRecord = Database['real_fixtures']
+export type RealTeamRecord = Database['real_teams']
+export type RealPlayerRecord = Database['real_players']
+export type RealEventRecord = Database['real_events']
 
 // export type SubscriptionRecord = Database['subscriptions']
