@@ -10,6 +10,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   const res: { user: User } = await useSecureFetch(`init`, 'get', null, null, true)
 
-  console.log('Response is')
+  console.log('Response is and try again')
   console.log(res)
 })

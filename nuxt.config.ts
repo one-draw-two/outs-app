@@ -2,6 +2,7 @@ import wasm from 'vite-plugin-wasm'
 import topLevelAwait from 'vite-plugin-top-level-await'
 import tailwindcss from '@tailwindcss/vite'
 
+console.log('BUILDING!!!!!!!!!!!!!!!!!!!!!!!')
 console.log(process.env.AUTH_URL)
 
 export default defineNuxtConfig({
