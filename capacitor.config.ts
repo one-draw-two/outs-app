@@ -5,7 +5,8 @@ const config: CapacitorConfig = {
   appName: 'outstanding',
   webDir: 'dist',
   server: {
-    hostname: 'outs-auth.deno.dev',
+    // hostname: 'outs-auth.deno.dev', !!! Note, dont have the www or the TLD part of the domain!
+    hostname: 'deno.dev',
     iosScheme: 'https',
     androidScheme: 'https',
   },

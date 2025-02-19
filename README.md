@@ -16,4 +16,4 @@
 - Feat: Round-id page added and NanoId conversion is finished: 474kb
 - Wip: Match-id page added and pre re-factoring PS queries based on relationships and PS bucket definitions: 475.51kb
 - Refactor: '@powersync/vue' package removed in order to use vanilla web tools: 473.96kb
-- Wip: Implementing very simple authentication, pre installing background runner: 474.78kb
+- Wip: Implementing very simple authentication, pre installing background runner: 474.78kb (with the Capacitor CORS fix: 474.8kb)
