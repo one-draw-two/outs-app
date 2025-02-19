@@ -8,9 +8,9 @@
 </template>
 
 <script setup lang="ts">
-const { seasons, isLoading, isFetching, error } = useSeasons()
+const { seasons, isLoading } = useSeasons()
 
 useLoadingWatcher(isLoading, seasons, 'Seasons')
 
-const change = (event: any) => navigateTo(event.target.value ? { name: 'season-id', params: { id: event.target.value } } : '/')
+const change = (event: any) => navigateTo(event.target.value ? { name: 'season-id', params: { id: event.target.value } } : '/season')
 </script>

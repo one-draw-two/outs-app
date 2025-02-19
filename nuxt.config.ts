@@ -41,7 +41,9 @@ export default defineNuxtConfig({
   css: ['~/assets/styles/main.css', '~/assets/styles/type.css'],
   runtimeConfig: {
     public: {
+      dev: process.env.DEV ? true : false,
       platform: process.env.NUXT_PUBLIC_PLATFORM || 'web',
+      authUrl: process.env.DEV ? process.env.DEV_AUTH_URL : process.env.AUTH_URL,
     },
   },
 })
