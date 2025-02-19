@@ -2,6 +2,10 @@ type HttpMethod = 'get' | 'GET' | 'post' | 'POST' | 'put' | 'PUT' | 'delete' | '
 
 export default function (url: string, method?: HttpMethod, body?: any, params?: any, isAuth?: boolean) {
   const config = useRuntimeConfig()
+
+  console.log(config)
+  console.log(config.public.authUrl)
+
   return $fetch(`${isAuth ? config.public.authUrl : config.public.serverUrl}/${url}`, {
     credentials: 'include',
     method: method ?? 'get',
