@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'outstanding',
   webDir: 'dist',
   server: {
-    hostname: 'onedrawtwo.com',
+    hostname: 'outs-auth.deno.dev',
     iosScheme: 'https',
     androidScheme: 'https',
   },
