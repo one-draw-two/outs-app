@@ -11,6 +11,9 @@ importers:
       '@capacitor/android':
         specifier: ^7.0.1
         version: 7.0.1(@capacitor/core@7.0.1)
+      '@capacitor/background-runner':
+        specifier: ^2.1.0
+        version: 2.1.0(@capacitor/core@7.0.1)
       '@capacitor/core':
         specifier: ^7.0.1
         version: 7.0.1
@@ -199,6 +202,11 @@ packages:
     resolution: {integrity: sha512-jukJJHfkcyEBOkFBJRD3EwXMIIQo7lSv0ExPWgsIliPdGXLAj6ElvK2JaYEzec3vKyLc4RTNFVv0PMEU0vnImg==}
     peerDependencies:
       '@capacitor/core': ^7.0.0
+
+  '@capacitor/background-runner@2.1.0':
+    resolution: {integrity: sha512-5ezvBeZVOaMC1sqDgD5gvCC4RYarEA47k29fAKti+mr2B9VvTp9yjeirMxjPJHvM247z1QNDTgAvEk4KmClE4Q==}
+    peerDependencies:
+      '@capacitor/core': ^6.0.0 || ^7.0.0
 
   '@capacitor/cli@7.0.1':
     resolution: {integrity: sha512-KNKT25ZvNL8Gm+zxSxCq8n9FQYUBsZcAGs5lisQKHnDRz7tkTMmMNok+TlNlLn6to78J1k+OtBgpmfbFerpOng==}
@@ -3649,6 +3657,10 @@ snapshots:
       '@babel/helper-validator-identifier': 7.25.9
 
   '@capacitor/android@7.0.1(@capacitor/core@7.0.1)':
+    dependencies:
+      '@capacitor/core': 7.0.1
+
+  '@capacitor/background-runner@2.1.0(@capacitor/core@7.0.1)':
     dependencies:
       '@capacitor/core': 7.0.1
 

@@ -3,6 +3,10 @@
 ## Notes:
 
 - Apple iOs usage statistics: https://developer.apple.com/support/app-store/?utm_source=chatgpt.com (~70% of users are using iOs 18+)
+- Capacitor Backtround Runner (and alternative community plugin):
+  - https://capacitorjs.com/docs/apis/background-runner
+  - https://github.com/transistorsoft/capacitor-background-fetch
+
 
 ## Bundle Logs
 
@@ -17,3 +21,4 @@
 - Wip: Match-id page added and pre re-factoring PS queries based on relationships and PS bucket definitions: 475.51kb
 - Refactor: '@powersync/vue' package removed in order to use vanilla web tools: 473.96kb
 - Wip: Implementing very simple authentication, pre installing background runner: 474.78kb (with the Capacitor CORS fix: 474.8kb)
+- Feat: Initial JWT auth via deno: 476.93kb

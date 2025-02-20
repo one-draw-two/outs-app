@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@capacitor/android": "^7.0.1",
+    "@capacitor/background-runner": "^2.1.0",
     "@capacitor/core": "^7.0.1",
     "@capacitor/ios": "^7.0.1",
     "@powersync/web": "^1.14.0",
