@@ -1,5 +1,5 @@
 <template>
-  <main class="container mx-auto mt-48">
+  <main>
     <h1>Round {{ selectedRound?.name }}</h1>
 
     <div class="space-y-8">

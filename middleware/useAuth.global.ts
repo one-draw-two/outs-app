@@ -1,46 +1,31 @@
-import { Connector } from '~/powersync/Connector'
+import type { User, AuthResponseSuccess } from '~/types'
 
-import type { User } from '~/types'
+export default defineNuxtRouteMiddleware(async (to, _) => {
+  if (useState('user').value) return // Need to perform this only once
 
-export default defineNuxtRouteMiddleware(async (to, from) => {
-  /*
-  console.log('---USEAUTH')
-  console.log(to)
-  console.log(from)
-  console.log('----')
-  */
-
-  if (to.meta.isPublic) return
+  if (to.meta.isPublic) return // Dont do it in public routes (avoid infinite loop)
 
   try {
-    // Try initial authentication
-    let res: { data: { user: User; powerSyncToken: string }; success: boolean } = await useSecureFetch('init', 'get', null, null, true)
+    let res: AuthResponseSuccess = await useSecureFetch('init', 'get', null, null, true)
 
-    // If initial request fails, try refresh and use its response
     if (!res.success) {
       console.log('Access token expired, attempting refresh...')
       res = await useSecureFetch('refresh', 'post', null, null, true)
-
-      if (!res.success) {
-        console.log('Token refresh failed, redirecting to login...')
-        return navigateTo('/access/login')
-      }
-      console.log('Token refresh successful')
+      if (!res.success) return navigateTo('/access/login', { replace: true })
     }
 
-    console.log('User is authenticated:', res.data.user)
-
-    console.log('PS TOKEN')
-
-    console.log(res.data.powerSyncToken)
-
+    /*
+    useState<User>('user').value = res.data.user
     const { $db }: any = useNuxtApp()
     const connector = new Connector(res.data.powerSyncToken)
     $db.connect(connector)
+    */
+
+    useInitUser(res)
 
     return
   } catch (error) {
     console.error('Authentication error:', error)
-    return navigateTo('/access/login')
+    return navigateTo('/access/login', { replace: true })
   }
 })

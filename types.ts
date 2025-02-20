@@ -6,7 +6,6 @@ interface Base {
 }
 
 export interface User extends Base {
-  auth0Id: string
   email: string
 }
 
@@ -59,4 +58,11 @@ export interface FixtureSlot extends Base {
 export interface RealFixture extends Base {
   _homeTeam: string
   _awayTeam: string
+}
+
+// UTIL
+
+export interface AuthResponseSuccess {
+  data: { user: User; powerSyncToken: string }
+  success: boolean
 }

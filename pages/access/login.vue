@@ -1,5 +1,5 @@
 <template>
-  <main class="container mx-auto mt-48 space-y-8">
+  <main class="space-y-8">
     <h1 class="text-2xl font-bold text-center mb-8">Login</h1>
 
     <form @submit.prevent="handleLogin" class="max-w-md mx-auto space-y-4">
@@ -33,9 +33,6 @@ const password = ref('')
 
 const handleLogin = async () => {
   const res = await useSecureFetch('login', 'post', { email: email.value, password: password.value }, null, true)
-  console.log('Login res')
-  console.log(res)
-
-  if (res.success) navigateTo('/')
+  if (res.success) useInitUser(res, '/')
 }
 </script>

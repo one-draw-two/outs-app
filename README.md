@@ -22,3 +22,4 @@
 - Refactor: '@powersync/vue' package removed in order to use vanilla web tools: 473.96kb
 - Wip: Implementing very simple authentication, pre installing background runner: 474.78kb (with the Capacitor CORS fix: 474.8kb)
 - Feat: Initial JWT auth via deno: 476.93kb
+- Feat: PS authentication and logout structure (skeleton): 477.01kb

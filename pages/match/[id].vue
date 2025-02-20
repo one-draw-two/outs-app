@@ -1,5 +1,5 @@
 <template>
-  <main class="container mx-auto mt-48">
+  <main>
     <h1>{{ selectedRealFixture?.name }}</h1>
     <p>
       {{ selectedRealFixture }}
