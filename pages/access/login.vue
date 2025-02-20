@@ -33,6 +33,9 @@ const password = ref('')
 
 const handleLogin = async () => {
   const res = await useSecureFetch('login', 'post', { email: email.value, password: password.value }, null, true)
+  console.log('Login res')
+  console.log(res)
+
   if (res.success) navigateTo('/')
 }
 </script>

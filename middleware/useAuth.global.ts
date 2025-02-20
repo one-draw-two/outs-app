@@ -1,10 +1,12 @@
 import type { User } from '~/types'
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
+  /*
   console.log('---USEAUTH')
   console.log(to)
   console.log(from)
   console.log('----')
+  */
 
   if (to.meta.isPublic) return
 
