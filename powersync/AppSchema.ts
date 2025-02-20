@@ -91,11 +91,9 @@ const real_events = new Table(
 
 const subscriptions = new Table(
   {
-    _createdAt: column.text,
-    _season: column.text,
-    _user: column.text,
     name: column.text,
-    status: column.text,
+    _user: column.text,
+    _season: column.text,
   },
   { indexes: {} }
 )
@@ -109,7 +107,7 @@ export const AppSchema = new Schema({
   real_teams,
   real_players,
   real_events,
-  // subscriptions,
+  subscriptions,
 })
 
 export type Database = (typeof AppSchema)['types']
@@ -125,4 +123,4 @@ export type RealTeamRecord = Database['real_teams']
 export type RealPlayerRecord = Database['real_players']
 export type RealEventRecord = Database['real_events']
 
-// export type SubscriptionRecord = Database['subscriptions']
+export type SubscriptionRecord = Database['subscriptions']

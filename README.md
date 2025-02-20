@@ -23,3 +23,4 @@
 - Wip: Implementing very simple authentication, pre installing background runner: 474.78kb (with the Capacitor CORS fix: 474.8kb)
 - Feat: Initial JWT auth via deno: 476.93kb
 - Feat: PS authentication and logout structure (skeleton): 477.01kb
+- Feat: User subscriptions (via PS): 477.14kb

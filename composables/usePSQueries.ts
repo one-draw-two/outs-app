@@ -1,8 +1,13 @@
-import type { Season, Season_Populated, Stage, Round, Challenge, RealFixture } from '~/types'
+import type { Season, Season_Populated, Stage, Round, Challenge, RealFixture, Subscription } from '~/types'
 
 export const useSeasons = () => {
-  const { data: seasons, isLoading, error } = usePSWatch<Season>('SELECT * FROM seasons', [], new AbortController())
+  const { data: seasons, isLoading, error } = usePSWatch<Season>('SELECT * FROM seasons ORDER BY name ASC', [], new AbortController())
   return { seasons, isLoading, error }
+}
+
+export const useUserSubscriptions = () => {
+  const { data: subscriptions, isLoading, error } = usePSWatch<Subscription>('SELECT * FROM subscriptions', [], new AbortController())
+  return { subscriptions, isLoading, error }
 }
 
 export const useSeasonWithStages = (seasonId: string) => {
