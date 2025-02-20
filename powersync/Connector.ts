@@ -1,10 +1,15 @@
 export class Connector {
-  constructor() {}
+  private token: string
+
+  constructor(token: string) {
+    this.token = token
+  }
 
   async fetchCredentials() {
     return {
       endpoint: import.meta.env.VITE_POWERSYNC_URL,
-      token: import.meta.env.VITE_POWERSYNC_APIKEY,
+      // token: import.meta.env.VITE_POWERSYNC_APIKEY,
+      token: this.token,
     }
   }
 

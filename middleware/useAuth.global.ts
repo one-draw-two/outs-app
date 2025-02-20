@@ -1,3 +1,5 @@
+import { Connector } from '~/powersync/Connector'
+
 import type { User } from '~/types'
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
@@ -12,7 +14,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   try {
     // Try initial authentication
-    let res: { data: { user: User }; success: boolean } = await useSecureFetch('init', 'get', null, null, true)
+    let res: { data: { user: User; powerSyncToken: string }; success: boolean } = await useSecureFetch('init', 'get', null, null, true)
 
     // If initial request fails, try refresh and use its response
     if (!res.success) {
@@ -27,6 +29,15 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
 
     console.log('User is authenticated:', res.data.user)
+
+    console.log('PS TOKEN')
+
+    console.log(res.data.powerSyncToken)
+
+    const { $db }: any = useNuxtApp()
+    const connector = new Connector(res.data.powerSyncToken)
+    $db.connect(connector)
+
     return
   } catch (error) {
     console.error('Authentication error:', error)

@@ -1,6 +1,5 @@
 import { Capacitor } from '@capacitor/core'
 import { PowerSyncDatabase, WASQLiteOpenFactory, WASQLiteVFS } from '@powersync/web'
-import { Connector } from '~/powersync/Connector'
 import { AppSchema } from '~/powersync/AppSchema'
 import { opfsNotSupportedMessage, purgeVFS, listVfsEntries } from '~/powersync/utils'
 
@@ -13,23 +12,12 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   const db = new PowerSyncDatabase({
     schema: AppSchema,
-    database: isUseIndexDB
-      ? {
-          dbFilename: 'outs-ps-idb.db',
-        }
-      : new WASQLiteOpenFactory({
-          dbFilename: 'outs-ps-opfs.db',
-          vfs: WASQLiteVFS.OPFSCoopSyncVFS,
-        }),
-    flags: isUseIndexDB
-      ? {
-          enableMultiTabs: typeof SharedWorker !== 'undefined',
-        }
-      : undefined,
+    database: isUseIndexDB ? { dbFilename: 'outs-ps-idb.db' } : new WASQLiteOpenFactory({ dbFilename: 'outs-ps-opfs.db', vfs: WASQLiteVFS.OPFSCoopSyncVFS }),
+    flags: isUseIndexDB ? { enableMultiTabs: typeof SharedWorker !== 'undefined' } : undefined,
   })
 
-  const connector = new Connector()
-  db.connect(connector)
+  // const connector = new Connector()
+  // db.connect(connector)
 
   nuxtApp.provide('db', db)
 
