@@ -8,11 +8,9 @@
 </template>
 
 <script setup lang="ts">
-const { seasons, isLoading: ilse } = useSeasons()
-const { subscriptions, isLoading: ilsb } = useUserSubscriptions()
-
-useLoadingWatcher(ilse, seasons, 'Seasons')
-useLoadingWatcher(ilsb, subscriptions, 'Subscriptions')
-
+const { data: seasons, isLoading: ilse } = usePSWatch<any>('SELECT * FROM seasons ORDER BY name ASC', [], { abortController: new AbortController() })
+const { data: subscriptions, isLoading: ilsb } = usePSWatch<any>('SELECT * FROM subscriptions', [], { abortController: new AbortController() })
 const change = (event: any) => navigateTo(event.target.value ? { name: 'season-id', params: { id: event.target.value } } : '/season')
+// useLoadingWatcher(ilse, seasons, 'Seasons')
+// useLoadingWatcher(ilsb, subscriptions, 'Subscriptions')
 </script>

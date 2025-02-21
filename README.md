@@ -24,3 +24,4 @@
 - Feat: Initial JWT auth via deno: 476.93kb
 - Feat: PS authentication and logout structure (skeleton): 477.01kb
 - Feat: User subscriptions (via PS): 477.14kb
+- Feat: PS Update highlighter directive: 478.17kb

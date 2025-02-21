@@ -98,6 +98,15 @@ const subscriptions = new Table(
   { indexes: {} }
 )
 
+const bets = new Table(
+  {
+    name: column.text,
+    _user: column.text,
+    _round: column.text,
+  },
+  { indexes: {} }
+)
+
 export const AppSchema = new Schema({
   seasons,
   stages,
@@ -108,6 +117,7 @@ export const AppSchema = new Schema({
   real_players,
   real_events,
   subscriptions,
+  bets,
 })
 
 export type Database = (typeof AppSchema)['types']
@@ -124,3 +134,5 @@ export type RealPlayerRecord = Database['real_players']
 export type RealEventRecord = Database['real_events']
 
 export type SubscriptionRecord = Database['subscriptions']
+
+export type BetRecord = Database['bets']

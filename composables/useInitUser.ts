@@ -7,6 +7,9 @@ export default function (res: AuthResponseSuccess, navToPath?: string) {
   useState<User>('user').value = res.data.user
   const { $db }: any = useNuxtApp()
   const connector = new Connector(res.data.powerSyncToken)
-  $db.connect(connector)
+
+  $db.connect(connector, {
+    params: { selected_round: 'ROI5yLY0' },
+  })
   if (navigateTo) navigateTo(navToPath, { replace: true })
 }

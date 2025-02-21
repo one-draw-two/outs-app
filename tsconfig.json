@@ -3,6 +3,7 @@
   "extends": "./.nuxt/tsconfig.json",
   "exclude": [
     "android",
-    "ios"
+    "ios",
+    "_unused"
   ]
 }
