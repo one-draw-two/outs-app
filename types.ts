@@ -52,7 +52,7 @@ export interface Challenge extends Base {
   family: string
   type: string
   order: number
-  fixtureSlots: string | FixtureSlot[]
+  fixtureSlots: string[] // Array of fixture IDs
   roundGoalCount: number | null
 }
 

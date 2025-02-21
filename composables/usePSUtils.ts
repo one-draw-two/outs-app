@@ -1,3 +1,5 @@
+import type { UnwrapRef } from 'vue'
+
 interface ChangeInfo<T> {
   type: 'insert' | 'update' | 'delete'
   rowId: string | number
@@ -31,88 +33,103 @@ export function usePSWatch<T extends WithPSChange>(
   const error = ref<Error | null>(null)
   const changeInfo = ref<ChangeInfo<T> | null>(null)
 
-  let isFirstUpdate = true // Add this flag
-  const highlightDuration = options?.highlightDuration ?? 5000 // Default 5 seconds
-
-  const setChangeAsOld = (item: T) => {
-    if (item.$psChange) {
-      setTimeout(() => {
-        if (item.$psChange) {
-          item.$psChange.isOld = true
-          // Trigger a reactive update
-          data.value = [...data.value]
-        }
-      }, highlightDuration)
-    }
-  }
-
   const controller = options?.abortController || new AbortController()
   const detectChanges = options?.detectChanges ?? false
 
-  const detectChangeType = (oldData: T[], newData: T[]): ChangeInfo<T> | null => {
-    if (!detectChanges) return null
+  const firstPopulation = new Promise<void>((resolve) => {
+    let isFirstUpdate = true // Add this flag
+    const highlightDuration = options?.highlightDuration ?? 5000 // Default 5 seconds
 
-    const oldMap = new Map(oldData.map((item) => [item.id, item]))
-    const newMap = new Map(newData.map((item) => [item.id, item]))
-
-    // Find added item
-    for (const item of newData) {
-      if (!oldMap.has(item.id)) {
-        item.$psChange = { type: 'insert', timestamp: Date.now() }
-        setChangeAsOld(item)
-        return { type: 'insert', rowId: item.id, currentData: item }
+    const setChangeAsOld = (item: T) => {
+      if (item.$psChange) {
+        setTimeout(() => {
+          if (item.$psChange) {
+            item.$psChange.isOld = true
+            // Trigger a reactive update
+            data.value = [...data.value]
+          }
+        }, highlightDuration)
       }
     }
 
-    // Find deleted item
-    for (const item of oldData) {
-      if (!newMap.has(item.id)) {
-        item.$psChange = { type: 'delete', timestamp: Date.now() }
-        setChangeAsOld(item)
-        return { type: 'delete', rowId: item.id, previousData: item }
-      }
-    }
+    const detectChangeType = (oldData: T[], newData: T[]): ChangeInfo<T> | null => {
+      if (!detectChanges) return null
 
-    // Find updated item
-    for (const item of newData) {
-      const oldItem = oldMap.get(item.id)
-      if (oldItem && JSON.stringify(oldItem) !== JSON.stringify(item)) {
-        const changedFields = Object.keys(item as Record<string, unknown>).filter((key) => JSON.stringify(oldItem[key]) !== JSON.stringify(item[key]))
-        item.$psChange = { type: 'update', timestamp: Date.now(), changedFields }
-        setChangeAsOld(item)
-        return { type: 'update', rowId: item.id, previousData: oldItem, currentData: item, changedFields }
-      }
-    }
+      const oldMap = new Map(oldData.map((item) => [item.id, item]))
+      const newMap = new Map(newData.map((item) => [item.id, item]))
 
-    return null
-  }
-
-  const watch = async () => {
-    try {
-      for await (const update of $db.watch(sql, parameters, { signal: controller.signal })) {
-        const newData = update.rows?._array || []
-
-        if (detectChanges && !isFirstUpdate) {
-          const currentData = data.value as T[]
-          changeInfo.value = detectChangeType(currentData, newData)
-          previousData.value = [...currentData]
+      // Find added item
+      for (const item of newData) {
+        if (!oldMap.has(item.id)) {
+          item.$psChange = { type: 'insert', timestamp: Date.now() }
+          setChangeAsOld(item)
+          return { type: 'insert', rowId: item.id, currentData: item }
         }
-
-        isFirstUpdate = false // Reset flag after first update
-        data.value = newData
-        isLoading.value = false
       }
-    } catch (e) {
-      error.value = e as Error
-      isLoading.value = false
+
+      // Find deleted item
+      for (const item of oldData) {
+        if (!newMap.has(item.id)) {
+          item.$psChange = { type: 'delete', timestamp: Date.now() }
+          setChangeAsOld(item)
+          return { type: 'delete', rowId: item.id, previousData: item }
+        }
+      }
+
+      // Find updated item
+      for (const item of newData) {
+        const oldItem = oldMap.get(item.id)
+        if (oldItem && JSON.stringify(oldItem) !== JSON.stringify(item)) {
+          const changedFields = Object.keys(item as Record<string, unknown>).filter((key) => JSON.stringify(oldItem[key]) !== JSON.stringify(item[key]))
+          item.$psChange = { type: 'update', timestamp: Date.now(), changedFields }
+          setChangeAsOld(item)
+          return { type: 'update', rowId: item.id, previousData: oldItem, currentData: item, changedFields }
+        }
+      }
+
+      return null
     }
+
+    const watch = async () => {
+      try {
+        for await (const update of $db.watch(sql, parameters, { signal: controller.signal })) {
+          const newData = update.rows?._array || []
+
+          if (detectChanges && !isFirstUpdate) {
+            const currentData = data.value as T[]
+            changeInfo.value = detectChangeType(currentData, newData)
+            previousData.value = [...currentData]
+          }
+
+          if (isFirstUpdate) {
+            isFirstUpdate = false
+            resolve() // Resolve the promise after first update
+          }
+
+          data.value = newData
+          isLoading.value = false
+        }
+      } catch (e) {
+        error.value = e as Error
+        isLoading.value = false
+        if (isFirstUpdate) {
+          resolve() // Resolve even on error to prevent hanging
+        }
+      }
+    }
+
+    watch()
+  })
+
+  // onUnmounted(() => controller.abort())
+
+  return {
+    data,
+    isLoading,
+    error,
+    changeInfo: detectChanges ? changeInfo : undefined,
+    await: () => firstPopulation, // Expose the await method
   }
-
-  watch()
-
-  onUnmounted(() => controller.abort())
-
-  return { data, isLoading, error, changeInfo: detectChanges ? changeInfo : undefined }
 }
 
 export const useLoadingWatcher = <T>(
@@ -134,4 +151,22 @@ export const useLoadingWatcher = <T>(
       }
     })
   }
+}
+
+export function usePSQueryWatcher<T>(queries: { data: Ref<any>; isLoading?: Ref<boolean> }[], callback: (data: Ref<UnwrapRef<T> | null>) => void) {
+  const isLoading = ref(true)
+  const data = ref<UnwrapRef<T> | null>(null)
+
+  watchEffect(() => {
+    const allQueriesPopulated = queries.every((q) => q.data.value)
+
+    if (allQueriesPopulated) {
+      callback(data as Ref<UnwrapRef<T> | null>)
+      isLoading.value = false
+    } else {
+      isLoading.value = true
+    }
+  })
+
+  return { data, isLoading }
 }

@@ -1,4 +1,4 @@
-import type { Season, Season_Populated, Stage, Round, Challenge, RealFixture } from '~/types'
+import type { Season, Season_Populated, Stage, Round, _Challenge, RealFixture } from '~/types'
 
 export const useSeasonWithStages = (seasonId: string) => {
   const isLoading = ref(true)
@@ -35,56 +35,33 @@ export const useSeasonWithStages = (seasonId: string) => {
   }
 }
 
-export const usePopulatedRound = (roundId: string) => {
-  const isLoading = ref(true)
-  const selectedRound = ref<Round | null>(null)
+export const usePopulatedRound = async (roundId: string) => {
+  const roundQuery = usePSWatch<Round>('SELECT * FROM rounds WHERE id = ?', [roundId])
 
-  // Get round
-  const { data: rounds } = usePSWatch<Round>('SELECT * FROM rounds WHERE id = ?', [roundId])
+  const challengesQuery = usePSWatch<_Challenge>('SELECT * FROM challenges WHERE _round = ? ORDER BY "order" ASC', [roundId])
 
-  // Get challenges
-  const { data: challenges } = usePSWatch<Challenge>('SELECT * FROM challenges WHERE _round = ? ORDER BY "order" ASC', [roundId])
+  await Promise.all([roundQuery.await(), challengesQuery.await()])
 
-  watchEffect(() => {
-    if (rounds.value?.[0] && challenges.value) {
-      const transformedChallenges = challenges.value.map((challenge) => ({
+  const transformedChallenges = challengesQuery.data.value.map((challenge) => ({ ...challenge, fixtureSlots: JSON.parse(challenge.fixtureSlots as string) }))
+
+  const realFixtures = transformedChallenges?.flatMap((c: any) => c.fixtureSlots).map((fs: any) => fs._realFixture)
+
+  const realFixturesQuery = usePSWatch<RealFixture>(`SELECT * FROM "real_fixtures" WHERE id IN (${realFixtures.map(() => '?').join(',')})`, realFixtures, { detectChanges: true })
+
+  await realFixturesQuery.await()
+
+  return usePSQueryWatcher<Round>([roundQuery, challengesQuery, realFixturesQuery], (round) => {
+    round.value = {
+      ...roundQuery.data.value[0],
+      challenges: transformedChallenges.map((challenge) => ({
         ...challenge,
-        fixtureSlots: JSON.parse(challenge.fixtureSlots as string),
-      }))
-
-      selectedRound.value = {
-        ...rounds.value[0],
-        challenges: transformedChallenges,
-      }
-      isLoading.value = false
-    } else {
-      isLoading.value = true
+        fixtureSlots: challenge.fixtureSlots.map((fs: any) => ({
+          ...fs,
+          _realFixture: realFixturesQuery.data.value.find((rf: RealFixture) => rf.id === fs._realFixture),
+        })),
+      })),
     }
   })
-
-  return {
-    selectedRound,
-    isLoading,
-  }
 }
 
-export const usePopulatedRealFixture = (rfId: string) => {
-  const isLoading = ref(true)
-  const selectedRealFixture = ref<RealFixture | null>(null)
-
-  const { data: realFixtures } = usePSWatch<RealFixture>('SELECT * FROM "real_fixtures" WHERE id = ?', [rfId])
-
-  watchEffect(() => {
-    if (realFixtures.value?.[0]) {
-      selectedRealFixture.value = realFixtures.value[0]
-      isLoading.value = false
-    } else {
-      isLoading.value = true
-    }
-  })
-
-  return {
-    selectedRealFixture,
-    isLoading,
-  }
-}
+export const usRFs = (rfIds: string[]) => usePSWatch<RealFixture>(`SELECT * FROM "real_fixtures" WHERE id IN (${rfIds.map(() => '?').join(',')})`, rfIds)

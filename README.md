@@ -25,3 +25,4 @@
 - Feat: PS authentication and logout structure (skeleton): 477.01kb
 - Feat: User subscriptions (via PS): 477.14kb
 - Feat: PS Update highlighter directive: 478.17kb
+- Wip: Live match details and populated queries (initial): 479.02kb

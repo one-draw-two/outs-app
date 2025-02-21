@@ -52,6 +52,8 @@ const real_fixtures = new Table(
     status: column.text,
     _homeTeam: column.text,
     _awayTeam: column.text,
+    result: column.text,
+    startingAt: column.text,
   },
   { indexes: {} }
 )
