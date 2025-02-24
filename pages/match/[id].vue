@@ -14,7 +14,7 @@ const route = useRoute()
 
 useHead({ title: `Match ${route.params.id}` })
 
-const { data: realFixtures, isLoading, error, changeInfo } = usRFs([route.params.id as string])
+const { data: realFixtures, isLoading, error, changeInfo } = usePSWatch<_RealFixture>(`SELECT * FROM "real_fixtures" WHERE id IN (?)`, [route.params.id as string])
 const selectedRealFixture = computed(() => realFixtures.value?.[0])
 useLoadingWatcher(isLoading, realFixtures, 'Real fixture fully populated', { changeInfo })
 
