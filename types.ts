@@ -7,9 +7,17 @@ interface Base {
   status: string
 }
 
+// Components
+
+interface FixtureSlot {
+  _realFixture: _RealFixture
+  slotIndex: number
+}
+
 // Base interface with change tracking
 export interface BaseWithChange extends Base, WithPSChange {}
 
+// Non PS types
 export interface User extends Base {
   email: string
 }
@@ -24,8 +32,11 @@ export type _RealFixture = RealFixtureRecord & WithPSChange
 export type _RealTeam = RealTeamRecord & WithPSChange
 export type _RealPlayer = RealPlayerRecord & WithPSChange
 
-// UTIL
+export interface _P_Challenge extends Omit<_Challenge, 'fixtureSlots'> {
+  fixtureSlots: FixtureSlot[]
+}
 
+// UTIL
 export interface AuthResponseSuccess {
   data: { user: User; powerSyncToken: string }
   success: boolean

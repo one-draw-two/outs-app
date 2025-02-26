@@ -44,3 +44,27 @@ export const usePopulatedRound = async (roundId: string) => {
     }
   })
 }
+
+export const usePopulatedChallenge = async (challengeId: string) => {
+  const challengeQuery = usePSWatch<_Challenge>(`SELECT * FROM challenges WHERE id IN (?)`, [challengeId])
+
+  await challengeQuery.await()
+
+  const transformedChallenge = { ...challengeQuery.data.value[0], fixtureSlots: JSON.parse(challengeQuery.data.value[0].fixtureSlots as string) }
+
+  const realFixtures = transformedChallenge?.fixtureSlots.map((fs: any) => fs._realFixture)
+
+  const realFixturesQuery = usePSWatch<_RealFixture>(`SELECT * FROM "real_fixtures" WHERE id IN (${realFixtures.map(() => '?').join(',')})`, realFixtures, { detectChanges: true })
+
+  await realFixturesQuery.await()
+
+  return usePSQueryWatcher<_Challenge>([challengeQuery, realFixturesQuery], (challenge) => {
+    challenge.value = {
+      ...transformedChallenge,
+      fixtureSlots: transformedChallenge.fixtureSlots.map((fs: any) => ({
+        ...fs,
+        _realFixture: realFixturesQuery.data.value.find((rf: _RealFixture) => rf.id === fs._realFixture),
+      })),
+    }
+  })
+}

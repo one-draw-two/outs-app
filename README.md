@@ -28,3 +28,4 @@
 - Wip: Live match details and populated queries (initial): 479.02kb
 - Refactor: Initial round layout and provide/inject composables: 480.2kb
 - Fix: Nuxt useRoute() late params in layout issue is fixed with useNativeRoute in layouts: 480.71kb
+- Wip: Adding challenge screens, also dayjs plugin added: 493.21kb
