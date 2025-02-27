@@ -48,9 +48,8 @@
               <PrevLineBar :is-no-padding="true" class="h-4 !before:bg-white/20"> </PrevLineBar>
             </div>
           </div>
-          <div v-if="challenge.type !== 'Bonus'" class="absolute w-full h-full vertical-split-background opacity-10 top-0 left-0 rounded-3xl -z-1 flex-center">
-            <PrevLineBar v-if="false" :is-no-padding="true" class="h-[4px] bg-red-500 !before:bg-white/20 w-full" />
-          </div>
+
+          <div class="absolute w-full h-full vertical-split-background opacity-10 top-0 left-0 rounded-3xl -z-1 flex-center"></div>
         </div>
       </div>
       <div
@@ -118,13 +117,18 @@ const slots: Ref<
         { rf: null, bet: '', name: 'Subs. 1', color: 'gray-100', coef: -1 },
         { rf: null, bet: '', name: 'Subs. 2', color: 'gray-100', coef: -2 },
       ]
-    : // Bonus has only one RF so assign it directly
-      [{ rf: props.challenge.fixtureSlots?.[0]?._realFixture, bet: '', name: 'x2.5 Pts.', color: 'orange-400', coef: 1 }]
+    : [
+        { rf: null, bet: '', name: 'x2.5 Pts.', color: 'orange-400', coef: 1 },
+        { rf: null, bet: '', name: 'Subs. 1', color: 'gray-100', coef: -1 },
+      ]
 )
 
 const calendar = computed(() => props.challenge.fixtureSlots.map((fs) => fs._realFixture))
 
 onBeforeMount(() => {
+  console.log('semih')
+  console.log(slots)
+
   // props.bet?.betFixtureSlots?.map((bfs) => {
   props.challenge?.fixtureSlots?.map((fs) => {
     slots.value[fs.slotIndex].rf = calendar.value.find((rf) => rf.id === fs._realFixture.id)!
@@ -204,7 +208,7 @@ const selectOption = async (e: MouseEvent, rfId: string, option: string) => {
 const clearSlots = () => {
   if (props.isSubmitable) {
     slots.value.map((s) => {
-      s.rf = props.challenge.type === 'Bonus' ? props.challenge.fixtureSlots[0]._realFixture : null // Auto-assign bonus (and future orderless types)
+      s.rf = null
       s.bet = ''
     })
     submitToServer()
