@@ -7,6 +7,10 @@ export default function (url: string, target: string, method?: HttpMethod, body?
     method: method ?? 'get',
     body,
     params,
+    headers: {
+      Accept: 'application/json', // Add this
+      ...(body ? { 'Content-Type': 'application/json' } : {}), // Only add Content-Type when there's a body
+    },
   }).catch((err: any) => {
     return { error: err }
   })
