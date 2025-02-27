@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full py-2" :class="options?.bg ? `bg-${options.bg}` : ''">
+  <div class="w-full py-2 text-white" :class="options?.bg ? `bg-${options.bg}` : ''">
     <PrevLineBar :is-no-padding="true" :color="line" class="h-1 mt-2 mb-1 !before:bg-white/20">
       <div v-if="slot" class="absolute text-micro space-x-2 right-0">
         <p>
@@ -53,6 +53,8 @@ const props = defineProps<{
     bg?: string
   }
 }>()
+
+// console.log(props.realFixture)
 
 const bgComputed = computed(() => (props.options?.bg ? `bg-${props.options.bg}` : 'bg-gray-900'))
 

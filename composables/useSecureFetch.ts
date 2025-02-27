@@ -1,8 +1,8 @@
 type HttpMethod = 'get' | 'GET' | 'post' | 'POST' | 'put' | 'PUT' | 'delete' | 'DELETE' | 'patch' | 'PATCH' | 'head' | 'HEAD' | 'connect' | 'CONNECT' | 'options' | 'OPTIONS' | 'trace' | 'TRACE'
 
-export default function (url: string, method?: HttpMethod, body?: any, params?: any, isAuth?: boolean) {
+export default function (url: string, target: string, method?: HttpMethod, body?: any, params?: any) {
   const config = useRuntimeConfig()
-  return $fetch(`${isAuth ? config.public.authUrl : config.public.serverUrl}/${url}`, {
+  return $fetch(`${target === 'auth' ? config.public.authUrl : config.public.baseUrl}/${url}`, {
     credentials: 'include',
     method: method ?? 'get',
     body,

@@ -30,12 +30,12 @@
               </div>
             </div>
 
-            <PrevRealFixture :key="slots[rfi].rf!._id" v-else :comp-name="'OldStyle'" :real-fixture="slots[rfi].rf!" :options="rfOptions">
+            <PrevRealFixture :key="slots[rfi].rf!.id" v-else :comp-name="'OldStyle'" :real-fixture="slots[rfi].rf!" :options="rfOptions">
               <template #right>
                 <div class="h-6 flex item-center space-x-6 shrink-0 min-w-0">
                   <div
                     v-for="option of options"
-                    @click.stop="selectOption($event, slots[rfi].rf!._id as string, option)"
+                    @click.stop="selectOption($event, slots[rfi].rf!.id as string, option)"
                     class="w-6 h-6 rounded-full flex-center ring-2 text-xs font-bold italic text-black relative cursor-pointer clear-highlight"
                     :class="slots[rfi]?.bet === option ? `bg-${slots[rfi].color} ring-white` : 'bg-white/50 ring-white'"
                   >
@@ -55,23 +55,23 @@
       </div>
       <div
         class="flex-1 shrink-0 flex flex-col"
-        :class="[isGamesVisible ? 'mobile-vertical-come-in' : '', calendar.filter((rf) => slots.map((s) => s.rf?._id).findIndex((rfid) => rf._id === rfid) < 0).length <= 0 ? 'max-md:hidden' : '']"
+        :class="[isGamesVisible ? 'mobile-vertical-come-in' : '', calendar.filter((rf) => slots.map((s) => s.rf?.id).findIndex((rfid) => rf.id === rfid) < 0).length <= 0 ? 'max-md:hidden' : '']"
       >
         <h2 class="px-8 pb-8">Matches</h2>
         <div class="rounded-border-section">
           <div
-            v-for="(rf, rfi) of calendar.filter((rf) => slots.map((s) => s.rf?._id).findIndex((rfid) => rf._id === rfid) < 0)"
-            :key="rf._id"
-            @click="clickOnRF(calendar.find((c) => c._id === rf._id)!)"
+            v-for="(rf, rfi) of calendar.filter((rf) => slots.map((s) => s.rf?.id).findIndex((rfid) => rf.id === rfid) < 0)"
+            :key="rf.id"
+            @click="clickOnRF(calendar.find((c) => c.id === rf.id)!)"
             class="cursor-pointer clear-highlight px-8"
           >
-            <PrevRealFixture :key="calendar.find((c) => c._id === rf._id)!._id" :comp-name="'OldStyle'" :real-fixture="calendar.find((c) => c._id === rf._id)!" :options="rfOptions" />
+            <PrevRealFixture :key="calendar.find((c) => c.id === rf.id)!.id" :comp-name="'OldStyle'" :real-fixture="calendar.find((c) => c.id === rf.id)!" :options="rfOptions" />
           </div>
           <div class="max-md:hidden h-4 bg-gray-500/25">
             <PrevLineBar :is-no-padding="true" class="h-4 !before:bg-white/20"> </PrevLineBar>
           </div>
-          <div v-for="(rf, rfi) of calendar.filter((rf) => slots.map((s) => s.rf?._id).findIndex((rfid) => rf._id === rfid) >= 0)" :key="rf._id" class="max-md:hidden opacity-10 px-8">
-            <PrevRealFixture :key="calendar.find((c) => c._id === rf._id)!._id" :comp-name="'OldStyle'" :real-fixture="calendar.find((c) => c._id === rf._id)!" :options="rfOptions" />
+          <div v-for="(rf, rfi) of calendar.filter((rf) => slots.map((s) => s.rf?.id).findIndex((rfid) => rf.id === rfid) >= 0)" :key="rf.id" class="max-md:hidden opacity-10 px-8">
+            <PrevRealFixture :key="calendar.find((c) => c.id === rf.id)!.id" :comp-name="'OldStyle'" :real-fixture="calendar.find((c) => c.id === rf.id)!" :options="rfOptions" />
           </div>
         </div>
       </div>
@@ -80,20 +80,20 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_Challenge, _RealFixture, _Bet } from '~/types'
+import type { _P_Challenge, _P_RealFixture, _Bet } from '~/types'
 
 const props = defineProps<{
   challenge: _P_Challenge
   bet?: _Bet
   isSubmitable: boolean
 }>()
-const emit = defineEmits(['selected'])
+const emit = defineEmits(['submit'])
 
 const bottomlinks = ref(['Lock', 'Help', 'Clear'])
 
 const slots: Ref<
   {
-    rf: null | _RealFixture
+    rf: null | _P_RealFixture
     bet: string
     name: string
     color: string
@@ -154,7 +154,7 @@ const clickOnEmptySlot = (slotIndex: number) => {
   }
 }
 
-const clickOnRF = (rObj: _RealFixture) => {
+const clickOnRF = (rObj: _P_RealFixture) => {
   if (props.isSubmitable) {
     if (slotIndexToBeChosen.value >= 0) {
       slots.value[slotIndexToBeChosen.value].rf = rObj
@@ -169,10 +169,10 @@ const clickOnFSB = (slotIndex: number) => {
   if (props.isSubmitable) {
     if (!selectedRF.value) {
       if (movingSlot.value) {
-        if (movingSlot.value.rf?._id === slots.value[slotIndex].rf?._id) {
+        if (movingSlot.value.rf?.id === slots.value[slotIndex].rf?.id) {
           movingSlot.value = null
         } else {
-          const movingSlotSlotIndex = slots.value.findIndex((s) => s.rf?._id === movingSlot.value.rf?._id)
+          const movingSlotSlotIndex = slots.value.findIndex((s) => s.rf?.id === movingSlot.value.rf?.id)
           const tempSlotHolder = Object.assign({}, slots.value[slotIndex])
 
           slots.value[slotIndex].rf = movingSlot.value.rf
@@ -196,7 +196,7 @@ const clickOnFSB = (slotIndex: number) => {
 const selectOption = async (e: MouseEvent, rfId: string, option: string) => {
   e.preventDefault()
   if (props.isSubmitable) {
-    slots.value.find((s) => s.rf?._id === rfId)!.bet = option
+    slots.value.find((s) => s.rf?.id === rfId)!.bet = option
     submitToServer()
   }
 }
@@ -212,14 +212,14 @@ const clearSlots = () => {
 }
 
 const submitToServer = () => {
-  emit('selected', {
-    cid: props.challenge._id,
+  emit('submit', {
+    cid: props.challenge.id,
     rid: props.challenge._round,
     betType: props.challenge.type,
     betName: props.challenge.name,
     betFixtureSlots: slots.value.map((slot: any, si) => {
       return {
-        rfId: slot.rf?._id ?? '',
+        rfId: slot.rf?.id ?? '',
         option: slot.bet ?? '',
         slotIndex: si,
       }

@@ -12,7 +12,7 @@ defineProps<{ user: User }>()
 const emit = defineEmits(['clearUser'])
 
 const handleLogout = async () => {
-  const res = await useSecureFetch('logout', 'post', null, null, true)
+  const res = await useSecureFetch('logout', 'auth', 'post')
   if (res.success) {
     emit('clearUser')
     navigateTo('/access/login')

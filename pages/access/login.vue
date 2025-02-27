@@ -32,7 +32,7 @@ const email = ref('')
 const password = ref('')
 
 const handleLogin = async () => {
-  const res = await useSecureFetch('login', 'post', { email: email.value, password: password.value }, null, true)
+  const res = await useSecureFetch('login', 'auth', 'post', { email: email.value, password: password.value })
   if (res.success) useInitUser(res, '/')
 }
 </script>

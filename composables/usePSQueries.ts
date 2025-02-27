@@ -1,4 +1,4 @@
-import type { _Season, _Stage, _Round, _Challenge, _RealFixture } from '~/types'
+import type { _Season, _Stage, _Round, _Challenge, _RealFixture, _RealTeam } from '~/types'
 
 export const useSeasonWithStages = (seasonId: string) => {
   const seasonsQuery = usePSWatch<_Season>('SELECT * FROM seasons WHERE id = ?', [seasonId])
@@ -36,9 +36,9 @@ export const usePopulatedRound = async (roundId: string) => {
       ...roundQuery.data.value[0],
       challenges: transformedChallenges.map((challenge) => ({
         ...challenge,
-        fixtureSlots: challenge.fixtureSlots.map((fs: any) => ({
+        fixtureSlots: challenge.fixtureSlots.map((fs: { _realFixture: string; slotIndex: number }) => ({
           ...fs,
-          _realFixture: realFixturesQuery.data.value.find((rf: _RealFixture) => rf.id === fs._realFixture),
+          _realFixture: realFixturesQuery.data.value.find((rf) => rf.id === fs._realFixture),
         })),
       })),
     }
@@ -58,12 +58,22 @@ export const usePopulatedChallenge = async (challengeId: string) => {
 
   await realFixturesQuery.await()
 
-  return usePSQueryWatcher<_Challenge>([challengeQuery, realFixturesQuery], (challenge) => {
+  const realTeams = realFixturesQuery.data.value.flatMap((rf: _RealFixture) => [rf._homeTeam, rf._awayTeam])
+
+  const realTeamsQuery = usePSWatch<_RealTeam>(`SELECT * FROM "real_teams" WHERE id IN (${realTeams.map(() => '?').join(',')})`, realTeams, { detectChanges: true })
+
+  await realTeamsQuery.await()
+
+  return usePSQueryWatcher<_Challenge>([challengeQuery, realFixturesQuery, realTeamsQuery], (challenge) => {
     challenge.value = {
       ...transformedChallenge,
       fixtureSlots: transformedChallenge.fixtureSlots.map((fs: any) => ({
         ...fs,
-        _realFixture: realFixturesQuery.data.value.find((rf: _RealFixture) => rf.id === fs._realFixture),
+        _realFixture: {
+          ...realFixturesQuery.data.value.find((rf: _RealFixture) => rf.id === fs._realFixture),
+          _homeTeam: realTeamsQuery.data.value.find((rt: _RealTeam) => rt.id === realFixturesQuery.data.value.find((rf: _RealFixture) => rf.id === fs._realFixture)?._homeTeam),
+          _awayTeam: realTeamsQuery.data.value.find((rt: _RealTeam) => rt.id === realFixturesQuery.data.value.find((rf: _RealFixture) => rf.id === fs._realFixture)?._awayTeam),
+        },
       })),
     }
   })

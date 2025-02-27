@@ -6,11 +6,11 @@ export default defineNuxtRouteMiddleware(async (to, _) => {
   if (to.meta.isPublic) return // Dont do it in public routes (avoid infinite loop)
 
   try {
-    let res: AuthResponseSuccess = await useSecureFetch('init', 'get', null, null, true)
+    let res: AuthResponseSuccess = await useSecureFetch('init', 'auth')
 
     if (!res.success) {
       console.log('Access token expired, attempting refresh...')
-      res = await useSecureFetch('refresh', 'post', null, null, true)
+      res = await useSecureFetch('refresh', 'auth', 'post')
       if (!res.success) return navigateTo('/access/login', { replace: true })
     }
 

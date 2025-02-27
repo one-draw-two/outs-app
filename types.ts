@@ -7,13 +7,6 @@ interface Base {
   status: string
 }
 
-// Components
-
-interface FixtureSlot {
-  _realFixture: _RealFixture
-  slotIndex: number
-}
-
 // Base interface with change tracking
 export interface BaseWithChange extends Base, WithPSChange {}
 
@@ -32,8 +25,16 @@ export type _RealFixture = RealFixtureRecord & WithPSChange
 export type _RealTeam = RealTeamRecord & WithPSChange
 export type _RealPlayer = RealPlayerRecord & WithPSChange
 
+export interface _P_RealFixture extends Omit<_RealFixture, '_homeTeam' | '_awayTeam'> {
+  _homeTeam: _RealTeam
+  _awayTeam: _RealTeam
+}
+
 export interface _P_Challenge extends Omit<_Challenge, 'fixtureSlots'> {
-  fixtureSlots: FixtureSlot[]
+  fixtureSlots: {
+    _realFixture: _P_RealFixture
+    slotIndex: number
+  }[]
 }
 
 // UTIL
