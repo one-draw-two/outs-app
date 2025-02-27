@@ -39,6 +39,6 @@ export interface _P_Challenge extends Omit<_Challenge, 'fixtureSlots'> {
 
 // UTIL
 export interface AuthResponseSuccess {
-  data: { user: User; powerSyncToken: string }
+  data: { user: User; accessToken: string; powerSyncToken: string }
   success: boolean
 }

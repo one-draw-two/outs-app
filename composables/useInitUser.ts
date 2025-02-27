@@ -5,6 +5,7 @@ export default function (res: AuthResponseSuccess, navToPath?: string) {
   console.log('Initializing user with response...')
   console.log(res)
   useState<User>('user').value = res.data.user
+  useState<String>('accessToken').value = res.data.accessToken
   const { $db }: any = useNuxtApp()
   const connector = new Connector(res.data.powerSyncToken)
 
