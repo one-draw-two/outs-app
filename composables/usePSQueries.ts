@@ -1,4 +1,4 @@
-import type { _Season, _Stage, _Round, _Challenge, _RealFixture, _RealTeam } from '~/types'
+import type { _Season, _Stage, _Round, _Challenge, _RealFixture, _RealTeam, _P_Challenge } from '~/types'
 
 export const useSeasonWithStages = (seasonId: string) => {
   const seasonsQuery = usePSWatch<_Season>('SELECT * FROM seasons WHERE id = ?', [seasonId])
@@ -64,7 +64,7 @@ export const usePopulatedChallenge = async (challengeId: string) => {
 
   await realTeamsQuery.await()
 
-  return usePSQueryWatcher<_Challenge>([challengeQuery, realFixturesQuery, realTeamsQuery], (challenge) => {
+  return usePSQueryWatcher<_P_Challenge>([challengeQuery, realFixturesQuery, realTeamsQuery], (challenge) => {
     challenge.value = {
       ...transformedChallenge,
       fixtureSlots: transformedChallenge.fixtureSlots.map((fs: any) => ({

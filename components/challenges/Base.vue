@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _Challenge } from '~/types'
+import type { _P_Challenge } from '~/types'
 
 const { round, isLoading } = inject(roundKey)!
 

@@ -13,7 +13,7 @@
       </div>
     </div>
     <div>
-      <PrevRealFixture v-for="rf of realFixtureIds" :comp-name="'OldStyle'" :real-fixture="rf" :options="rfOptions" />
+      <PrevRealFixture v-for="rf of realFixtures" :comp-name="'OldStyle'" :real-fixture="rf" :options="rfOptions" />
     </div>
   </div>
 </template>
@@ -29,12 +29,14 @@ const props = defineProps<{
 const emit = defineEmits(['submit'])
 
 const userBetIfExists = computed(() => props.bet?.betRoundGoalCount)
-const realFixtureIds = computed(() => props.challenge?.fixtureSlots.map((fs) => fs._realFixture).sort((a, b) => new Date(a.startingAt).getTime() - new Date(b.startingAt).getTime()))
+const realFixtures = computed(() => props.challenge?.fixtureSlots.map((fs) => fs._realFixture).sort((a, b) => new Date(a.startingAt).getTime() - new Date(b.startingAt).getTime()))
 const rfOptions = ref({
   isDateShown: true,
   isScoreless: true,
 })
 
+// Set latest real fixture as _keyRealFixture for the betFixtureSlots
+const latestRFToSetAsKey = computed(() => realFixtures.value[realFixtures.value.length - 1])
 const selectOption = async (i: number, e?: MouseEvent) => {
   e?.preventDefault()
   if (props.isSubmitable) {
@@ -44,7 +46,7 @@ const selectOption = async (i: number, e?: MouseEvent) => {
       rid: props.challenge._round,
       betType: props.challenge.type,
       betName: props.challenge.name,
-      bet: i,
+      betFixtureSlots: [{ rfId: latestRFToSetAsKey.value?.id ?? '', option: i, slotIndex: 0 }],
     })
   }
 }

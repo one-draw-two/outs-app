@@ -1,4 +1,4 @@
-import type { _Round, _Challenge } from '~/types'
+import type { _Round, _P_Challenge } from '~/types'
 
 export const roundKey = Symbol('round') as InjectionKey<{
   round: Ref<_Round | null>
@@ -6,6 +6,6 @@ export const roundKey = Symbol('round') as InjectionKey<{
 }>
 
 export const challengeKey = Symbol('challenge') as InjectionKey<{
-  challenge: Ref<_Challenge | null>
+  challenge: Ref<_P_Challenge | null>
   isLoading: Ref<boolean>
 }>
