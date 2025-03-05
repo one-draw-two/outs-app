@@ -1,4 +1,4 @@
-import type { _Season, _Stage, _Round, _Challenge, _RealFixture, _RealTeam, _P_Challenge } from '~/types'
+import type { _Season, _Stage, _Round, _Challenge, _Bet, _P_Bet, _RealFixture, _RealTeam, _P_Challenge } from '~/types'
 
 export const useSeasonWithStages = (seasonId: string) => {
   const seasonsQuery = usePSWatch<_Season>('SELECT * FROM seasons WHERE id = ?', [seasonId])
@@ -76,5 +76,15 @@ export const usePopulatedChallenge = async (challengeId: string) => {
         },
       })),
     }
+  })
+}
+
+export const usePopulatedBet = async (challengeId: string) => {
+  const betsQuery = usePSWatch<_Bet>('SELECT * FROM bets WHERE "_challenge" = ?', [challengeId], { detectChanges: true })
+
+  await betsQuery.await()
+
+  return usePSQueryWatcher<_P_Bet>([betsQuery], (bet) => {
+    bet.value = { ...betsQuery.data.value[0], betFixtureSlots: JSON.parse(betsQuery.data.value[0]?.betFixtureSlots as string) }
   })
 }

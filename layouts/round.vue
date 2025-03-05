@@ -6,7 +6,6 @@
         <div class="flex gap-8">
           <NuxtLink :to="`/round/${round?.id}`"><h2>Matches</h2></NuxtLink>
           <NuxtLink :to="`/round/${round?.id}/challenges`"><h2>Challenges</h2></NuxtLink>
-          <NuxtLink :to="`/round/${round?.id}/bets`"><h2>Bets</h2></NuxtLink>
         </div>
       </div>
     </div>
@@ -19,7 +18,7 @@ import type { _Round } from '~/types'
 import { useRoute as useNativeRoute } from 'vue-router'
 const nativeRoute = useNativeRoute()
 
-const { data: round, isLoading } = await usePopulatedRound(nativeRoute.params.id as string)
+const { data: round, isLoading } = await usePopulatedRound(nativeRoute.params.rid as string)
 useLoadingWatcher(isLoading, round, 'Round fully populated')
 
 provide(roundKey, { round, isLoading })

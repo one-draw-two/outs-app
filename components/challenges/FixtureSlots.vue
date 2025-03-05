@@ -57,7 +57,7 @@
         :class="[isGamesVisible ? 'mobile-vertical-come-in' : '', calendar.filter((rf) => slots.map((s) => s.rf?.id).findIndex((rfid) => rf.id === rfid) < 0).length <= 0 ? 'max-md:hidden' : '']"
       >
         <h2 class="px-8 pb-8">Matches</h2>
-        <div class="rounded-border-section">
+        <div class="rounded-border-section bg-green-500">
           <div
             v-for="(rf, rfi) of calendar.filter((rf) => slots.map((s) => s.rf?.id).findIndex((rfid) => rf.id === rfid) < 0)"
             :key="rf.id"
@@ -79,11 +79,11 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_Challenge, _P_RealFixture, _Bet } from '~/types'
+import type { _P_Challenge, _P_RealFixture, _P_Bet } from '~/types'
 
 const props = defineProps<{
   challenge: _P_Challenge
-  bet?: _Bet
+  bet?: _P_Bet | null
   isSubmitable: boolean
 }>()
 const emit = defineEmits(['submit'])
@@ -126,14 +126,9 @@ const slots: Ref<
 const calendar = computed(() => props.challenge.fixtureSlots.map((fs) => fs._realFixture))
 
 onBeforeMount(() => {
-  console.log('semih')
-  console.log(slots)
-
-  // props.bet?.betFixtureSlots?.map((bfs) => {
-  props.challenge?.fixtureSlots?.map((fs) => {
-    slots.value[fs.slotIndex].rf = calendar.value.find((rf) => rf.id === fs._realFixture.id)!
-    // slots.value[fs.slotIndex].bet = bfs.bet!
-    slots.value[fs.slotIndex].bet = ''
+  props.bet?.betFixtureSlots?.map((bfs) => {
+    slots.value[bfs.slotIndex].rf = calendar.value.find((rf) => rf.id === bfs._realFixture)!
+    slots.value[bfs.slotIndex].bet = bfs.bet!
   })
 })
 
@@ -219,8 +214,6 @@ const submitToServer = () => {
   emit('submit', {
     cid: props.challenge.id,
     rid: props.challenge._round,
-    betType: props.challenge.type,
-    betName: props.challenge.name,
     betFixtureSlots: slots.value.map((slot: any, si) => {
       return {
         rfId: slot.rf?.id ?? '',
@@ -233,6 +226,7 @@ const submitToServer = () => {
 
 console.log('Hello from FixtureSlots')
 console.log(props.challenge)
+console.log(props.bet)
 console.log(slots.value)
 
 defineExpose({

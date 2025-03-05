@@ -10,7 +10,7 @@ export default function (res: AuthResponseSuccess, navToPath?: string) {
   const connector = new Connector(res.data.powerSyncToken)
 
   $db.connect(connector, {
-    params: { selected_round: 'ROI5yLY0' },
+    params: { selected_round: 'RO250000' },
   })
   if (navigateTo) navigateTo(navToPath, { replace: true })
 }

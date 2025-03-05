@@ -30,3 +30,4 @@
 - Fix: Nuxt useRoute() late params in layout issue is fixed with useNativeRoute in layouts: 480.71kb
 - Wip: Adding challenge screens, also dayjs plugin added: 493.21kb
 - Wip: Temporary RoundGoalCount submission component also added: 493.3kb
+- Feat: Added bet to the challenge screens and refactored routing: 492.69kb

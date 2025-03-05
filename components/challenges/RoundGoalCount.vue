@@ -8,7 +8,12 @@
       </div>
     </div>
     <div class="grid grid-cols-5 rounded-3xl gap-1 p-1 bg-gray-400 border border-gray-400">
-      <div v-for="i of 30" class="h-12 flex-center rounded-3xl pseudo-btn" @click="selectOption(i, $event)" :class="userBetIfExists === i ? 'bg-blue-300 text-black font-bold ring-2' : 'bg-gray-900 '">
+      <div
+        v-for="i of 30"
+        class="h-12 flex-center rounded-3xl pseudo-btn"
+        @click="selectOption(i, $event)"
+        :class="userBetIfExists === i.toString() ? 'bg-blue-300 text-black font-bold ring-2' : 'bg-gray-900 '"
+      >
         {{ i }}
       </div>
     </div>
@@ -19,16 +24,16 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_Challenge, _P_RealFixture, _Bet } from '~/types'
+import type { _P_Challenge, _P_RealFixture, _P_Bet } from '~/types'
 
 const props = defineProps<{
   challenge: _P_Challenge
-  bet?: _Bet
+  bet?: _P_Bet | null
   isSubmitable: boolean
 }>()
 const emit = defineEmits(['submit'])
 
-const userBetIfExists = computed(() => props.bet?.betRoundGoalCount)
+const userBetIfExists = computed(() => props.bet?.betFixtureSlots[0]?.bet)
 const realFixtures = computed(() => props.challenge?.fixtureSlots.map((fs) => fs._realFixture).sort((a, b) => new Date(a.startingAt).getTime() - new Date(b.startingAt).getTime()))
 const rfOptions = ref({
   isDateShown: true,
@@ -44,8 +49,6 @@ const selectOption = async (i: number, e?: MouseEvent) => {
     emit('submit', {
       cid: props.challenge.id,
       rid: props.challenge._round,
-      betType: props.challenge.type,
-      betName: props.challenge.name,
       betFixtureSlots: [{ rfId: latestRFToSetAsKey.value?.id ?? '', option: i, slotIndex: 0 }],
     })
   }
@@ -64,6 +67,10 @@ const isGamesVisible = ref(false)
 const clearSlots = () => {
   selectOption(0)
 }
+
+console.log('Hello from RoundGoalCount')
+console.log(props.challenge)
+console.log(props.bet)
 
 defineExpose({
   clearSlots,

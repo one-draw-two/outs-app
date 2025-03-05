@@ -37,6 +37,14 @@ export interface _P_Challenge extends Omit<_Challenge, 'fixtureSlots'> {
   }[]
 }
 
+export interface _P_Bet extends Omit<_Bet, 'betFixtureSlots'> {
+  betFixtureSlots: {
+    _realFixture: string
+    slotIndex: number
+    bet?: string
+  }[]
+}
+
 // UTIL
 export interface AuthResponseSuccess {
   data: { user: User; accessToken: string; powerSyncToken: string }

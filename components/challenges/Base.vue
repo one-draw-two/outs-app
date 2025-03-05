@@ -1,7 +1,15 @@
 <template>
   <div class="space-y-8">
     <h2 @click="clear">Clear bets</h2>
-    <component v-if="challenge" ref="comp" :is="returnComponent(challenge.type!)!" :challenge="challenge" :isSubmitable="round?.status === 'current-published' || true" @submit="submitToServer" />
+    <component
+      v-if="challenge"
+      ref="comp"
+      :is="returnComponent(challenge.type!)!"
+      :challenge="challenge"
+      :bet="bet"
+      :isSubmitable="round?.status === 'current-published' || true"
+      @submit="submitToServer"
+    />
   </div>
 </template>
 
@@ -11,6 +19,8 @@ import type { _P_Challenge } from '~/types'
 const { round, isLoading } = inject(roundKey)!
 
 const { challenge, isLoading: challengeIsLoading } = inject(challengeKey)!
+
+const { data: bet } = await usePopulatedBet(challenge?.value?.id as string)
 
 const returnComponent = (challengeType: string) => {
   if (challengeType === '1x2' || challengeType === 'Goals' || challengeType === 'Bonus') return Challenge_Type_FixtureSlots

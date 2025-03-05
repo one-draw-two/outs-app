@@ -11,10 +11,10 @@
 import type { _RealFixture } from '~/types'
 
 const route = useRoute()
+definePageMeta({ layout: 'round' })
+useHead({ title: `Match ${route.params.mid}` })
 
-useHead({ title: `Match ${route.params.id}` })
-
-const { data: realFixtures, isLoading, error, changeInfo } = usePSWatch<_RealFixture>(`SELECT * FROM "real_fixtures" WHERE id IN (?)`, [route.params.id as string])
+const { data: realFixtures, isLoading, error, changeInfo } = usePSWatch<_RealFixture>(`SELECT * FROM "real_fixtures" WHERE id IN (?)`, [route.params.mid as string])
 const selectedRealFixture = computed(() => realFixtures.value?.[0])
 useLoadingWatcher(isLoading, realFixtures, 'Real fixture fully populated', { changeInfo })
 

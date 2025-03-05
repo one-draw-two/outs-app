@@ -102,9 +102,11 @@ const subscriptions = new Table(
 
 const bets = new Table(
   {
-    name: column.text,
     _user: column.text,
     _round: column.text,
+    _challenge: column.text,
+    isValid: column.text,
+    betFixtureSlots: column.text,
   },
   { indexes: {} }
 )
