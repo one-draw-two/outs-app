@@ -1,22 +1,26 @@
 <template>
   <main>
-    <h1>{{ selectedRealFixture?.name }}</h1>
-    <p>
-      {{ selectedRealFixture }}
-    </p>
+    <h1>{{ realFixture?.name }}</h1>
+
+    <h2>Events</h2>
+    <div v-for="re of timeSortedEvents" class="flex gap-6 tabular-nums">
+      <p class="font-mono">{{ re?.id }}</p>
+      <p>{{ re?.time }}</p>
+      <p>{{ re?.type }}</p>
+    </div>
   </main>
 </template>
 
 <script setup lang="ts">
-import type { _RealFixture } from '~/types'
+import type { _P_RealFixture } from '~/types'
 
 const route = useRoute()
 definePageMeta({ layout: 'round' })
 useHead({ title: `Match ${route.params.mid}` })
 
-const { data: realFixtures, isLoading, error, changeInfo } = usePSWatch<_RealFixture>(`SELECT * FROM "real_fixtures" WHERE id IN (?)`, [route.params.mid as string])
-const selectedRealFixture = computed(() => realFixtures.value?.[0])
-useLoadingWatcher(isLoading, realFixtures, 'Real fixture fully populated', { changeInfo })
+const { data: realFixture } = await usePopulatedRealFixture(route.params.mid as string)
 
-// wecl(realFixtures)
+const timeSortedEvents = computed(() => realFixture.value?._events?.sort((a: any, b: any) => a.time - b.time))
+
+wecl(realFixture)
 </script>

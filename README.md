@@ -31,3 +31,4 @@
 - Wip: Adding challenge screens, also dayjs plugin added: 493.21kb
 - Wip: Temporary RoundGoalCount submission component also added: 493.3kb
 - Feat: Added bet to the challenge screens and refactored routing: 492.69kb
+- Feat: usePopulatedRF now in PSQueries and mid page: 492.83kb

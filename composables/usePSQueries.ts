@@ -1,4 +1,4 @@
-import type { _Season, _Stage, _Round, _Challenge, _Bet, _P_Bet, _RealFixture, _RealTeam, _P_Challenge } from '~/types'
+import type { _Season, _Stage, _Round, _Challenge, _Bet, _P_Bet, _RealFixture, _RealTeam, _P_Challenge, _P_RealFixture, _RealEvent } from '~/types'
 
 export const useSeasonWithStages = (seasonId: string) => {
   const seasonsQuery = usePSWatch<_Season>('SELECT * FROM seasons WHERE id = ?', [seasonId])
@@ -75,6 +75,55 @@ export const usePopulatedChallenge = async (challengeId: string) => {
           _awayTeam: realTeamsQuery.data.value.find((rt: _RealTeam) => rt.id === realFixturesQuery.data.value.find((rf: _RealFixture) => rf.id === fs._realFixture)?._awayTeam),
         },
       })),
+    }
+  })
+}
+
+export const usePopulatedRealFixture = async (rfId: string) => {
+  const realFixtureQuery = usePSWatch<_RealFixture>(`SELECT * FROM "real_fixtures" WHERE id IN (?)`, [rfId])
+
+  await realFixtureQuery.await()
+
+  const transformedRF = realFixtureQuery.data.value[0]
+
+  const realTeamsQuery = usePSWatch<_RealTeam>(`SELECT * FROM "real_teams" WHERE id IN (?,?)`, [transformedRF._homeTeam, transformedRF._awayTeam], { detectChanges: true })
+
+  await realTeamsQuery.await()
+
+  const realEventsQuery = usePSWatch<_RealEvent>(`SELECT * FROM "real_events" WHERE "_realFixture" IN (?)`, [rfId], { detectChanges: true })
+
+  await realEventsQuery.await()
+
+  /*
+  const realFixtures = transformedChallenge?.fixtureSlots.map((fs: any) => fs._realFixture)
+
+  const realFixturesQuery = usePSWatch<_RealFixture>(`SELECT * FROM "real_fixtures" WHERE id IN (${realFixtures.map(() => '?').join(',')})`, realFixtures, { detectChanges: true })
+
+  await realFixturesQuery.await()
+
+  const realTeams = realFixturesQuery.data.value.flatMap((rf: _RealFixture) => [rf._homeTeam, rf._awayTeam])
+
+  const realTeamsQuery = usePSWatch<_RealTeam>(`SELECT * FROM "real_teams" WHERE id IN (${realTeams.map(() => '?').join(',')})`, realTeams, { detectChanges: true })
+
+  await realTeamsQuery.await()
+  */
+
+  return usePSQueryWatcher<_P_RealFixture>([realFixtureQuery, realTeamsQuery, realEventsQuery], (realFixture) => {
+    realFixture.value = {
+      ...transformedRF,
+      _homeTeam: realTeamsQuery.data.value.find((rt: _RealTeam) => rt.id === transformedRF._homeTeam),
+      _awayTeam: realTeamsQuery.data.value.find((rt: _RealTeam) => rt.id === transformedRF._awayTeam),
+      _events: realEventsQuery.data.value,
+      /*
+      fixtureSlots: transformedChallenge.fixtureSlots.map((fs: any) => ({
+        ...fs,
+        _realFixture: {
+          ...realFixturesQuery.data.value.find((rf: _RealFixture) => rf.id === fs._realFixture),
+          _homeTeam: realTeamsQuery.data.value.find((rt: _RealTeam) => rt.id === realFixturesQuery.data.value.find((rf: _RealFixture) => rf.id === fs._realFixture)?._homeTeam),
+          _awayTeam: realTeamsQuery.data.value.find((rt: _RealTeam) => rt.id === realFixturesQuery.data.value.find((rf: _RealFixture) => rf.id === fs._realFixture)?._awayTeam),
+        },
+      })),
+      */
     }
   })
 }
