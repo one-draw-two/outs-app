@@ -16,9 +16,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     flags: isUseIndexDB ? { enableMultiTabs: typeof SharedWorker !== 'undefined' } : undefined,
   })
 
-  // const connector = new Connector()
-  // db.connect(connector)
-
   nuxtApp.provide('db', db)
 
   nuxtApp.vueApp.config.globalProperties.$vfsPurge = isUseIndexDB ? opfsNotSupportedMessage : () => purgeVFS(db)

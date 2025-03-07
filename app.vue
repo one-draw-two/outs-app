@@ -10,9 +10,11 @@
 <script setup lang="ts">
 import type { User } from '~/types'
 const user = useState<User | null>('user')
+const { clearAuth } = useAuthStorage()
 
 const clearUser = () => {
   user.value = null
   useState('accessToken').value = null
+  clearAuth()
 }
 </script>

@@ -6,6 +6,8 @@
 - Capacitor Backtround Runner (and alternative community plugin):
   - https://capacitorjs.com/docs/apis/background-runner
   - https://github.com/transistorsoft/capacitor-background-fetch
+- [Offline Token Expiry Implementation](./_notes/offlinetokenexpiry.md)
+
 
 
 ## Bundle Logs
@@ -32,3 +34,4 @@
 - Wip: Temporary RoundGoalCount submission component also added: 493.3kb
 - Feat: Added bet to the challenge screens and refactored routing: 492.69kb
 - Feat: usePopulatedRF now in PSQueries and mid page: 492.83kb
+- Feat: Offline authentication enabled with @capacitor/preferences API (doesnt expire and not tested yet): 493.9kb

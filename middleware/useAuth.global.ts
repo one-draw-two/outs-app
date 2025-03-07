@@ -1,24 +1,24 @@
-import type { User, AuthResponseSuccess } from '~/types'
+import type { AuthResponseSuccess } from '~/types'
 
 export default defineNuxtRouteMiddleware(async (to, _) => {
-  if (useState('user').value) return // Need to perform this only once
+  const { getStoredAuth, saveAuth } = useAuthStorage()
 
-  if (to.meta.isPublic) return // Dont do it in public routes (avoid infinite loop)
+  if (useState('user').value) return
+  if (to.meta.isPublic) return
 
   try {
-    /*
-    let res: AuthResponseSuccess = await useSecureFetch('init', 'auth')
-    if (!res.success) {
-      console.log('Access token expired, attempting refresh...')
-      res = await useSecureFetch('refresh', 'auth', 'post')
-      if (!res.success) return navigateTo('/access/login', { replace: true })
+    const storedData = await getStoredAuth()
+    if (storedData) {
+      console.log('Wow we have stored data:', storedData)
+      useInitUser({ success: true, data: storedData })
+      return
     }
-    */
 
     const res: AuthResponseSuccess = await useSecureFetch('refresh', 'auth', 'post')
     if (!res.success) return navigateTo('/access/login', { replace: true })
+
+    await saveAuth(res)
     useInitUser(res)
-    return
   } catch (error) {
     console.error('Authentication error:', error)
     return navigateTo('/access/login', { replace: true })
