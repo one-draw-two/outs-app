@@ -48,11 +48,20 @@ export interface _P_Bet extends Omit<_Bet, 'betFixtureSlots'> {
 }
 
 // UTIL
-export interface AuthResponseSuccess {
-  success: boolean
+
+export type AuthResponseError = {
+  success: false
+  message: string
+  error?: string
+}
+
+export type AuthResponseSuccess = {
+  success: true
   data: {
     user: User
     accessToken: string
     powerSyncToken: string
   }
 }
+
+export type AuthResponse = AuthResponseSuccess | AuthResponseError

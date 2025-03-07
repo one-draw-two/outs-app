@@ -4,11 +4,14 @@ PODS:
   - CapacitorBackgroundRunner (2.1.0):
     - Capacitor
   - CapacitorCordova (7.0.1)
+  - CapacitorPreferences (7.0.0):
+    - Capacitor
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/.pnpm/@capacitor+ios@7.0.1_@capacitor+core@7.0.1/node_modules/@capacitor/ios`)"
   - "CapacitorBackgroundRunner (from `../../node_modules/.pnpm/@capacitor+background-runner@2.1.0_@capacitor+core@7.0.1/node_modules/@capacitor/background-runner`)"
   - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@7.0.1_@capacitor+core@7.0.1/node_modules/@capacitor/ios`)"
+  - "CapacitorPreferences (from `../../node_modules/.pnpm/@capacitor+preferences@7.0.0_@capacitor+core@7.0.1/node_modules/@capacitor/preferences`)"
 
 EXTERNAL SOURCES:
   Capacitor:
@@ -17,12 +20,15 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/.pnpm/@capacitor+background-runner@2.1.0_@capacitor+core@7.0.1/node_modules/@capacitor/background-runner"
   CapacitorCordova:
     :path: "../../node_modules/.pnpm/@capacitor+ios@7.0.1_@capacitor+core@7.0.1/node_modules/@capacitor/ios"
+  CapacitorPreferences:
+    :path: "../../node_modules/.pnpm/@capacitor+preferences@7.0.0_@capacitor+core@7.0.1/node_modules/@capacitor/preferences"
 
 SPEC CHECKSUMS:
   Capacitor: 23fff43571a4d1e3ee7d67b5a3588c6e757c2913
   CapacitorBackgroundRunner: 75cddaea3ecc58c79ecd2b772cb80f8ecb1f3299
   CapacitorCordova: 63d476958d5022d76f197031e8b7ea3519988c64
+  CapacitorPreferences: e24a50a936f0e4f54a6b43be6121f923b4d91c27
 
-PODFILE CHECKSUM: 35cdcde6f73c23690507c7e51578453a39e7da17
+PODFILE CHECKSUM: 9b33f547dbe33af1628c272329da7b36c03fec03
 
 COCOAPODS: 1.15.2

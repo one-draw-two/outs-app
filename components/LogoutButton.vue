@@ -12,10 +12,9 @@ defineProps<{ user: User }>()
 const emit = defineEmits(['clearUser'])
 
 const handleLogout = async () => {
-  const res = await useSecureFetch('logout', 'auth', 'post')
-  if (res.success) {
-    emit('clearUser')
-    navigateTo('/access/login')
-  }
+  navigateTo('/access/login')
+  // await sleep(1000) // To remove flickering
+  emit('clearUser')
+  useSecureFetch('logout', 'auth', 'post')
 }
 </script>

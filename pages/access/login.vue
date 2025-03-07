@@ -5,7 +5,7 @@
     <form @submit.prevent="handleLogin" class="max-w-md mx-auto space-y-4">
       <div class="space-y-2">
         <label for="email" class="block text-sm font-medium">Email</label>
-        <input id="email" v-model="email" type="text" required class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input id="email" autocomplete="email" v-model="email" type="text" required class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
 
       <div class="space-y-2">
@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ isPublic: true })
+definePageMeta({ layout: 'access', isPublic: true })
 useHead({ title: 'Login' })
 
 const email = ref('')
@@ -33,6 +33,6 @@ const password = ref('')
 
 const handleLogin = async () => {
   const res = await useSecureFetch('login', 'auth', 'post', { email: email.value, password: password.value })
-  if (res.success) useInitUser(res, '/')
+  if (res.success) useInitUser(res, '/', true)
 }
 </script>
