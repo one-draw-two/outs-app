@@ -23,7 +23,7 @@ export const usePopulatedRound = async (roundId: string) => {
 
   await Promise.all([roundQuery.await(), challengesQuery.await()])
 
-  const transformedChallenges = challengesQuery.data.value.map((challenge) => ({ ...challenge, fixtureSlots: JSON.parse(challenge.fixtureSlots as string) }))
+  const transformedChallenges = challengesQuery.data.value.map((challenge) => ({ ...challenge, fixtureSlots: JSON.parse((challenge.fixtureSlots as string) ?? '[]') }))
 
   const realFixtures = transformedChallenges?.flatMap((c: any) => c.fixtureSlots).map((fs: any) => fs._realFixture)
 
@@ -50,7 +50,7 @@ export const usePopulatedChallenge = async (challengeId: string) => {
 
   await challengeQuery.await()
 
-  const transformedChallenge = { ...challengeQuery.data.value[0], fixtureSlots: JSON.parse(challengeQuery.data.value[0].fixtureSlots as string) }
+  const transformedChallenge = { ...challengeQuery.data.value[0], fixtureSlots: JSON.parse((challengeQuery.data.value[0].fixtureSlots as string) ?? '[]') }
 
   const realFixtures = transformedChallenge?.fixtureSlots.map((fs: any) => fs._realFixture)
 
@@ -80,6 +80,7 @@ export const usePopulatedChallenge = async (challengeId: string) => {
 }
 
 export const usePopulatedRealFixture = async (rfId: string) => {
+  console.log('Amin eb')
   const realFixtureQuery = usePSWatch<_RealFixture>(`SELECT * FROM "real_fixtures" WHERE id IN (?)`, [rfId])
 
   await realFixtureQuery.await()
@@ -129,11 +130,16 @@ export const usePopulatedRealFixture = async (rfId: string) => {
 }
 
 export const usePopulatedBet = async (challengeId: string) => {
+  console.log('OCOCO')
+
   const betsQuery = usePSWatch<_Bet>('SELECT * FROM bets WHERE "_challenge" = ?', [challengeId], { detectChanges: true })
 
   await betsQuery.await()
 
   return usePSQueryWatcher<_P_Bet>([betsQuery], (bet) => {
-    bet.value = { ...betsQuery.data.value[0], betFixtureSlots: JSON.parse(betsQuery.data.value[0]?.betFixtureSlots as string) }
+    bet.value = {
+      ...betsQuery.data.value[0],
+      betFixtureSlots: JSON.parse(betsQuery.data.value[0]?.betFixtureSlots ?? '[]'),
+    }
   })
 }

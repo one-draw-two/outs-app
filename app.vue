@@ -15,6 +15,7 @@ const { clearAuth } = useAuthStorage()
 const clearUser = () => {
   user.value = null
   useState('accessToken').value = null
+  useState('powerSyncToken').value = null
   clearAuth()
 }
 </script>

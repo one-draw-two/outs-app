@@ -93,7 +93,7 @@ const real_events = new Table(
 
 const subscriptions = new Table(
   {
-    name: column.text,
+    status: column.text,
     _user: column.text,
     _season: column.text,
   },

@@ -1,4 +1,3 @@
-import { Connector } from '~/powersync/Connector'
 import type { User, AuthResponseSuccess } from '~/types'
 
 export default function (res: AuthResponseSuccess, navToPath?: string, isToSaveOffline?: boolean) {
@@ -6,12 +5,10 @@ export default function (res: AuthResponseSuccess, navToPath?: string, isToSaveO
   console.log(res)
   useState<User>('user').value = res.data.user
   useState<String>('accessToken').value = res.data.accessToken
-  const { $db }: any = useNuxtApp()
-  const connector = new Connector(res.data.powerSyncToken)
+  useState<String>('powerSyncToken').value = res.data.powerSyncToken
 
-  $db.connect(connector, {
-    params: { selected_round: 'RO250000' },
-  })
+  useDynamicPS({})
+
   if (isToSaveOffline) useAuthStorage().saveAuth(res)
   if (navigateTo) navigateTo(navToPath, { replace: true })
 }

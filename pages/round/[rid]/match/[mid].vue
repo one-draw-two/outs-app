@@ -17,6 +17,7 @@ import type { _P_RealFixture } from '~/types'
 const route = useRoute()
 definePageMeta({ layout: 'round' })
 useHead({ title: `Match ${route.params.mid}` })
+useDynamicPS({ selected_rf: route.params.mid })
 
 const { data: realFixture } = await usePopulatedRealFixture(route.params.mid as string)
 
