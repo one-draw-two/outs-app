@@ -35,4 +35,4 @@
 - Feat: Added bet to the challenge screens and refactored routing: 492.69kb
 - Feat: usePopulatedRF now in PSQueries and mid page: 492.83kb
 - Feat: Offline authentication enabled with @capacitor/preferences API (doesnt expire and not tested yet): 493.9kb
-- Feat: Dynamic PS client parameters for real events (being tested): 494.33kb
+- Feat: Dynamic PS client parameters for real events (being tested): 494.33kb. Package updates: 496.5kb
