@@ -1,67 +1,85 @@
-// Simple service worker for basic offline functionality
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js')
 
-const CACHE_NAME = 'outstanding-offline-v1'
+// *** SINGLE VERSION PARAMETER TO CONTROL EVERYTHING ***
+const APP_VERSION = '1.1.0'
 
-// Assets to cache immediately
-const urlsToCache = ['/', '/index.html', '/manifest.json', '/icons/512.png', '/favicon.ico']
+// Derived values
+const SW_VERSION = APP_VERSION
+const CACHE_SUFFIX = 'v' + APP_VERSION.split('.').join('')
 
-// Check if URL is cacheable (must be http/https)
-function isCacheableUrl(url) {
-  const urlObj = new URL(url, self.location.origin)
-  return urlObj.protocol === 'http:' || urlObj.protocol === 'https:'
-}
+console.log(`[SW ${SW_VERSION}] Service worker initializing with Workbox (cache suffix: ${CACHE_SUFFIX})`)
 
-// Install event - cache basic assets
-self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache)))
-  self.skipWaiting()
+// Use cache name with dynamically generated suffix
+workbox.core.setCacheNameDetails({
+  prefix: 'outstanding-offline',
+  suffix: CACHE_SUFFIX,
 })
 
-// Fetch event - serve from cache when offline
-self.addEventListener('fetch', (event) => {
-  // Skip non-HTTP/HTTPS requests (like chrome-extension:)
-  if (!isCacheableUrl(event.request.url)) {
-    return
-  }
+// Precache critical assets
+workbox.precaching.precacheAndRoute([
+  { url: '/', revision: APP_VERSION },
+  { url: '/index.html', revision: APP_VERSION },
+  { url: '/manifest.json', revision: APP_VERSION },
+  { url: '/icons/512.png', revision: APP_VERSION },
+  { url: '/favicon.ico', revision: APP_VERSION },
+  // Add any other critical static assets
+])
 
-  event.respondWith(
-    // Try the cache first
-    caches.match(event.request).then((cachedResponse) => {
-      // Return cached response if found
-      if (cachedResponse) {
-        return cachedResponse
-      }
+// Handle SPA navigation requests - this works with dynamic Nuxt routes
+workbox.routing.registerRoute(
+  ({ request }) => request.mode === 'navigate',
+  new workbox.strategies.NetworkFirst({
+    cacheName: 'pages-cache',
+    plugins: [
+      new workbox.expiration.ExpirationPlugin({
+        maxEntries: 50,
+        maxAgeSeconds: 24 * 60 * 60, // 1 day
+      }),
+      // This plugin returns index.html for navigation requests that fail
+      {
+        cacheKeyWillBeUsed: async () => {
+          return new Request('/index.html')
+        },
+        handlerDidError: async () => {
+          return await caches.match('/index.html')
+        },
+      },
+    ],
+  })
+)
 
-      // Otherwise try to fetch from network
-      return fetch(event.request)
-        .then((response) => {
-          // Don't cache if not a valid response
-          if (!response || response.status !== 200) {
-            return response
-          }
+// PowerSync related resources - add custom handling if needed
+// Example (modify according to your needs):
+workbox.routing.registerRoute(
+  ({ url }) => url.pathname.includes('/powersync'),
+  new workbox.strategies.NetworkOnly() // or custom strategy
+)
 
-          // Cache the fetched response
-          const responseToCache = response.clone()
-          caches.open(CACHE_NAME).then((cache) => {
-            // Double-check it's a cacheable URL before putting in cache
-            if (isCacheableUrl(event.request.url)) {
-              cache.put(event.request, responseToCache)
-            }
-          })
+// Static assets (JS, CSS, etc.)
+workbox.routing.registerRoute(
+  ({ request }) => request.destination === 'script' || request.destination === 'style',
+  new workbox.strategies.StaleWhileRevalidate({
+    cacheName: 'static-assets',
+  })
+)
 
-          return response
-        })
-        .catch(() => {
-          // If both cache and network fail, return offline page
-          // Return offline response only for HTML requests
-          if (event.request.headers.get('Accept')?.includes('text/html')) {
-            return new Response('You are offline. Please reconnect to use the app.', {
-              headers: { 'Content-Type': 'text/html' },
-            })
-          }
-          // For other resources, just let the error happen
-          return Promise.reject('Network fetch failed')
-        })
-    })
-  )
-})
+// Images
+workbox.routing.registerRoute(
+  ({ request }) => request.destination === 'image',
+  new workbox.strategies.CacheFirst({
+    cacheName: 'images',
+    plugins: [
+      new workbox.expiration.ExpirationPlugin({
+        maxEntries: 60,
+        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+      }),
+    ],
+  })
+)
+
+// Catch-all for any other requests
+workbox.routing.setDefaultHandler(
+  new workbox.strategies.NetworkFirst({
+    cacheName: 'default-cache',
+  })
+)

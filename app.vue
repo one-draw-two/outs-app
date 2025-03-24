@@ -19,20 +19,5 @@ const clearUser = () => {
   clearAuth()
 }
 
-onMounted(() => {
-  console.log('Component mounted')
-
-  if ('serviceWorker' in navigator) {
-    console.log('Service worker is supported')
-
-    navigator.serviceWorker
-      .register('/sw.js')
-      .then((registration) => {
-        console.log('Service Worker registered:', registration.scope)
-      })
-      .catch((error) => {
-        console.error('Service Worker registration failed:', error)
-      })
-  }
-})
+useServiceWorker()
 </script>

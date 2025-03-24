@@ -6,6 +6,7 @@
     "build": "nuxt build",
     "build:s": "pnpm build && NUXT_PUBLIC_PLATFORM=cap pnpm generate && pnpm cap:sync",
     "build:a": "npx nuxi analyze",
+    "build:sw": "NODE_ENV=production VITE_SW_DEBUG=true VITE_DISABLE_HMR=true nuxt generate && concurrently \"npx serve -l tcp://127.0.0.1:3000 .output/public\" \"npx localtunnel --port 3000 --subdomain outs-sw\"",
     "dev": "DEV=true NODE_ENV=development nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
@@ -34,6 +35,8 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^7.1.0",
+    "concurrently": "^9.1.2",
+    "localtunnel": "^2.0.2",
     "vite-plugin-top-level-await": "^1.5.0",
     "vite-plugin-wasm": "^3.4.1"
   }
