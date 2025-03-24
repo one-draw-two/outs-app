@@ -20,10 +20,3 @@ const challengePath = computed(() => {
   if (props.challengeCode === 'RoundGoalCount') return '/png/goals.png'
 })
 </script>
-
-<style lang="postcss" scoped>
-.flag {
-  @apply box-content;
-  clip-path: url(#flag);
-}
-</style>
