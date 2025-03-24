@@ -1,6 +1,7 @@
 import wasm from 'vite-plugin-wasm'
 import topLevelAwait from 'vite-plugin-top-level-await'
 import tailwindcss from '@tailwindcss/vite'
+import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-28',
@@ -13,7 +14,23 @@ export default defineNuxtConfig({
     },
   },
   vite: {
-    plugins: [tailwindcss(), wasm(), topLevelAwait()],
+    plugins: [
+      tailwindcss(),
+      wasm(),
+      topLevelAwait(),
+      VitePWA({
+        registerType: 'autoUpdate',
+        devOptions: {
+          enabled: true,
+        },
+        manifest: {
+          name: 'Outstanding',
+        },
+        workbox: {
+          maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // Increase to 10 MiB
+        },
+      }),
+    ],
     optimizeDeps: {
       exclude: ['@journeyapps/wa-sqlite', '@powersync/web'],
       include: ['@powersync/web > js-logger'], // <-- Include `js-logger` when it isn't installed and imported.
