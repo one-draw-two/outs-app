@@ -2,9 +2,6 @@ import wasm from 'vite-plugin-wasm'
 import topLevelAwait from 'vite-plugin-top-level-await'
 import tailwindcss from '@tailwindcss/vite'
 
-import { VitePWA } from 'vite-plugin-pwa'
-import pwaConfig from './pwa.config'
-
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-28',
   ssr: false,
@@ -13,10 +10,25 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'Outstanding', // default title
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'description', content: 'Your app description' },
+        { name: 'theme-color', content: '#ffffff' },
+        { name: 'apple-mobile-web-app-capable', content: 'yes' },
+        { name: 'mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+        { name: 'apple-mobile-web-app-title', content: 'Outstanding' },
+      ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'apple-touch-icon', href: '/icons/apple-touch-icon.png' },
+        { rel: 'manifest', href: '/manifest.json' },
+      ],
     },
   },
   vite: {
-    plugins: [tailwindcss(), wasm(), topLevelAwait(), VitePWA(pwaConfig)],
+    plugins: [tailwindcss(), wasm(), topLevelAwait()],
     optimizeDeps: {
       exclude: ['@journeyapps/wa-sqlite', '@powersync/web'],
       include: ['@powersync/web > js-logger'], // <-- Include `js-logger` when it isn't installed and imported.
