@@ -12,10 +12,13 @@ export default function (params: any) {
       if (result.receive === 'granted') {
         await $capacitor.$pushNotifications.register()
 
-        // const fcmToken = await $capacitor.$fcm.getToken()
-        // console.log('FCM TOKEN IS')
-        // console.log(fcmToken)
-        // if (fcmToken) await useSecureFetch(`users/addPnToken/${fcmToken.token}`, 'post')
+        const fcmToken = await $capacitor.$fcm.getToken()
+        console.log('FCM TOKEN IS')
+        console.log(fcmToken)
+        if (fcmToken) {
+          const res = await useSecureFetch('push-token', 'auth', 'post', { token: fcmToken })
+          console.log(res)
+        }
       } else {
         // Show some error
         console.log('Capacitor Push Notification Error')
@@ -23,13 +26,15 @@ export default function (params: any) {
       }
     })
 
-    $capacitor.$pushNotifications.addListener('registration', async (token) => {
-      console.log('Push registration success')
-      console.log('*********')
-      console.log(token.value)
+    /*
+    // Android already generates FCM compatible tokens but to convert the APN tokens to FCM, we need the $fcm package as used above
+    // const fcmToken = await $capacitor.$fcm.getToken()
 
+    $capacitor.$pushNotifications.addListener('registration', async (token) => {
+      console.log(`Push registration success: ${token.value}`)
       const res = await useSecureFetch('push-token', 'auth', 'post', { token: token.value })
       console.log(res)
     })
+    */
   }
 }
