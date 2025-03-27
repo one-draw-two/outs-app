@@ -36,4 +36,4 @@
 - Feat: usePopulatedRF now in PSQueries and mid page: 492.83kb
 - Feat: Offline authentication enabled with @capacitor/preferences API (doesnt expire and not tested yet): 493.9kb
 - Feat: Dynamic PS client parameters for real events (being tested): 494.33kb. Package updates: 496.5kb
-- Feat: Capacitor push tokens and auth key expiration: 498.87kb
+- Feat: Capacitor push tokens and auth key expiration: 498.87kb. 499.02kb after package updates
