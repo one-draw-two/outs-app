@@ -6,7 +6,7 @@
 - Capacitor Backtround Runner (and alternative community plugin):
   - https://capacitorjs.com/docs/apis/background-runner
   - https://github.com/transistorsoft/capacitor-background-fetch
-- [Offline Token Expiry Implementation](./_notes/offlinetokenexpiry.md)
+- [Offline Token Expiry Implementation](./_notes/OFFLINETOKENEXPITY.md) (implemented 27.03.25)
 
 
 
@@ -36,3 +36,4 @@
 - Feat: usePopulatedRF now in PSQueries and mid page: 492.83kb
 - Feat: Offline authentication enabled with @capacitor/preferences API (doesnt expire and not tested yet): 493.9kb
 - Feat: Dynamic PS client parameters for real events (being tested): 494.33kb. Package updates: 496.5kb
+- Feat: Capacitor push tokens and auth key expiration: 498.87kb

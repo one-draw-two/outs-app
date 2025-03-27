@@ -4,12 +4,6 @@ import duration from 'dayjs/plugin/duration'
 dayjs.extend(utc)
 dayjs.extend(duration)
 
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties {
-    $day: any
-  }
-}
-
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.config.globalProperties.$day = dayjs
 })

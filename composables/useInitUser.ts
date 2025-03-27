@@ -8,6 +8,7 @@ export default function (res: AuthResponseSuccess, navToPath?: string, isToSaveO
   useState<String>('powerSyncToken').value = res.data.powerSyncToken
 
   useDynamicPS({})
+  useGetPushTokens({})
 
   if (isToSaveOffline) useAuthStorage().saveAuth(res)
   if (navigateTo) navigateTo(navToPath, { replace: true })
