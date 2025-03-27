@@ -7,6 +7,7 @@
   - https://capacitorjs.com/docs/apis/background-runner
   - https://github.com/transistorsoft/capacitor-background-fetch
 - [Offline Token Expiry Implementation](./_notes/OFFLINETOKENEXPITY.md) (implemented 27.03.25)
+- [Removing a file from the git history](./_notes/REMOVEAFILEFROMGITHISTORY.md)
 
 
 
