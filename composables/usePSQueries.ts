@@ -80,7 +80,6 @@ export const usePopulatedChallenge = async (challengeId: string) => {
 }
 
 export const usePopulatedRealFixture = async (rfId: string) => {
-  console.log('Amin eb')
   const realFixtureQuery = usePSWatch<_RealFixture>(`SELECT * FROM "real_fixtures" WHERE id IN (?)`, [rfId])
 
   await realFixtureQuery.await()

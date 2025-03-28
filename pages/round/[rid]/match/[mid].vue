@@ -3,8 +3,9 @@
     <h1>{{ realFixture?.name }}</h1>
 
     <h2>Events</h2>
-    <div v-for="re of timeSortedEvents" class="flex gap-6 tabular-nums">
-      <p class="font-mono">{{ re?.id }}</p>
+    <div v-for="(re, i) of timeSortedEvents" class="flex gap-6 tabular-nums">
+      <p class="w-12 font-mono">{{ i }}</p>
+      <p v-highlight="re" class="font-mono">{{ re?.id }}</p>
       <p>{{ re?.time }}</p>
       <p>{{ re?.type }}</p>
     </div>
