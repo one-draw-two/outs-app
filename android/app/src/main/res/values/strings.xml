@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">outstanding</string>
-    <string name="title_activity_main">outstanding</string>
+    <string name="app_name">outs</string>
+    <string name="title_activity_main">outs</string>
     <string name="package_name">outs.tand.ing</string>
     <string name="custom_url_scheme">outs.tand.ing</string>
 </resources>

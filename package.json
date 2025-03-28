@@ -17,6 +17,7 @@
     "cap:ios:sync": "npx cap sync ios",
     "cap:ios:open": "npx cap open ios",
     "cap:ios:icons": "npx cordova-res ios --skip-config --copy",
+    "cap:icons": "npx cordova-res --skip-config --copy",
     "cap:sync": "npx cap sync android && npx cap sync ios"
   },
   "dependencies": {
