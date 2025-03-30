@@ -1,0 +1,18 @@
+{
+  "aps": {
+    "timestamp": 1234,
+    "event": "start",
+    "content-state": {
+      "status": "Started",
+      "progress": 0.0
+    },
+    "attributes-type": "OutstandingLiveActivityAttributes",
+    "attributes": {
+      "title": "New Round Started"
+    },
+    "alert": {
+      "title": "New Round",
+      "body": "Round has started!"
+    }
+  }
+}

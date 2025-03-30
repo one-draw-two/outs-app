@@ -1,0 +1,15 @@
+{
+  "aps": {
+    "timestamp": 1743362899,
+    "event": "update",
+    "content-state": {
+      "status": "Updated",
+      "progress": 2.5
+    },
+    "alert": {
+      "title": "HAmsi",
+      "body": "Round has started!"
+    }
+  }
+}
+
