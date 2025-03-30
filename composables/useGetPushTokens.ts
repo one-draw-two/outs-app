@@ -16,7 +16,7 @@ export default function (params: any) {
         console.log('FCM TOKEN IS')
         console.log(fcmToken)
         if (fcmToken) {
-          const res = await useSecureFetch('push-token', 'auth', 'post', { token: fcmToken })
+          const res = await useSecureFetch('push-token', 'auth', 'post', fcmToken)
           console.log(res)
         }
       } else {
