@@ -41,6 +41,7 @@
     "@capacitor/cli": "^7.2.0",
     "concurrently": "^9.1.2",
     "localtunnel": "^2.0.2",
+    "typescript": "^5.8.2",
     "vite-plugin-top-level-await": "^1.5.0",
     "vite-plugin-wasm": "^3.4.1"
   }

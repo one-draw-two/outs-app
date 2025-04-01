@@ -4,11 +4,7 @@ export default function (params: any) {
   const { $capacitor } = useNuxtApp()
 
   if ($capacitor.$platform !== 'web') {
-    console.log('REQO')
-
     $capacitor.$pushNotifications.requestPermissions().then(async (result: any) => {
-      console.log('YAVAL')
-
       if (result.receive === 'granted') {
         await $capacitor.$pushNotifications.register()
 

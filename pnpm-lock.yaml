@@ -31,7 +31,7 @@ importers:
         version: 7.0.0(@capacitor/core@7.2.0)
       '@powersync/web':
         specifier: ^1.17.0
-        version: 1.17.0(@journeyapps/wa-sqlite@1.2.2)(@powersync/common@1.25.0)
+        version: 1.17.0(@journeyapps/wa-sqlite@1.2.2)(@powersync/common@1.26.0)
       '@tailwindcss/vite':
         specifier: ^4.0.17
         version: 4.0.17(vite@6.2.4(@types/node@22.13.16)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))
@@ -63,6 +63,9 @@ importers:
       localtunnel:
         specifier: ^2.0.2
         version: 2.0.2
+      typescript:
+        specifier: ^5.8.2
+        version: 5.8.2
       vite-plugin-top-level-await:
         specifier: ^1.5.0
         version: 1.5.0(rollup@4.38.0)(vite@6.2.4(@types/node@22.13.16)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))
@@ -707,8 +710,8 @@ packages:
     resolution: {integrity: sha512-aQypoot0HPSJa6gDPEPTntc1GT6QINrSbgRlRhadGW2WaYqUK3tK4Bw9SBMZXhmxd3GeAlZjVcODHgiu+THY7A==}
     engines: {node: '>=18'}
 
-  '@powersync/common@1.25.0':
-    resolution: {integrity: sha512-nrxr0iPFoBbHQX4ZbaWR9oLuo5Ebol9BUGdB6tEQCoHPw7ZuFKE1s8iHOkkFAzP8zCqmVEIOYE9of71HtuT9/Q==}
+  '@powersync/common@1.26.0':
+    resolution: {integrity: sha512-inb9vUV1+QHkKViD6XsaEvjp42tBhJzvB8nHOHeROJcgMXEM2vSgnjz4iUn6LNkTbt0+hEkaNoc3dJMM8qy+5Q==}
 
   '@powersync/web@1.17.0':
     resolution: {integrity: sha512-HfuEg3WquLQZJmQuV2wF+TyFnAk1cVLKuT83IMc6IEV3RWRmNvUB/92D+/luYKOIRFkv+1g9V9lvp7Jb3VpEOA==}
@@ -4253,14 +4256,14 @@ snapshots:
 
   '@poppinss/exception@1.2.1': {}
 
-  '@powersync/common@1.25.0':
+  '@powersync/common@1.26.0':
     dependencies:
       js-logger: 1.6.1
 
-  '@powersync/web@1.17.0(@journeyapps/wa-sqlite@1.2.2)(@powersync/common@1.25.0)':
+  '@powersync/web@1.17.0(@journeyapps/wa-sqlite@1.2.2)(@powersync/common@1.26.0)':
     dependencies:
       '@journeyapps/wa-sqlite': 1.2.2
-      '@powersync/common': 1.25.0
+      '@powersync/common': 1.26.0
       async-mutex: 0.4.1
       bson: 6.10.3
       comlink: 4.4.2
@@ -6707,8 +6710,7 @@ snapshots:
 
   type-fest@4.39.0: {}
 
-  typescript@5.8.2:
-    optional: true
+  typescript@5.8.2: {}
 
   ufo@1.5.4: {}
 
