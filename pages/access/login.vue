@@ -5,7 +5,7 @@
     <form @submit.prevent="handleLogin" class="max-w-md mx-auto space-y-4" ref="formRef" autocomplete="off">
       <div class="space-y-2">
         <label for="email" class="block text-sm font-medium">Email</label>
-        <input id="email" name="email" type="text" autocomplete="email" autocapitalize="none" required class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input id="email" name="email" type="text" required class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
 
       <div class="space-y-2">
@@ -32,7 +32,7 @@ const formRef = ref<HTMLFormElement | null>(null)
 const handleLogin = async () => {
   if (!formRef.value) return
 
-  const formData = new FormData(formRef.value)
+  const formData = new FormData(formRef.value as any)
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
