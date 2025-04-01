@@ -11,6 +11,15 @@
     <true/>
     <key>NSSupportsLiveActivitiesFrequentUpdates</key>
     <true/>
+
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+
+
+<key>com.apple.security.application-groups</key>
+<array>
+  <string>group.your.bundle.identifier</string>
+</array>
     ```
 - Add Widgets bundle (WidgetExtensions target) and Shared (as a Framework target)
   - Important note: You need to convert thr directories into Groups otherwise Xcode witll give a build error:
