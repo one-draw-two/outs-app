@@ -2,9 +2,9 @@ import SwiftUI
 import WidgetKit
 import ActivityKit
 
-struct OutsYoLiveActivityConfiguration: Widget {
+struct OutsLiveActivityConfiguration: Widget {
     var body: some WidgetConfiguration {
-        ActivityConfiguration(for: OutsYoNewLiveActivityAttributes.self) { context in
+        ActivityConfiguration(for: OutsWednesdayLiveActivityAttributes.self) { context in
             // Lock screen/banner UI
             VStack {
                 Text(context.attributes.title)
