@@ -23,6 +23,10 @@
 		0AD509152D9C6942004EAB89 /* LiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD5090F2D9C6931004EAB89 /* LiveActivityAttributes.swift */; };
 		0AD509162D9C6942004EAB89 /* LiveActivityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD509102D9C6931004EAB89 /* LiveActivityConfiguration.swift */; };
 		0AD509172D9C6942004EAB89 /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD5090E2D9C6931004EAB89 /* LiveActivityManager.swift */; };
+		0AD5091A2D9D24F5004EAB89 /* LiveActivityPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD509192D9D24F5004EAB89 /* LiveActivityPlugin.swift */; };
+		0AD5091C2D9D28CE004EAB89 /* LiveActivityPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD5091B2D9D28C6004EAB89 /* LiveActivityPlugin.m */; };
+		0AD509202D9D29A8004EAB89 /* Echo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD5091F2D9D29A8004EAB89 /* Echo.swift */; };
+		0AD509222D9D29B2004EAB89 /* EchoPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD509212D9D29B2004EAB89 /* EchoPlugin.swift */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
@@ -73,6 +77,10 @@
 		0AD5090E2D9C6931004EAB89 /* LiveActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityManager.swift; sourceTree = "<group>"; };
 		0AD5090F2D9C6931004EAB89 /* LiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityAttributes.swift; sourceTree = "<group>"; };
 		0AD509102D9C6931004EAB89 /* LiveActivityConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityConfiguration.swift; sourceTree = "<group>"; };
+		0AD509192D9D24F5004EAB89 /* LiveActivityPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityPlugin.swift; sourceTree = "<group>"; };
+		0AD5091B2D9D28C6004EAB89 /* LiveActivityPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LiveActivityPlugin.m; sourceTree = "<group>"; };
+		0AD5091F2D9D29A8004EAB89 /* Echo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Echo.swift; sourceTree = "<group>"; };
+		0AD509212D9D29B2004EAB89 /* EchoPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EchoPlugin.swift; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -133,6 +141,24 @@
 			path = LiveActivities;
 			sourceTree = "<group>";
 		};
+		0AD5091D2D9D28D8004EAB89 /* LiveActivityPlugin */ = {
+			isa = PBXGroup;
+			children = (
+				0AD5091B2D9D28C6004EAB89 /* LiveActivityPlugin.m */,
+				0AD509192D9D24F5004EAB89 /* LiveActivityPlugin.swift */,
+			);
+			path = LiveActivityPlugin;
+			sourceTree = "<group>";
+		};
+		0AD5091E2D9D2999004EAB89 /* Plugins */ = {
+			isa = PBXGroup;
+			children = (
+				0AD509212D9D29B2004EAB89 /* EchoPlugin.swift */,
+				0AD5091F2D9D29A8004EAB89 /* Echo.swift */,
+			);
+			path = Plugins;
+			sourceTree = "<group>";
+		};
 		27E2DDA53C4D2A4D1A88CE4A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -166,6 +192,8 @@
 		504EC3061FED79650016851F /* App */ = {
 			isa = PBXGroup;
 			children = (
+				0AD5091E2D9D2999004EAB89 /* Plugins */,
+				0AD5091D2D9D28D8004EAB89 /* LiveActivityPlugin */,
 				0AD5088D2D9C6817004EAB89 /* App.entitlements */,
 				50379B222058CBB4000EE86E /* capacitor.config.json */,
 				504EC3071FED79650016851F /* AppDelegate.swift */,
@@ -355,9 +383,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				0AD509152D9C6942004EAB89 /* LiveActivityAttributes.swift in Sources */,
+				0AD509222D9D29B2004EAB89 /* EchoPlugin.swift in Sources */,
+				0AD509202D9D29A8004EAB89 /* Echo.swift in Sources */,
+				0AD5091C2D9D28CE004EAB89 /* LiveActivityPlugin.m in Sources */,
 				0AD509162D9C6942004EAB89 /* LiveActivityConfiguration.swift in Sources */,
 				0AD509172D9C6942004EAB89 /* LiveActivityManager.swift in Sources */,
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
+				0AD5091A2D9D24F5004EAB89 /* LiveActivityPlugin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
