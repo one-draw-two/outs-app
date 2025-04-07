@@ -8,6 +8,14 @@
   - https://github.com/transistorsoft/capacitor-background-fetch
 - [Offline Token Expiry Implementation](./_notes/OFFLINETOKENEXPITY.md) (implemented 27.03.25)
 - [Removing a file from the git history](./_notes/REMOVEAFILEFROMGITHISTORY.md)
+- While implementing a custom select component (for manual domain select for example):
+  - https://github.com/ionic-team/cordova-plugin-ionic-webview/issues/654
+  - https://developer.apple.com/support/alternative-browser-engines/
+- Custom select related:
+  - https://developer.chrome.com/blog/a-customizable-select
+  - https://caniuse.com/mdn-css_properties_appearance_base-select (on 3/4/25 %46.14 global usage)
+- Monetization related:
+  - https://developer.apple.com/app-store/small-business-program/
 
 
 
@@ -37,4 +45,4 @@
 - Feat: usePopulatedRF now in PSQueries and mid page: 492.83kb
 - Feat: Offline authentication enabled with @capacitor/preferences API (doesnt expire and not tested yet): 493.9kb
 - Feat: Dynamic PS client parameters for real events (being tested): 494.33kb. Package updates: 496.5kb
-- Feat: Capacitor push tokens and auth key expiration: 498.87kb. 499.02kb after package updates
+- Feat: Capacitor push tokens and auth key expiration: 498.87kb. 499.02kb after package updates. Further package updates: 501.9kb
