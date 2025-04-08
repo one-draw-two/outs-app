@@ -1,16 +1,34 @@
 import { column, Schema, Table } from '@powersync/web'
 
-const seasons = new Table(
+const account_subscriptions = new Table(
+  {
+    status: column.text,
+    _user: column.text,
+    _season: column.text,
+  },
+  { indexes: {} }
+)
+
+const blueprint_seasons = new Table(
   {
     name: column.text,
     status: column.text,
     bgUrl: column.text,
+  },
+  { indexes: {} }
+)
+
+const calendar_seasons = new Table(
+  {
+    name: column.text,
+    status: column.text,
+    _bpSeason: column.text,
     _currentRound: column.text,
   },
   { indexes: {} }
 )
 
-const stages = new Table(
+const calendar_stages = new Table(
   {
     name: column.text,
     status: column.text,
@@ -20,7 +38,7 @@ const stages = new Table(
   { indexes: {} }
 )
 
-const rounds = new Table(
+const calendar_rounds = new Table(
   {
     name: column.text,
     status: column.text,
@@ -32,7 +50,7 @@ const rounds = new Table(
   { indexes: {} }
 )
 
-const challenges = new Table(
+const game_challenges = new Table(
   {
     name: column.text,
     status: column.text,
@@ -42,6 +60,17 @@ const challenges = new Table(
     order: column.integer,
     fixtureSlots: column.text,
     roundGoalCount: column.text,
+  },
+  { indexes: {} }
+)
+
+const game_bets = new Table(
+  {
+    _user: column.text,
+    _round: column.text,
+    _challenge: column.text,
+    isValid: column.text,
+    betFixtureSlots: column.text,
   },
   { indexes: {} }
 )
@@ -91,52 +120,34 @@ const real_events = new Table(
   { indexes: {} }
 )
 
-const subscriptions = new Table(
-  {
-    status: column.text,
-    _user: column.text,
-    _season: column.text,
-  },
-  { indexes: {} }
-)
-
-const bets = new Table(
-  {
-    _user: column.text,
-    _round: column.text,
-    _challenge: column.text,
-    isValid: column.text,
-    betFixtureSlots: column.text,
-  },
-  { indexes: {} }
-)
-
 export const AppSchema = new Schema({
-  seasons,
-  stages,
-  rounds,
-  challenges,
+  account_subscriptions,
+  blueprint_seasons,
+  calendar_seasons,
+  calendar_stages,
+  calendar_rounds,
+  game_challenges,
+  game_bets,
   real_fixtures,
   real_teams,
   real_players,
   real_events,
-  subscriptions,
-  bets,
 })
 
 export type Database = (typeof AppSchema)['types']
 
-export type SeasonRecord = Database['seasons']
-export type StageRecord = Database['stages']
-export type RoundRecord = Database['rounds']
+export type SubscriptionRecord = Database['account_subscriptions']
 
-export type ChallengeRecord = Database['challenges']
+export type BPSeasonRecord = Database['blueprint_seasons']
+
+export type SeasonRecord = Database['calendar_seasons']
+export type StageRecord = Database['calendar_stages']
+export type RoundRecord = Database['calendar_rounds']
+
+export type ChallengeRecord = Database['game_challenges']
+export type BetRecord = Database['game_bets']
 
 export type RealFixtureRecord = Database['real_fixtures']
 export type RealTeamRecord = Database['real_teams']
 export type RealPlayerRecord = Database['real_players']
 export type RealEventRecord = Database['real_events']
-
-export type SubscriptionRecord = Database['subscriptions']
-
-export type BetRecord = Database['bets']

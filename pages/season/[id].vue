@@ -1,7 +1,7 @@
 <template>
   <main>
     <h1>Season {{ season?.name }}</h1>
-    <div class="size-48 bg-cover bg-center bg-no-repeat" :style="{ backgroundImage: season?.bgUrl ? `url(${getSanityUrl(season.bgUrl)})` : 'none' }"></div>
+    <div class="size-48 bg-cover bg-center bg-no-repeat" :style="{ backgroundImage: season?.blueprint?.bgUrl ? `url(${getSanityUrl(season.blueprint?.bgUrl)})` : 'none' }"></div>
 
     <div class="space-y-8">
       <details v-for="stage in season?.stages" :key="stage.id" open>
@@ -21,6 +21,8 @@
 </template>
 
 <script setup lang="ts">
+import { getSanityUrl } from '~/composables/useHelpers'
+
 const route = useRoute()
 
 definePageMeta({ layout: 'season' })

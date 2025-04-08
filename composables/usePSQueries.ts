@@ -1,9 +1,14 @@
 import type { _Season, _Stage, _Round, _Challenge, _Bet, _P_Bet, _RealFixture, _RealTeam, _P_Challenge, _P_RealFixture, _RealEvent } from '~/types'
 
-export const useSeasonWithStages = (seasonId: string) => {
-  const seasonsQuery = usePSWatch<_Season>('SELECT * FROM seasons WHERE id = ?', [seasonId])
-  const stagesQuery = usePSWatch<_Stage>('SELECT * FROM stages WHERE _season = ? ORDER BY sePI ASC', [seasonId])
-  const roundsQuery = usePSWatch<_Round>('SELECT * FROM rounds WHERE _season = ? ORDER BY sePI ASC', [seasonId])
+export const useSeasonWithStages = async (seasonId: string) => {
+  const seasonsQuery = usePSWatch<_Season>('SELECT * FROM "calendar_seasons" WHERE id = ?', [seasonId])
+
+  const stagesQuery = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE _season = ? ORDER BY sePI ASC', [seasonId])
+  const roundsQuery = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE _season = ? ORDER BY sePI ASC', [seasonId])
+
+  await seasonsQuery.await()
+
+  const blueprintQuery = usePSWatch<_Stage>('SELECT * FROM "blueprint_seasons" WHERE id = ?', [seasonsQuery.data.value[0]._bpSeason])
 
   return usePSQueryWatcher<_Season>([seasonsQuery, stagesQuery, roundsQuery], (season) => {
     season.value = {
@@ -12,14 +17,15 @@ export const useSeasonWithStages = (seasonId: string) => {
         ...stage,
         rounds: roundsQuery.data.value?.filter((round) => round._stage === stage.id) || [],
       })),
+      blueprint: blueprintQuery.data.value[0],
     }
   })
 }
 
 export const usePopulatedRound = async (roundId: string) => {
-  const roundQuery = usePSWatch<_Round>('SELECT * FROM rounds WHERE id = ?', [roundId])
+  const roundQuery = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE id = ?', [roundId])
 
-  const challengesQuery = usePSWatch<_Challenge>('SELECT * FROM challenges WHERE _round = ? ORDER BY "order" ASC', [roundId])
+  const challengesQuery = usePSWatch<_Challenge>('SELECT * FROM "game_challenges" WHERE _round = ? ORDER BY "order" ASC', [roundId])
 
   await Promise.all([roundQuery.await(), challengesQuery.await()])
 
@@ -46,7 +52,7 @@ export const usePopulatedRound = async (roundId: string) => {
 }
 
 export const usePopulatedChallenge = async (challengeId: string) => {
-  const challengeQuery = usePSWatch<_Challenge>(`SELECT * FROM challenges WHERE id IN (?)`, [challengeId])
+  const challengeQuery = usePSWatch<_Challenge>(`SELECT * FROM "game_challenges" WHERE id IN (?)`, [challengeId])
 
   await challengeQuery.await()
 
@@ -131,7 +137,7 @@ export const usePopulatedRealFixture = async (rfId: string) => {
 export const usePopulatedBet = async (challengeId: string) => {
   console.log('OCOCO')
 
-  const betsQuery = usePSWatch<_Bet>('SELECT * FROM bets WHERE "_challenge" = ?', [challengeId], { detectChanges: true })
+  const betsQuery = usePSWatch<_Bet>('SELECT * FROM "game_bets" WHERE "_challenge" = ?', [challengeId], { detectChanges: true })
 
   await betsQuery.await()
 
