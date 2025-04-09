@@ -9,7 +9,7 @@ include ':capacitor-background-runner'
 project(':capacitor-background-runner').projectDir = new File('../node_modules/.pnpm/@capacitor+background-runner@2.1.0_@capacitor+core@7.2.0/node_modules/@capacitor/background-runner/android')
 
 include ':capacitor-preferences'
-project(':capacitor-preferences').projectDir = new File('../node_modules/.pnpm/@capacitor+preferences@7.0.0_@capacitor+core@7.2.0/node_modules/@capacitor/preferences/android')
+project(':capacitor-preferences').projectDir = new File('../node_modules/.pnpm/@capacitor+preferences@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/preferences/android')
 
 include ':capacitor-push-notifications'
-project(':capacitor-push-notifications').projectDir = new File('../node_modules/.pnpm/@capacitor+push-notifications@7.0.0_@capacitor+core@7.2.0/node_modules/@capacitor/push-notifications/android')
+project(':capacitor-push-notifications').projectDir = new File('../node_modules/.pnpm/@capacitor+push-notifications@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/push-notifications/android')

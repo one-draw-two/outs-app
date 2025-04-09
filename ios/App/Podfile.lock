@@ -7,9 +7,9 @@ PODS:
     - Capacitor
     - FirebaseMessaging
   - CapacitorCordova (7.2.0)
-  - CapacitorPreferences (7.0.0):
+  - CapacitorPreferences (7.0.1):
     - Capacitor
-  - CapacitorPushNotifications (7.0.0):
+  - CapacitorPushNotifications (7.0.1):
     - Capacitor
   - FirebaseCore (11.0.0):
     - FirebaseCoreInternal (~> 11.0)
@@ -70,8 +70,8 @@ DEPENDENCIES:
   - "CapacitorBackgroundRunner (from `../../node_modules/.pnpm/@capacitor+background-runner@2.1.0_@capacitor+core@7.2.0/node_modules/@capacitor/background-runner`)"
   - "CapacitorCommunityFcm (from `../../node_modules/.pnpm/@capacitor-community+fcm@7.1.1_@capacitor+core@7.2.0/node_modules/@capacitor-community/fcm`)"
   - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@7.2.0_@capacitor+core@7.2.0/node_modules/@capacitor/ios`)"
-  - "CapacitorPreferences (from `../../node_modules/.pnpm/@capacitor+preferences@7.0.0_@capacitor+core@7.2.0/node_modules/@capacitor/preferences`)"
-  - "CapacitorPushNotifications (from `../../node_modules/.pnpm/@capacitor+push-notifications@7.0.0_@capacitor+core@7.2.0/node_modules/@capacitor/push-notifications`)"
+  - "CapacitorPreferences (from `../../node_modules/.pnpm/@capacitor+preferences@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/preferences`)"
+  - "CapacitorPushNotifications (from `../../node_modules/.pnpm/@capacitor+push-notifications@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/push-notifications`)"
 
 SPEC REPOS:
   trunk:
@@ -94,17 +94,17 @@ EXTERNAL SOURCES:
   CapacitorCordova:
     :path: "../../node_modules/.pnpm/@capacitor+ios@7.2.0_@capacitor+core@7.2.0/node_modules/@capacitor/ios"
   CapacitorPreferences:
-    :path: "../../node_modules/.pnpm/@capacitor+preferences@7.0.0_@capacitor+core@7.2.0/node_modules/@capacitor/preferences"
+    :path: "../../node_modules/.pnpm/@capacitor+preferences@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/preferences"
   CapacitorPushNotifications:
-    :path: "../../node_modules/.pnpm/@capacitor+push-notifications@7.0.0_@capacitor+core@7.2.0/node_modules/@capacitor/push-notifications"
+    :path: "../../node_modules/.pnpm/@capacitor+push-notifications@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/push-notifications"
 
 SPEC CHECKSUMS:
   Capacitor: 106e7a4205f4618d582b886a975657c61179138d
   CapacitorBackgroundRunner: 75cddaea3ecc58c79ecd2b772cb80f8ecb1f3299
   CapacitorCommunityFcm: 15b0b44dcb160adc28f120719dcf9fbf72e14e1d
   CapacitorCordova: 5967b9ba03915ef1d585469d6e31f31dc49be96f
-  CapacitorPreferences: e24a50a936f0e4f54a6b43be6121f923b4d91c27
-  CapacitorPushNotifications: c4feed483e03825369c278f5bab75100fb3f94a0
+  CapacitorPreferences: cbf154e5e5519b7f5ab33817a334dda1e98387f9
+  CapacitorPushNotifications: 0b653a3264d56daccf0e8769fff15d2f48306de6
   FirebaseCore: 3cf438f431f18c12cdf2aaf64434648b63f7e383
   FirebaseCoreInternal: cac45dbc4824e152fe93cdd5dd46bd503c3fdffb
   FirebaseInstallations: 833536e8ff1dfadd4b5f80e8dfef69e8edbd071d
@@ -114,6 +114,6 @@ SPEC CHECKSUMS:
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
 
-PODFILE CHECKSUM: 941d487870e50d11c7ce33abb4d3c8e212cd8c11
+PODFILE CHECKSUM: b5c9bed11308288abe3db754995c9963e0191df6
 
 COCOAPODS: 1.16.2
