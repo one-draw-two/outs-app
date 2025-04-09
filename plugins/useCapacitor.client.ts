@@ -1,6 +1,7 @@
 import { Capacitor, registerPlugin } from '@capacitor/core'
 import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
+import { CapLiveActivities } from 'outs-capacitor-liveactivities'
 
 interface LiveActivityPlugin {
   startLiveActivity(): Promise<{ message: string }>
@@ -12,6 +13,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     $pushNotifications: PushNotifications,
     $fcm: FCM,
     $liveActivity: registerPlugin<LiveActivityPlugin>('LiveActivityPlugin'),
+    $cli: CapLiveActivities,
   })
 
   if (Capacitor.getPlatform() === 'web') return

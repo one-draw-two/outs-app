@@ -11,6 +11,7 @@ declare module '#app' {
       $pushNotifications: typeof PushNotifications
       $fcm: typeof FCM
       $liveActivity: any
+      $cli: any
     }
 
     $db: PowerSyncDatabase
@@ -27,6 +28,7 @@ declare module '@vue/runtime-core' {
       $pushNotifications: typeof PushNotifications
       $fcm: typeof FCM
       $liveActivity: any
+      $cli: any
     }
 
     // PowerSync

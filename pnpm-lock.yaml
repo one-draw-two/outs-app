@@ -30,7 +30,7 @@ importers:
         specifier: ^7.0.1
         version: 7.0.1(@capacitor/core@7.2.0)
       '@powersync/web':
-        specifier: ^1.17.2
+        specifier: ^1.18.0
         version: 1.18.0(@journeyapps/wa-sqlite@1.2.2)(@powersync/common@1.27.1)
       '@tailwindcss/vite':
         specifier: ^4.1.3
@@ -44,6 +44,9 @@ importers:
       nuxt:
         specifier: ^3.16.2
         version: 3.16.2(@capacitor/preferences@7.0.1(@capacitor/core@7.2.0))(@parcel/watcher@2.5.1)(@types/node@22.14.0)(db0@0.3.1)(ioredis@5.6.0)(lightningcss@1.29.2)(magicast@0.3.5)(rollup@4.39.0)(terser@5.39.0)(typescript@5.8.3)(vite@6.2.5(@types/node@22.14.0)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))(xml2js@0.6.2)(yaml@2.7.1)
+      outs-capacitor-liveactivities:
+        specifier: ^0.0.1
+        version: 0.0.1(@capacitor/core@7.2.0)
       tailwindcss:
         specifier: ^4.1.3
         version: 4.1.3
@@ -696,8 +699,8 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
-  '@polka/url@1.0.0-next.28':
-    resolution: {integrity: sha512-8LduaNlMZGwdZ6qWrKlfa+2M4gahzFkprZiAt2TF8uS0qQgBizKXpXURqvTJ4WtmupWxaLqjRb2UCTe72mu+Aw==}
+  '@polka/url@1.0.0-next.29':
+    resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
   '@poppinss/colors@4.1.4':
     resolution: {integrity: sha512-FA+nTU8p6OcSH4tLDY5JilGYr1bVWHpNmcLr7xmMEdbWmKHa+3QZ+DqefrXKmdjO/brHTnQZo20lLSjaO7ydog==}
@@ -2439,6 +2442,11 @@ packages:
   openurl@1.1.1:
     resolution: {integrity: sha512-d/gTkTb1i1GKz5k3XE3XFV/PxQ1k45zDqGP2OA7YhgsaLoqm6qRvARAZOFer1fcXritWlGBRCu/UgeS4HAnXAA==}
 
+  outs-capacitor-liveactivities@0.0.1:
+    resolution: {integrity: sha512-wtMAphYMmOGB7l/E/bu17wEx/DTPsqtmxdG5iox5//osfvUgHqdKVlGGZHXV7BhhIcoFxa5NBtj8QlcQPZyf9w==}
+    peerDependencies:
+      '@capacitor/core': '>=7.0.0'
+
   oxc-parser@0.56.5:
     resolution: {integrity: sha512-MNT32sqiTFeSbQZP2WZIRQ/mlIpNNq4sua+/4hBG4qT5aef2iQe+1/BjezZURPlvucZeSfN1Y6b60l7OgBdyUA==}
     engines: {node: '>=14.0.0'}
@@ -3444,8 +3452,8 @@ packages:
     resolution: {integrity: sha512-fusrlIMLeRvTFYLUjJ9KzlGC3N+6MOPJ68HNj/yJv2nz7zq8t4HEviLms2gkdRPUS7F5rZ5n+pYx9r88m6IE1g==}
     engines: {node: '>=18'}
 
-  youch@4.1.0-beta.6:
-    resolution: {integrity: sha512-y1aNsEeoLXnWb6pI9TvfNPIxySyo4Un3OGxKn7rsNj8+tgSquzXEWkzfA5y6gU0fvzmQgvx3JBn/p51qQ8Xg9A==}
+  youch@4.1.0-beta.7:
+    resolution: {integrity: sha512-HUn0M24AUTMvjdkoMtH8fJz2FEd+k1xvtR9EoTrDUoVUi6o7xl5X+pST/vjk4T3GEQo2mJ9FlAvhWBm8dIdD4g==}
     engines: {node: '>=18'}
 
   zip-stream@6.0.1:
@@ -3955,7 +3963,7 @@ snapshots:
       std-env: 3.9.0
       tinyexec: 1.0.1
       ufo: 1.6.1
-      youch: 4.1.0-beta.6
+      youch: 4.1.0-beta.7
     transitivePeerDependencies:
       - magicast
 
@@ -4242,7 +4250,7 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@polka/url@1.0.0-next.28': {}
+  '@polka/url@1.0.0-next.29': {}
 
   '@poppinss/colors@4.1.4':
     dependencies:
@@ -5846,7 +5854,7 @@ snapshots:
       unstorage: 1.15.0(@capacitor/preferences@7.0.1(@capacitor/core@7.2.0))(db0@0.3.1)(ioredis@5.6.0)
       untyped: 2.0.0
       unwasm: 0.3.9
-      youch: 4.1.0-beta.6
+      youch: 4.1.0-beta.7
       youch-core: 0.3.2
     optionalDependencies:
       xml2js: 0.6.2
@@ -6075,6 +6083,10 @@ snapshots:
       is-wsl: 2.2.0
 
   openurl@1.1.1: {}
+
+  outs-capacitor-liveactivities@0.0.1(@capacitor/core@7.2.0):
+    dependencies:
+      '@capacitor/core': 7.2.0
 
   oxc-parser@0.56.5:
     dependencies:
@@ -6526,7 +6538,7 @@ snapshots:
 
   sirv@3.0.1:
     dependencies:
-      '@polka/url': 1.0.0-next.28
+      '@polka/url': 1.0.0-next.29
       mrmime: 2.0.1
       totalist: 3.0.1
 
@@ -7060,7 +7072,7 @@ snapshots:
       '@poppinss/exception': 1.2.1
       error-stack-parser-es: 1.0.5
 
-  youch@4.1.0-beta.6:
+  youch@4.1.0-beta.7:
     dependencies:
       '@poppinss/dumper': 0.6.3
       '@speed-highlight/core': 1.2.7

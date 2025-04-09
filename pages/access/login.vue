@@ -21,6 +21,7 @@
       <span class="mx-2">|</span>
       <NuxtLink to="/admin" class="text-blue-500 hover:underline">Admin</NuxtLink>
     </div>
+    <div @click="activateLiveActivities()">Activate live activities</div>
   </main>
 </template>
 <script setup lang="ts">
@@ -38,5 +39,25 @@ const handleLogin = async () => {
 
   const res = await useSecureFetch('login', 'auth', 'post', { email, password })
   if (res.success) useInitUser(res, '/', true)
+}
+
+const { $capacitor } = useNuxtApp()
+const activateLiveActivities = async () => {
+  $capacitor.$cli.echo({ value: 'MALUM' })
+  console.log('Praw')
+  try {
+    const result = await $capacitor.$cli.startLiveActivity({
+      activityId: 'your-activity-id',
+      data: {
+        // Your activity data
+        title: 'Activity Title',
+        content: 'Activity Content',
+      },
+    })
+
+    console.log('Live Activity started:', result.started)
+  } catch (error) {
+    console.error('Failed to start Live Activity:', error)
+  }
 }
 </script>
