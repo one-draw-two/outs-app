@@ -7,6 +7,8 @@ PODS:
     - Capacitor
     - FirebaseMessaging
   - CapacitorCordova (7.2.0)
+  - CapacitorNetwork (7.0.1):
+    - Capacitor
   - CapacitorPreferences (7.0.1):
     - Capacitor
   - CapacitorPushNotifications (7.0.1):
@@ -72,6 +74,7 @@ DEPENDENCIES:
   - "CapacitorBackgroundRunner (from `../../node_modules/.pnpm/@capacitor+background-runner@2.1.0_@capacitor+core@7.2.0/node_modules/@capacitor/background-runner`)"
   - "CapacitorCommunityFcm (from `../../node_modules/.pnpm/@capacitor-community+fcm@7.1.1_@capacitor+core@7.2.0/node_modules/@capacitor-community/fcm`)"
   - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@7.2.0_@capacitor+core@7.2.0/node_modules/@capacitor/ios`)"
+  - "CapacitorNetwork (from `../../node_modules/.pnpm/@capacitor+network@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/network`)"
   - "CapacitorPreferences (from `../../node_modules/.pnpm/@capacitor+preferences@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/preferences`)"
   - "CapacitorPushNotifications (from `../../node_modules/.pnpm/@capacitor+push-notifications@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/push-notifications`)"
   - "OutsCapacitorLiveactivities (from `../../node_modules/.pnpm/outs-capacitor-liveactivities@0.0.4_@capacitor+core@7.2.0/node_modules/outs-capacitor-liveactivities`)"
@@ -96,6 +99,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/.pnpm/@capacitor-community+fcm@7.1.1_@capacitor+core@7.2.0/node_modules/@capacitor-community/fcm"
   CapacitorCordova:
     :path: "../../node_modules/.pnpm/@capacitor+ios@7.2.0_@capacitor+core@7.2.0/node_modules/@capacitor/ios"
+  CapacitorNetwork:
+    :path: "../../node_modules/.pnpm/@capacitor+network@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/network"
   CapacitorPreferences:
     :path: "../../node_modules/.pnpm/@capacitor+preferences@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/preferences"
   CapacitorPushNotifications:
@@ -108,6 +113,7 @@ SPEC CHECKSUMS:
   CapacitorBackgroundRunner: 75cddaea3ecc58c79ecd2b772cb80f8ecb1f3299
   CapacitorCommunityFcm: 15b0b44dcb160adc28f120719dcf9fbf72e14e1d
   CapacitorCordova: 5967b9ba03915ef1d585469d6e31f31dc49be96f
+  CapacitorNetwork: 07ec4c69c1bb696f41c23e00d31bda1bbb221bba
   CapacitorPreferences: cbf154e5e5519b7f5ab33817a334dda1e98387f9
   CapacitorPushNotifications: 0b653a3264d56daccf0e8769fff15d2f48306de6
   FirebaseCore: 3cf438f431f18c12cdf2aaf64434648b63f7e383
@@ -120,6 +126,6 @@ SPEC CHECKSUMS:
   OutsCapacitorLiveactivities: 8fcfd8003785da778906bcdf195289c10f4b261f
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
 
-PODFILE CHECKSUM: 42586ebf58a9164135945ca90122852505f786b6
+PODFILE CHECKSUM: ef1fd9eaed892b62ad53c99e89af9d3d5109fce0
 
 COCOAPODS: 1.16.2

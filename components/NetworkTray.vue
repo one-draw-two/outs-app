@@ -14,7 +14,10 @@
           {{ lastSyncedTime ? `Last synced: ${lastSyncedTime}` : 'Never synced' }}
         </span>
         <span v-if="timeSinceLastSync" class="text-xs text-white opacity-70"> ({{ timeSinceLastSync }} ago) </span>
-        <span class="text-xs text-white opacity-70"> PowerSync: {{ connected ? 'Connected' : 'Disconnected' }} </span>
+        <span class="text-xs text-white opacity-70">
+          PowerSync: {{ connected ? 'Connected' : 'Disconnected' }}
+          <span v-if="isOnline && connectionType !== 'none'">({{ connectionType }})</span>
+        </span>
       </div>
     </div>
   </Transition>
@@ -23,19 +26,46 @@
 <script setup lang="ts">
 import { SyncStatus } from '@powersync/web'
 
-const { $db } = useNuxtApp()
-const $day = useNuxtApp().vueApp.config.globalProperties.$day
+const { $db, $capacitor, vueApp } = useNuxtApp()
+const $network = $capacitor.$network
+const $day = vueApp.config.globalProperties.$day
 
 const connected = useState<boolean>('network:powerSyncConnected', () => false)
-const isOnline = useState<boolean>('network:networkOnline', () => navigator.onLine)
+const isOnline = useState<boolean>('network:networkOnline', () => true) // Default to true until checked
+const connectionType = useState<string>('network:connectionType', () => 'unknown')
 const lastSyncedTime = useState<string | null>('network:lastSyncedTime', () => null)
 const lastSyncedDate = useState<Date | null>('network:lastSyncedDate', () => null)
 const isForcedVisible = useState<boolean>('network:networkTrayForced', () => false)
-const connectionStatus = useState<string>('network:connectionStatus', () => 'offline') // 'connected', 'online', 'offline'
+const connectionStatus = useState<string>('network:connectionStatus', () => 'offline')
 const connectionColorClass = useState<string>('network:connectionColorClass', () => 'bg-red-500')
 const timeSinceLastSync = ref<string | null>(null)
+const networkListener = ref<any>(null)
 
-// Watch connection state changes and update both status and color class
+const initNetwork = async () => {
+  try {
+    const status = await $network.getStatus()
+    isOnline.value = status.connected
+    connectionType.value = status.connectionType
+
+    networkListener.value = await $network.addListener('networkStatusChange', (status) => {
+      console.log('Network status changed:', status)
+      isOnline.value = status.connected
+      connectionType.value = status.connectionType
+    })
+  } catch (error) {
+    console.warn('Capacitor Network API not available, using browser fallback:', error)
+    isOnline.value = navigator.onLine
+
+    window.addEventListener('online', handleBrowserNetworkChange)
+    window.addEventListener('offline', handleBrowserNetworkChange)
+  }
+}
+
+const handleBrowserNetworkChange = () => {
+  isOnline.value = navigator.onLine
+  connectionType.value = navigator.onLine ? 'unknown' : 'none'
+}
+
 watch(
   [isOnline, connected],
   ([newIsOnline, newConnected]) => {
@@ -53,52 +83,29 @@ watch(
   { immediate: true }
 )
 
-// Reference for the hide timer - fixed type to number for setTimeout
 let hideTimer = ref<number | null>(null)
 
-// Improved toggle visibility function that handles multiple presses
 const toggleVisibility = () => {
-  // Always clear existing timer first
   if (hideTimer.value !== null) {
     window.clearTimeout(hideTimer.value)
     hideTimer.value = null
   }
 
-  // If we're offline, clicking should only toggle the forced visibility
-  // but keep the tray visible due to offline status
   if (!isOnline.value) {
-    // If forced is already true, turn it off (timer was already cleared above)
-    if (isForcedVisible.value) {
-      isForcedVisible.value = false
-    } else {
-      // Turn on forced and set timer (even though offline will keep it visible)
-      isForcedVisible.value = true
-      hideTimer.value = window.setTimeout(() => {
-        isForcedVisible.value = false
-      }, 10000)
-    }
+    isForcedVisible.value = !isForcedVisible.value
+    if (isForcedVisible.value) hideTimer.value = window.setTimeout(() => (isForcedVisible.value = false), 10000)
     return
   }
 
-  // Normal toggle behavior when online
   isForcedVisible.value = !isForcedVisible.value
-
-  // Only set timer if we're now visible
-  if (isForcedVisible.value) {
-    hideTimer.value = window.setTimeout(() => {
-      isForcedVisible.value = false
-    }, 10000) // 10 seconds
-  }
+  if (isForcedVisible.value) hideTimer.value = window.setTimeout(() => (isForcedVisible.value = false), 10000)
 }
 
-// Listen for the toggle event
 const toggleEvent = useState<number>('network:networkTrayToggleTrigger', () => 0)
 watch(
   () => toggleEvent.value,
   () => {
-    if (toggleEvent.value > 0) {
-      toggleVisibility()
-    }
+    if (toggleEvent.value > 0) toggleVisibility()
   }
 )
 
@@ -121,7 +128,6 @@ const stopTimer = () => {
   }
 }
 
-// Update timer when either tray is showing (forced or offline)
 watch(
   () => !isOnline.value || isForcedVisible.value,
   (isVisible) => {
@@ -141,23 +147,26 @@ const unregisterPowerSync = $db.registerListener({
   },
 })
 
-const handleNetworkChange = () => (isOnline.value = navigator.onLine)
-
-onMounted(() => {
-  window.addEventListener('online', handleNetworkChange)
-  window.addEventListener('offline', handleNetworkChange)
+onMounted(async () => {
+  await initNetwork()
   if (!isOnline.value || isForcedVisible.value) startTimer()
 })
 
-onUnmounted(() => {
-  window.removeEventListener('online', handleNetworkChange)
-  window.removeEventListener('offline', handleNetworkChange)
+onUnmounted(async () => {
+  if (networkListener.value) {
+    try {
+      await $network.removeAllListeners()
+    } catch (error) {
+      console.warn('Error removing network listeners:', error)
+    }
+  } else {
+    window.removeEventListener('online', handleBrowserNetworkChange)
+    window.removeEventListener('offline', handleBrowserNetworkChange)
+  }
+
   unregisterPowerSync()
   stopTimer()
 
-  // Clear any existing timer - fixed to handle null case
-  if (hideTimer.value !== null) {
-    window.clearTimeout(hideTimer.value)
-  }
+  if (hideTimer.value !== null) window.clearTimeout(hideTimer.value)
 })
 </script>

@@ -48,3 +48,4 @@
 - Feat: Capacitor push tokens and auth key expiration: 498.87kb. 499.02kb after package updates. Further package updates: 501.9kb
 - Pre: Capacitor plugin: 499.32kb, with smoke test: 499.58kb
 - Wip: Offline status, pre dayJS last synced diff: 500.25kb, when the network button and tray components ready: 501.96kb
+- Fix: For a wider platform network status detection, using @capacitor/network: 502.89kb

@@ -1,4 +1,5 @@
 import { PowerSyncDatabase } from '@powersync/web'
+import { Network } from '@capacitor/network'
 import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
 import dayjs from 'dayjs'
@@ -8,6 +9,7 @@ declare module '#app' {
     // Capacitor
     $capacitor: {
       $platform: string
+      $network: typeof Network
       $pushNotifications: typeof PushNotifications
       $fcm: typeof FCM
       $liveActivities: any
@@ -24,6 +26,7 @@ declare module '@vue/runtime-core' {
     // Capacitor
     $capacitor: {
       $platform: string
+      $network: typeof Network
       $pushNotifications: typeof PushNotifications
       $fcm: typeof FCM
       $liveActivities: any

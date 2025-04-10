@@ -13,6 +13,7 @@ def capacitor_pods
   pod 'CapacitorCordova', :path => '../../node_modules/.pnpm/@capacitor+ios@7.2.0_@capacitor+core@7.2.0/node_modules/@capacitor/ios'
   pod 'CapacitorCommunityFcm', :path => '../../node_modules/.pnpm/@capacitor-community+fcm@7.1.1_@capacitor+core@7.2.0/node_modules/@capacitor-community/fcm'
   pod 'CapacitorBackgroundRunner', :path => '../../node_modules/.pnpm/@capacitor+background-runner@2.1.0_@capacitor+core@7.2.0/node_modules/@capacitor/background-runner'
+  pod 'CapacitorNetwork', :path => '../../node_modules/.pnpm/@capacitor+network@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/network'
   pod 'CapacitorPreferences', :path => '../../node_modules/.pnpm/@capacitor+preferences@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/preferences'
   pod 'CapacitorPushNotifications', :path => '../../node_modules/.pnpm/@capacitor+push-notifications@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/push-notifications'
   pod 'OutsCapacitorLiveactivities', :path => '../../node_modules/.pnpm/outs-capacitor-liveactivities@0.0.4_@capacitor+core@7.2.0/node_modules/outs-capacitor-liveactivities'
