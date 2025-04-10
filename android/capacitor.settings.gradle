@@ -5,6 +5,9 @@ project(':capacitor-android').projectDir = new File('../node_modules/.pnpm/@capa
 include ':capacitor-community-fcm'
 project(':capacitor-community-fcm').projectDir = new File('../node_modules/.pnpm/@capacitor-community+fcm@7.1.1_@capacitor+core@7.2.0/node_modules/@capacitor-community/fcm/android')
 
+include ':capacitor-app'
+project(':capacitor-app').projectDir = new File('../node_modules/.pnpm/@capacitor+app@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/app/android')
+
 include ':capacitor-network'
 project(':capacitor-network').projectDir = new File('../node_modules/.pnpm/@capacitor+network@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/network/android')
 
@@ -15,4 +18,4 @@ include ':capacitor-push-notifications'
 project(':capacitor-push-notifications').projectDir = new File('../node_modules/.pnpm/@capacitor+push-notifications@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/push-notifications/android')
 
 include ':outs-capacitor-liveactivities'
-project(':outs-capacitor-liveactivities').projectDir = new File('../node_modules/.pnpm/outs-capacitor-liveactivities@0.0.4_@capacitor+core@7.2.0/node_modules/outs-capacitor-liveactivities/android')
+project(':outs-capacitor-liveactivities').projectDir = new File('../node_modules/.pnpm/outs-capacitor-liveactivities@0.0.5_@capacitor+core@7.2.0/node_modules/outs-capacitor-liveactivities/android')

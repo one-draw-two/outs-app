@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A51D0852DA7E3DC0049DB7F /* MyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A51D0842DA7E3DC0049DB7F /* MyViewController.swift */; };
 		0A963A672DA6B8A9003452F5 /* LiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A963A632DA6B8A9003452F5 /* LiveActivityAttributes.swift */; };
 		0A963A682DA6B8A9003452F5 /* LiveActivityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A963A642DA6B8A9003452F5 /* LiveActivityConfiguration.swift */; };
 		0A963A692DA6B8A9003452F5 /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A963A652DA6B8A9003452F5 /* LiveActivityManager.swift */; };
@@ -58,6 +59,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0A51D0842DA7E3DC0049DB7F /* MyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyViewController.swift; sourceTree = "<group>"; };
 		0A963A632DA6B8A9003452F5 /* LiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityAttributes.swift; sourceTree = "<group>"; };
 		0A963A642DA6B8A9003452F5 /* LiveActivityConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityConfiguration.swift; sourceTree = "<group>"; };
 		0A963A652DA6B8A9003452F5 /* LiveActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityManager.swift; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 				504EC3071FED79650016851F /* AppDelegate.swift */,
 				0AA4EDFD2DA6B44A004C6AB7 /* GoogleService-Info.plist */,
 				504EC30B1FED79650016851F /* Main.storyboard */,
+				0A51D0842DA7E3DC0049DB7F /* MyViewController.swift */,
 				504EC30E1FED79650016851F /* Assets.xcassets */,
 				504EC3101FED79650016851F /* LaunchScreen.storyboard */,
 				504EC3131FED79650016851F /* Info.plist */,
@@ -357,6 +360,7 @@
 				0A963A6A2DA6B8A9003452F5 /* LiveActivityAttributes.swift in Sources */,
 				0A963A6B2DA6B8A9003452F5 /* LiveActivityConfiguration.swift in Sources */,
 				0A963A6C2DA6B8A9003452F5 /* LiveActivityManager.swift in Sources */,
+				0A51D0852DA7E3DC0049DB7F /* MyViewController.swift in Sources */,
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

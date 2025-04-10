@@ -14,9 +14,9 @@ importers:
       '@capacitor/android':
         specifier: ^7.2.0
         version: 7.2.0(@capacitor/core@7.2.0)
-      '@capacitor/background-runner':
-        specifier: ^2.1.0
-        version: 2.1.0(@capacitor/core@7.2.0)
+      '@capacitor/app':
+        specifier: ^7.0.1
+        version: 7.0.1(@capacitor/core@7.2.0)
       '@capacitor/core':
         specifier: ^7.2.0
         version: 7.2.0
@@ -48,8 +48,8 @@ importers:
         specifier: ^3.16.2
         version: 3.16.2(@capacitor/preferences@7.0.1(@capacitor/core@7.2.0))(@parcel/watcher@2.5.1)(@types/node@22.14.0)(db0@0.3.1)(ioredis@5.6.0)(lightningcss@1.29.2)(magicast@0.3.5)(rollup@4.39.0)(terser@5.39.0)(typescript@5.8.3)(vite@6.2.6(@types/node@22.14.0)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))(xml2js@0.6.2)(yaml@2.7.1)
       outs-capacitor-liveactivities:
-        specifier: ^0.0.4
-        version: 0.0.4(@capacitor/core@7.2.0)
+        specifier: ^0.0.5
+        version: 0.0.5(@capacitor/core@7.2.0)
       tailwindcss:
         specifier: ^4.1.3
         version: 4.1.3
@@ -208,10 +208,10 @@ packages:
     peerDependencies:
       '@capacitor/core': ^7.2.0
 
-  '@capacitor/background-runner@2.1.0':
-    resolution: {integrity: sha512-5ezvBeZVOaMC1sqDgD5gvCC4RYarEA47k29fAKti+mr2B9VvTp9yjeirMxjPJHvM247z1QNDTgAvEk4KmClE4Q==}
+  '@capacitor/app@7.0.1':
+    resolution: {integrity: sha512-ArlVZAAla4MwQoKh26x2AaTDOBh5Vhp1VhMKR3RwqZSsZnazKTFGNrPbr9Ez5r1knnEDfApyjwp1uZnXK1WTYQ==}
     peerDependencies:
-      '@capacitor/core': ^6.0.0 || ^7.0.0
+      '@capacitor/core': '>=7.0.0'
 
   '@capacitor/cli@7.2.0':
     resolution: {integrity: sha512-RNW9vtYYYSDmOdguYBSW0VpRnG/d6lGydlc9DLrJ7qbSPxFrotTz9IjkM48O+SruUma61DyuSqJttdbay2xSxg==}
@@ -2450,8 +2450,8 @@ packages:
   openurl@1.1.1:
     resolution: {integrity: sha512-d/gTkTb1i1GKz5k3XE3XFV/PxQ1k45zDqGP2OA7YhgsaLoqm6qRvARAZOFer1fcXritWlGBRCu/UgeS4HAnXAA==}
 
-  outs-capacitor-liveactivities@0.0.4:
-    resolution: {integrity: sha512-tCnrOAxtxTxXTh8cVPI/lt87MTgRFYzliP3674pgd7BBfhJlhVZeDFcOatCsTFNW31c1dibc3BCuF1+IOAbIHg==}
+  outs-capacitor-liveactivities@0.0.5:
+    resolution: {integrity: sha512-v23IGXYeRERBYwuuqfjUIhfuPbWrIVb7HFo/NkCEFRP+9u/1DNnWKMRPZRNpHABDziTqoDe+TvDsua5o8HqmEA==}
     peerDependencies:
       '@capacitor/core': '>=7.0.0'
 
@@ -3648,7 +3648,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 7.2.0
 
-  '@capacitor/background-runner@2.1.0(@capacitor/core@7.2.0)':
+  '@capacitor/app@7.0.1(@capacitor/core@7.2.0)':
     dependencies:
       '@capacitor/core': 7.2.0
 
@@ -6096,7 +6096,7 @@ snapshots:
 
   openurl@1.1.1: {}
 
-  outs-capacitor-liveactivities@0.0.4(@capacitor/core@7.2.0):
+  outs-capacitor-liveactivities@0.0.5(@capacitor/core@7.2.0):
     dependencies:
       '@capacitor/core': 7.2.0
 

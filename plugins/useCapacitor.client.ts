@@ -1,4 +1,5 @@
 import { Capacitor } from '@capacitor/core'
+import { App } from '@capacitor/app'
 import { Network } from '@capacitor/network'
 import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
@@ -14,4 +15,12 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   })
 
   if (Capacitor.getPlatform() === 'web') return
+
+  App.addListener('backButton', ({ canGoBack }) => {
+    if (!canGoBack) {
+      App.exitApp()
+    } else {
+      window.history.back()
+    }
+  })
 })
