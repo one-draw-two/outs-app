@@ -8,6 +8,11 @@
 - Add GoogleService-Info(plist)
 
 - Edit Info(plist)
+  - 
+  ```
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+  ```
   -
     ```
     <key>NSSupportsLiveActivities</key>

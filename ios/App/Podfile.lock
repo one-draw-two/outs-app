@@ -1,8 +1,6 @@
 PODS:
   - Capacitor (7.2.0):
     - CapacitorCordova
-  - CapacitorBackgroundRunner (2.1.0):
-    - Capacitor
   - CapacitorCommunityFcm (7.1.1):
     - Capacitor
     - FirebaseMessaging
@@ -71,7 +69,6 @@ PODS:
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/.pnpm/@capacitor+ios@7.2.0_@capacitor+core@7.2.0/node_modules/@capacitor/ios`)"
-  - "CapacitorBackgroundRunner (from `../../node_modules/.pnpm/@capacitor+background-runner@2.1.0_@capacitor+core@7.2.0/node_modules/@capacitor/background-runner`)"
   - "CapacitorCommunityFcm (from `../../node_modules/.pnpm/@capacitor-community+fcm@7.1.1_@capacitor+core@7.2.0/node_modules/@capacitor-community/fcm`)"
   - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@7.2.0_@capacitor+core@7.2.0/node_modules/@capacitor/ios`)"
   - "CapacitorNetwork (from `../../node_modules/.pnpm/@capacitor+network@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/network`)"
@@ -93,8 +90,6 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Capacitor:
     :path: "../../node_modules/.pnpm/@capacitor+ios@7.2.0_@capacitor+core@7.2.0/node_modules/@capacitor/ios"
-  CapacitorBackgroundRunner:
-    :path: "../../node_modules/.pnpm/@capacitor+background-runner@2.1.0_@capacitor+core@7.2.0/node_modules/@capacitor/background-runner"
   CapacitorCommunityFcm:
     :path: "../../node_modules/.pnpm/@capacitor-community+fcm@7.1.1_@capacitor+core@7.2.0/node_modules/@capacitor-community/fcm"
   CapacitorCordova:
@@ -110,7 +105,6 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Capacitor: 106e7a4205f4618d582b886a975657c61179138d
-  CapacitorBackgroundRunner: 75cddaea3ecc58c79ecd2b772cb80f8ecb1f3299
   CapacitorCommunityFcm: 15b0b44dcb160adc28f120719dcf9fbf72e14e1d
   CapacitorCordova: 5967b9ba03915ef1d585469d6e31f31dc49be96f
   CapacitorNetwork: 07ec4c69c1bb696f41c23e00d31bda1bbb221bba
@@ -126,6 +120,6 @@ SPEC CHECKSUMS:
   OutsCapacitorLiveactivities: 8fcfd8003785da778906bcdf195289c10f4b261f
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
 
-PODFILE CHECKSUM: ef1fd9eaed892b62ad53c99e89af9d3d5109fce0
+PODFILE CHECKSUM: 2a478117ba46559edbf6de51f95c92dc3ad6dac9
 
 COCOAPODS: 1.16.2
