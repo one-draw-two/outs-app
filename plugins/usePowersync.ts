@@ -19,5 +19,12 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.provide('db', db)
 
   nuxtApp.vueApp.config.globalProperties.$vfsPurge = isUseIndexDB ? opfsNotSupportedMessage : () => purgeVFS(db)
-  nuxtApp.vueApp.config.globalProperties.$vfsList = isUseIndexDB ? opfsNotSupportedMessage : listVfsEntries
+  nuxtApp.vueApp.config.globalProperties.$vfsList = isUseIndexDB
+    ? async () => Promise.resolve(['OPFS operations not supported with IndexDB'])
+    : async () => {
+        const entries: string[] = []
+        const root: any = await navigator.storage.getDirectory()
+        for await (const [name, entry] of root.entries!()) entries.push(`${entry.kind}: ${name}`)
+        return entries
+      }
 })

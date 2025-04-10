@@ -53,7 +53,7 @@ export default defineNuxtConfig({
       },
     },
   },
-  css: ['~/assets/styles/main.css', '~/assets/styles/type.css'],
+  css: ['~/assets/styles/main.css', '~/assets/styles/type.css', '~/assets/styles/transitions.css'],
   runtimeConfig: {
     public: {
       dev: process.env.DEV ? true : false,
