@@ -17,5 +17,5 @@ project(':capacitor-preferences').projectDir = new File('../node_modules/.pnpm/@
 include ':capacitor-push-notifications'
 project(':capacitor-push-notifications').projectDir = new File('../node_modules/.pnpm/@capacitor+push-notifications@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/push-notifications/android')
 
-include ':outs-capacitor-liveactivities'
-project(':outs-capacitor-liveactivities').projectDir = new File('../node_modules/.pnpm/outs-capacitor-liveactivities@0.0.5_@capacitor+core@7.2.0/node_modules/outs-capacitor-liveactivities/android')
+include ':outs1x2-capacitor-liveactivities'
+project(':outs1x2-capacitor-liveactivities').projectDir = new File('../node_modules/.pnpm/@outs1x2+capacitor-liveactivities@0.1.2_@capacitor+core@7.2.0/node_modules/@outs1x2/capacitor-liveactivities/android')

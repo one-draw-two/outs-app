@@ -16,7 +16,7 @@ def capacitor_pods
   pod 'CapacitorNetwork', :path => '../../node_modules/.pnpm/@capacitor+network@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/network'
   pod 'CapacitorPreferences', :path => '../../node_modules/.pnpm/@capacitor+preferences@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/preferences'
   pod 'CapacitorPushNotifications', :path => '../../node_modules/.pnpm/@capacitor+push-notifications@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/push-notifications'
-  pod 'OutsCapacitorLiveactivities', :path => '../../node_modules/.pnpm/outs-capacitor-liveactivities@0.0.5_@capacitor+core@7.2.0/node_modules/outs-capacitor-liveactivities'
+  pod 'Outs1x2CapacitorLiveactivities', :path => '../../node_modules/.pnpm/@outs1x2+capacitor-liveactivities@0.1.2_@capacitor+core@7.2.0/node_modules/@outs1x2/capacitor-liveactivities'
 end
 
 target 'App' do

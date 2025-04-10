@@ -32,6 +32,9 @@ importers:
       '@capacitor/push-notifications':
         specifier: ^7.0.1
         version: 7.0.1(@capacitor/core@7.2.0)
+      '@outs1x2/capacitor-liveactivities':
+        specifier: ^0.1.2
+        version: 0.1.2(@capacitor/core@7.2.0)
       '@powersync/web':
         specifier: ^1.18.0
         version: 1.18.0(@journeyapps/wa-sqlite@1.2.2)(@powersync/common@1.27.1)
@@ -47,9 +50,6 @@ importers:
       nuxt:
         specifier: ^3.16.2
         version: 3.16.2(@capacitor/preferences@7.0.1(@capacitor/core@7.2.0))(@parcel/watcher@2.5.1)(@types/node@22.14.0)(db0@0.3.1)(ioredis@5.6.0)(lightningcss@1.29.2)(magicast@0.3.5)(rollup@4.39.0)(terser@5.39.0)(typescript@5.8.3)(vite@6.2.6(@types/node@22.14.0)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))(xml2js@0.6.2)(yaml@2.7.1)
-      outs-capacitor-liveactivities:
-        specifier: ^0.0.5
-        version: 0.0.5(@capacitor/core@7.2.0)
       tailwindcss:
         specifier: ^4.1.3
         version: 4.1.3
@@ -546,6 +546,11 @@ packages:
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0.0}
     peerDependencies:
       vue: ^3.3.4
+
+  '@outs1x2/capacitor-liveactivities@0.1.2':
+    resolution: {integrity: sha512-DFA3xMuXOtNqlgRuHV408P1LuFiD2c2UyUCN+TdGAerUlJPZHEyV9DKhVIWpd1ELzHMVvOgLfPzajpsgbUS8SQ==}
+    peerDependencies:
+      '@capacitor/core': '>=7.0.0'
 
   '@oxc-parser/binding-darwin-arm64@0.56.5':
     resolution: {integrity: sha512-rj4WZqQVJQgLnGnDu2ciIOC5SqcBPc4x11RN0NwuedSGzny5mtBdNVLwt0+8iB15lIjrOKg5pjYJ8GQVPca5HA==}
@@ -2450,11 +2455,6 @@ packages:
   openurl@1.1.1:
     resolution: {integrity: sha512-d/gTkTb1i1GKz5k3XE3XFV/PxQ1k45zDqGP2OA7YhgsaLoqm6qRvARAZOFer1fcXritWlGBRCu/UgeS4HAnXAA==}
 
-  outs-capacitor-liveactivities@0.0.5:
-    resolution: {integrity: sha512-v23IGXYeRERBYwuuqfjUIhfuPbWrIVb7HFo/NkCEFRP+9u/1DNnWKMRPZRNpHABDziTqoDe+TvDsua5o8HqmEA==}
-    peerDependencies:
-      '@capacitor/core': '>=7.0.0'
-
   oxc-parser@0.56.5:
     resolution: {integrity: sha512-MNT32sqiTFeSbQZP2WZIRQ/mlIpNNq4sua+/4hBG4qT5aef2iQe+1/BjezZURPlvucZeSfN1Y6b60l7OgBdyUA==}
     engines: {node: '>=14.0.0'}
@@ -4153,6 +4153,10 @@ snapshots:
       - vti
       - vue-tsc
       - yaml
+
+  '@outs1x2/capacitor-liveactivities@0.1.2(@capacitor/core@7.2.0)':
+    dependencies:
+      '@capacitor/core': 7.2.0
 
   '@oxc-parser/binding-darwin-arm64@0.56.5':
     optional: true
@@ -6095,10 +6099,6 @@ snapshots:
       is-wsl: 2.2.0
 
   openurl@1.1.1: {}
-
-  outs-capacitor-liveactivities@0.0.5(@capacitor/core@7.2.0):
-    dependencies:
-      '@capacitor/core': 7.2.0
 
   oxc-parser@0.56.5:
     dependencies:

@@ -1,6 +1,6 @@
 import UIKit
 import Capacitor
-import OutsCapacitorLiveactivities
+import Outs1x2CapacitorLiveactivities
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, LiveActivityDelegate {
