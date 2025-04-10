@@ -1,25 +1,26 @@
 export default function (params: any) {
-  console.log('GETTING PUSH TOKENS')
-
   const { $capacitor } = useNuxtApp()
 
   if ($capacitor.$platform !== 'web') {
     $capacitor.$pushNotifications.requestPermissions().then(async (result: any) => {
-      if (result.receive === 'granted') {
-        await $capacitor.$pushNotifications.register()
+      if (result.receive !== 'granted') console.log('Push notifications permission denied')
 
-        const fcmToken = await $capacitor.$fcm.getToken()
-        console.log('FCM TOKEN IS')
-        console.log(fcmToken)
-        if (fcmToken) {
-          const res = await useSecureFetch('push-token', 'auth', 'post', fcmToken)
-          console.log(res)
-        }
-      } else {
-        // Show some error
-        console.log('Capacitor Push Notification Error')
-        console.log(result)
+      await $capacitor.$pushNotifications.register()
+
+      const fcmToken = await $capacitor.$fcm.getToken()
+      if (fcmToken) {
+        console.log('FCM Token:', fcmToken)
+        await useSecureFetch('push-token', 'auth', 'post', fcmToken)
       }
+
+      await $capacitor.$liveActivities.startLiveActivity()
+    })
+
+    $capacitor.$liveActivities.addListener('StartTokenReceived', (data: any) => {
+      console.log('LA: Start token received:', data.token)
+    })
+    $capacitor.$liveActivities.addListener('UpdateTokenReceived', (data: any) => {
+      console.log('LA: Update token received:', data.token)
     })
 
     /*

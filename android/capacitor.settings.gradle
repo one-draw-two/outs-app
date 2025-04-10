@@ -15,4 +15,4 @@ include ':capacitor-push-notifications'
 project(':capacitor-push-notifications').projectDir = new File('../node_modules/.pnpm/@capacitor+push-notifications@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/push-notifications/android')
 
 include ':outs-capacitor-liveactivities'
-project(':outs-capacitor-liveactivities').projectDir = new File('../node_modules/.pnpm/outs-capacitor-liveactivities@0.0.1_@capacitor+core@7.2.0/node_modules/outs-capacitor-liveactivities/android')
+project(':outs-capacitor-liveactivities').projectDir = new File('../node_modules/.pnpm/outs-capacitor-liveactivities@0.0.4_@capacitor+core@7.2.0/node_modules/outs-capacitor-liveactivities/android')
