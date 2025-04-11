@@ -10,7 +10,7 @@ export default function (params: any) {
       const fcmToken = await $capacitor.$fcm.getToken()
       if (fcmToken) {
         console.log('FCM Token:', fcmToken)
-        await useSecureFetch('push-token', 'auth', 'post', fcmToken)
+        await useSecureFetch('push-token', 'auth', 'post', { token: fcmToken.token, platform: $capacitor.$platform })
       }
 
       await $capacitor.$liveActivities.startLiveActivity()
