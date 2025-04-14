@@ -83,6 +83,7 @@ const real_fixtures = new Table(
     _awayTeam: column.text,
     result: column.text,
     startingAt: column.text,
+    liveMinute: column.text,
   },
   { indexes: {} }
 )
