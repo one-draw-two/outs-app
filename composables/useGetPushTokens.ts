@@ -1,5 +1,6 @@
 export default function (params: any) {
   const { $capacitor } = useNuxtApp()
+  const currentFcmToken = ref()
 
   if ($capacitor.$platform !== 'web') {
     $capacitor.$pushNotifications.requestPermissions().then(async (result: any) => {
@@ -10,18 +11,28 @@ export default function (params: any) {
       const fcmToken = await $capacitor.$fcm.getToken()
       if (fcmToken) {
         console.log('FCM Token:', fcmToken)
-        await useSecureFetch('push-token', 'auth', 'post', { token: fcmToken.token, platform: $capacitor.$platform })
+        currentFcmToken.value = fcmToken.token
+        await useSecureFetch('push-token-notification', 'auth', 'post', { token: fcmToken.token, platform: $capacitor.$platform })
       }
 
       await $capacitor.$liveActivities.startLiveActivity()
     })
 
-    $capacitor.$liveActivities.addListener('StartTokenReceived', (data: any) => {
-      console.log('LA: Start token received:', data.token)
-    })
-    $capacitor.$liveActivities.addListener('UpdateTokenReceived', (data: any) => {
-      console.log('LA: Update token received:', data.token)
-    })
+    const registerLiveActivityListener = (eventName: string, tokenType: string) => {
+      $capacitor.$liveActivities.addListener(eventName, async (data: any) => {
+        console.log(`LA: ${tokenType} token received:`, data.token)
+        await useSecureFetch('push-token-liveactivity', 'auth', 'post', {
+          tokenType,
+          token: data.token,
+          fcmToken: currentFcmToken.value,
+          activityType: data.activityType || 'default',
+          platform: $capacitor.$platform,
+        })
+      })
+    }
+
+    registerLiveActivityListener('StartTokenReceived', 'start')
+    registerLiveActivityListener('UpdateTokenReceived', 'update')
 
     /*
     // Android already generates FCM compatible tokens but to convert the APN tokens to FCM, we need the $fcm package as used above

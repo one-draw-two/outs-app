@@ -1,19 +1,15 @@
 <template>
-  <main class="space-y-8">
-    <div class="flex gap-8" v-for="rf in realFixtures" :key="rf?.id">
-      <NuxtLink :to="`/round/${route.params.rid}/match/${rf?.id}`" class="flex gap-8">
-        <div class="grid grid-cols-3 md:grid-cols-5 gap-4">
-          <div v-highlight="rf" class="w-12 tabular-nums min-w-[3rem]">{{ rf?.liveMinute?.padStart(2, '0') }}</div>
-          <div class="w-24 min-w-[6rem]">{{ rf?.status }}</div>
-          <div class="w-48 min-w-[12rem] font-mono">{{ $day(rf?.startingAt).format('ddd DD/MM HH:mm') }}</div>
-          <div class="col-span-3 md:col-span-1 min-w-0 truncate">{{ rf?.name }}</div>
-          <div v-highlight="rf" class="col-span-3 md:col-span-1 w-12 min-w-[3rem]">{{ rf?.result }}</div>
-        </div>
-      </NuxtLink>
-    </div>
+  <main>
+    <NuxtLink v-for="rf in realFixtures" :key="rf?.id" :to="`/round/${route.params.rid}/match/${rf?.id}`" class="block py-4 hover:bg-gray-100">
+      <div class="grid grid-cols-[12rem_3rem_1fr_3rem] gap-4">
+        <div class="font-mono">{{ $day(rf?.startingAt).format('ddd DD/MM HH:mm') }}</div>
+        <div v-highlight="rf" class="tabular-nums">{{ rf?.liveMinute?.padStart(2, '0') }}</div>
+        <div class="min-w-0 truncate">{{ rf?.name }}</div>
+        <div v-highlight="rf">{{ rf?.result }}</div>
+      </div>
+    </NuxtLink>
   </main>
 </template>
-
 <script setup lang="ts">
 definePageMeta({ layout: 'round' })
 const { round, isLoading } = inject(roundKey)!
@@ -31,4 +27,6 @@ const realFixtures = computed(() =>
       return aTime - bTime
     })
 )
+
+// <div v-if="false" class="w-24 min-w-[6rem]">{{ rf?.status }}</div>
 </script>

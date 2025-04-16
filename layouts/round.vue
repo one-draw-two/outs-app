@@ -1,6 +1,13 @@
 <template>
   <div class="space-y-8">
-    <h1>Round {{ round?.name }}</h1>
+    <div class="flex gap-8">
+      <h1>Round {{ round?.name }}</h1>
+      <div>
+        <p>Deadline {{ $day(round?._h_roundDeadline).format('ddd DD/MM HH:mm') }}</p>
+        <p v-highlight="round">Cursor {{ round?._h_lastFinishedMatchIndex }}</p>
+      </div>
+    </div>
+
     <div class="flex gap-8">
       <div class="flex-1 space-y-8">
         <div class="flex gap-8">

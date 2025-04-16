@@ -23,7 +23,7 @@ export const useSeasonWithStages = async (seasonId: string) => {
 }
 
 export const usePopulatedRound = async (roundId: string) => {
-  const roundQuery = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE id = ?', [roundId])
+  const roundQuery = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE id = ?', [roundId], { detectChanges: true })
 
   const challengesQuery = usePSWatch<_Challenge>('SELECT * FROM "game_challenges" WHERE _round = ? ORDER BY "order" ASC', [roundId])
 

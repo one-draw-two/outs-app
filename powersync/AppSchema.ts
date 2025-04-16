@@ -46,6 +46,8 @@ const calendar_rounds = new Table(
     _stage: column.text,
     sePI: column.integer,
     stPI: column.integer,
+    _h_roundDeadline: column.text,
+    _h_lastFinishedMatchIndex: column.integer,
   },
   { indexes: {} }
 )
