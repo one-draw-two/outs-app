@@ -1,6 +1,5 @@
 export default function (params: any) {
   const { $capacitor } = useNuxtApp()
-  const currentFcmToken = ref()
 
   if ($capacitor.$platform !== 'web') {
     $capacitor.$pushNotifications.requestPermissions().then(async (result: any) => {
@@ -11,7 +10,7 @@ export default function (params: any) {
       const fcmToken = await $capacitor.$fcm.getToken()
       if (fcmToken) {
         console.log('FCM Token:', fcmToken)
-        currentFcmToken.value = fcmToken.token
+        useState<String>('fcmToken').value = fcmToken.token
         await useSecureFetch('push-token-notification', 'auth', 'post', { token: fcmToken.token, platform: $capacitor.$platform })
       }
 
@@ -24,7 +23,7 @@ export default function (params: any) {
         await useSecureFetch('push-token-liveactivity', 'auth', 'post', {
           tokenType,
           token: data.token,
-          fcmToken: currentFcmToken.value,
+          fcmToken: useState<String>('fcmToken').value,
           activityType: data.activityType || 'default',
           platform: $capacitor.$platform,
         })
