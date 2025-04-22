@@ -1,5 +1,13 @@
 import { column, Schema, Table } from '@powersync/web'
 
+const account_users = new Table(
+  {
+    name: column.text,
+    status: column.text,
+  },
+  { indexes: {} }
+)
+
 const account_subscriptions = new Table(
   {
     status: column.text,
@@ -77,6 +85,25 @@ const game_bets = new Table(
   { indexes: {} }
 )
 
+const game_groups = new Table(
+  {
+    name: column.text,
+    status: column.text,
+    type: column.text,
+    order: column.integer,
+    _parentGroup: column.text,
+    // _scopeLevel: column.integer,
+    // _scopeName: column.text,
+    // isFixture: column.integer, // Boolean as integer (0/1)
+    // isBye: column.integer, // Boolean as integer (0/1)
+    _season: column.text,
+    _link: column.text,
+    _linkString: column.text,
+    rows: column.text,
+  },
+  { indexes: {} }
+)
+
 const real_fixtures = new Table(
   {
     name: column.text,
@@ -124,6 +151,7 @@ const real_events = new Table(
 )
 
 export const AppSchema = new Schema({
+  account_users,
   account_subscriptions,
   blueprint_seasons,
   calendar_seasons,
@@ -131,6 +159,7 @@ export const AppSchema = new Schema({
   calendar_rounds,
   game_challenges,
   game_bets,
+  game_groups,
   real_fixtures,
   real_teams,
   real_players,
@@ -139,6 +168,7 @@ export const AppSchema = new Schema({
 
 export type Database = (typeof AppSchema)['types']
 
+export type UserRecord = Database['account_users']
 export type SubscriptionRecord = Database['account_subscriptions']
 
 export type BPSeasonRecord = Database['blueprint_seasons']
@@ -149,6 +179,7 @@ export type RoundRecord = Database['calendar_rounds']
 
 export type ChallengeRecord = Database['game_challenges']
 export type BetRecord = Database['game_bets']
+export type GroupRecord = Database['game_groups']
 
 export type RealFixtureRecord = Database['real_fixtures']
 export type RealTeamRecord = Database['real_teams']

@@ -4,17 +4,25 @@
     <div class="size-48 bg-cover bg-center bg-no-repeat" :style="{ backgroundImage: season?.blueprint?.bgUrl ? `url(${getSanityUrl(season.blueprint?.bgUrl)})` : 'none' }"></div>
 
     <div class="space-y-8">
-      <details v-for="stage in season?.stages" :key="stage.id" open>
-        <summary>{{ stage.name }}</summary>
+      <details v-for="stage in season?.stages" :key="stage.id" :open="stage.status !== 'unknown'">
+        <summary class="flex gap-8">
+          <NuxtLink :to="`/stage/${stage.id}`">{{ stage.name }}</NuxtLink>
+          <span>{{ stage.status }}</span>
+        </summary>
 
-        <NuxtLink v-for="round in stage.rounds" :key="round.id" :to="`/round/${round.id}`" class="flex gap-8" :class="round.status === 'current' ? 'bg-green-500' : ''">
-          <div class="w-32">
-            {{ round.name }}
-          </div>
+        <div class="flex gap-8 items-stretch">
           <div>
-            {{ round.status }}
+            <NuxtLink v-for="round in stage.rounds" :key="round.id" :to="`/round/${round.id}`" class="flex gap-8" :class="round.status === 'current' ? 'bg-green-500' : ''">
+              <div class="font-mono">
+                {{ round.name }}
+              </div>
+              <div>
+                {{ round.status }}
+              </div>
+            </NuxtLink>
           </div>
-        </NuxtLink>
+          <div class="bg-blue-200 flex-1"></div>
+        </div>
       </details>
     </div>
   </main>

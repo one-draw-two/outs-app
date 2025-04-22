@@ -1,4 +1,4 @@
-import type { _Season, _Stage, _Round, _Challenge, _Bet, _P_Bet, _RealFixture, _RealTeam, _P_Challenge, _P_RealFixture, _RealEvent } from '~/types'
+import type { _Season, _Stage, _Round, _Group, _Challenge, _Bet, _P_Bet, _P_Stage, _RealFixture, _RealTeam, _P_Challenge, _P_RealFixture, _RealEvent } from '~/types'
 
 export const useSeasonWithStages = async (seasonId: string) => {
   const seasonsQuery = usePSWatch<_Season>('SELECT * FROM "calendar_seasons" WHERE id = ?', [seasonId])
@@ -18,6 +18,41 @@ export const useSeasonWithStages = async (seasonId: string) => {
         rounds: roundsQuery.data.value?.filter((round) => round._stage === stage.id) || [],
       })),
       blueprint: blueprintQuery.data.value[0],
+    }
+  })
+}
+
+export const usePopulatedStage = async (stageId: string) => {
+  const stageQuery = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE id = ?', [stageId], { detectChanges: true })
+  const roundsQuery = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE _stage = ? ORDER BY sePI ASC', [stageId], { detectChanges: true })
+  const groupsQuery = usePSWatch<_Group>('SELECT * FROM "game_groups" WHERE _link LIKE ?', [`%"_refId":"${stageId}"%`], { detectChanges: true })
+
+  await Promise.all([groupsQuery.await()])
+
+  const userIds = groupsQuery.data.value
+    .flatMap((group) => JSON.parse((group.rows as string) || '[]'))
+    .map((row) => row._user)
+    .filter(Boolean)
+
+  const usersQuery = usePSWatch<any>(`SELECT * FROM "account_users" WHERE id IN (${userIds.map(() => '?').join(',')})`, userIds)
+
+  return usePSQueryWatcher<_P_Stage>([stageQuery, roundsQuery, groupsQuery, usersQuery], (stage) => {
+    const userMap = Object.fromEntries(usersQuery.data.value.map((user) => [user.id, user]))
+
+    stage.value = {
+      ...stageQuery.data.value[0],
+      rounds: roundsQuery.data.value,
+      groups: groupsQuery.data.value.map((group) => {
+        const parsedRows = JSON.parse((group.rows as string) || '[]')
+        return {
+          ...group,
+          _link: JSON.parse(group._link as string),
+          rows: parsedRows.map((row: any) => ({
+            ...row,
+            _user: userMap[row._user] || row._user,
+          })),
+        }
+      }),
     }
   })
 }
