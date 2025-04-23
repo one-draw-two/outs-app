@@ -13,7 +13,8 @@ struct activitiesBundle: WidgetBundle {
     var body: some Widget {
         activities()
         activitiesControl()
-        activitiesLiveActivity()
-        OutsLiveActivityConfiguration()
+        // Outs Live Activities
+        LinearConfiguration()
+        RadialConfiguration()
     }
 }

@@ -6,21 +6,28 @@ import Outs1x2CapacitorLiveactivities
 class AppDelegate: UIResponder, UIApplicationDelegate, LiveActivityDelegate {
 
     var window: UIWindow?
+    
+    func initialize() {
+        LiveActivityManager.shared.initialize()
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
         CapLiveActivities.liveActivityDelegate = self
+
         return true
     }
     
+    /*
     func monitorPushToStartToken() {
-        LiveActivityManager.shared.monitorPushToStartToken()
+        LiveActivityManager.shared.monitorPushToStartTokens()
     }
     
     func monitorNewActivities() {
         LiveActivityManager.shared.monitorNewActivities()
     }
+    */
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         NotificationCenter.default.post(name: .capacitorDidRegisterForRemoteNotifications, object: deviceToken)

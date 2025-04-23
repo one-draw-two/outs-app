@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		0A51D0852DA7E3DC0049DB7F /* MyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A51D0842DA7E3DC0049DB7F /* MyViewController.swift */; };
-		0A963A672DA6B8A9003452F5 /* LiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A963A632DA6B8A9003452F5 /* LiveActivityAttributes.swift */; };
-		0A963A682DA6B8A9003452F5 /* LiveActivityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A963A642DA6B8A9003452F5 /* LiveActivityConfiguration.swift */; };
+		0A963A672DA6B8A9003452F5 /* LinearAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A963A632DA6B8A9003452F5 /* LinearAttributes.swift */; };
+		0A963A682DA6B8A9003452F5 /* LinearConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A963A642DA6B8A9003452F5 /* LinearConfiguration.swift */; };
 		0A963A692DA6B8A9003452F5 /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A963A652DA6B8A9003452F5 /* LiveActivityManager.swift */; };
-		0A963A6A2DA6B8A9003452F5 /* LiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A963A632DA6B8A9003452F5 /* LiveActivityAttributes.swift */; };
-		0A963A6B2DA6B8A9003452F5 /* LiveActivityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A963A642DA6B8A9003452F5 /* LiveActivityConfiguration.swift */; };
+		0A963A6A2DA6B8A9003452F5 /* LinearAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A963A632DA6B8A9003452F5 /* LinearAttributes.swift */; };
+		0A963A6B2DA6B8A9003452F5 /* LinearConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A963A642DA6B8A9003452F5 /* LinearConfiguration.swift */; };
 		0A963A6C2DA6B8A9003452F5 /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A963A652DA6B8A9003452F5 /* LiveActivityManager.swift */; };
 		0AA4EDFE2DA6B44A004C6AB7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0AA4EDFD2DA6B44A004C6AB7 /* GoogleService-Info.plist */; };
 		0AA4EE052DA6B48A004C6AB7 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA4EE042DA6B48A004C6AB7 /* WidgetKit.framework */; };
@@ -22,8 +22,11 @@
 		0AA4EE282DA6B498004C6AB7 /* activities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA4EE1E2DA6B498004C6AB7 /* activities.swift */; };
 		0AA4EE292DA6B498004C6AB7 /* activitiesBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA4EE1F2DA6B498004C6AB7 /* activitiesBundle.swift */; };
 		0AA4EE2A2DA6B498004C6AB7 /* activitiesControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA4EE202DA6B498004C6AB7 /* activitiesControl.swift */; };
-		0AA4EE2B2DA6B498004C6AB7 /* activitiesLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA4EE212DA6B498004C6AB7 /* activitiesLiveActivity.swift */; };
 		0AA4EE2C2DA6B498004C6AB7 /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA4EE222DA6B498004C6AB7 /* AppIntent.swift */; };
+		0AF588902DB8D54C008F2CBB /* RadialAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF5888D2DB8D54C008F2CBB /* RadialAttributes.swift */; };
+		0AF588912DB8D54C008F2CBB /* RadialConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF5888E2DB8D54C008F2CBB /* RadialConfiguration.swift */; };
+		0AF588922DB8D54C008F2CBB /* RadialAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF5888D2DB8D54C008F2CBB /* RadialAttributes.swift */; };
+		0AF588932DB8D54C008F2CBB /* RadialConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF5888E2DB8D54C008F2CBB /* RadialConfiguration.swift */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
@@ -60,8 +63,8 @@
 
 /* Begin PBXFileReference section */
 		0A51D0842DA7E3DC0049DB7F /* MyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyViewController.swift; sourceTree = "<group>"; };
-		0A963A632DA6B8A9003452F5 /* LiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityAttributes.swift; sourceTree = "<group>"; };
-		0A963A642DA6B8A9003452F5 /* LiveActivityConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityConfiguration.swift; sourceTree = "<group>"; };
+		0A963A632DA6B8A9003452F5 /* LinearAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinearAttributes.swift; sourceTree = "<group>"; };
+		0A963A642DA6B8A9003452F5 /* LinearConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinearConfiguration.swift; sourceTree = "<group>"; };
 		0A963A652DA6B8A9003452F5 /* LiveActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityManager.swift; sourceTree = "<group>"; };
 		0AA4EDFD2DA6B44A004C6AB7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0AA4EE032DA6B48A004C6AB7 /* activitiesExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = activitiesExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,11 +73,12 @@
 		0AA4EE1E2DA6B498004C6AB7 /* activities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = activities.swift; sourceTree = "<group>"; };
 		0AA4EE1F2DA6B498004C6AB7 /* activitiesBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = activitiesBundle.swift; sourceTree = "<group>"; };
 		0AA4EE202DA6B498004C6AB7 /* activitiesControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = activitiesControl.swift; sourceTree = "<group>"; };
-		0AA4EE212DA6B498004C6AB7 /* activitiesLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = activitiesLiveActivity.swift; sourceTree = "<group>"; };
 		0AA4EE222DA6B498004C6AB7 /* AppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntent.swift; sourceTree = "<group>"; };
 		0AA4EE232DA6B498004C6AB7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0AA4EE242DA6B498004C6AB7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0AA4EE2D2DA6B630004C6AB7 /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
+		0AF5888D2DB8D54C008F2CBB /* RadialAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadialAttributes.swift; sourceTree = "<group>"; };
+		0AF5888E2DB8D54C008F2CBB /* RadialConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadialConfiguration.swift; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -113,8 +117,8 @@
 		0A963A662DA6B8A9003452F5 /* LiveActivities */ = {
 			isa = PBXGroup;
 			children = (
-				0A963A632DA6B8A9003452F5 /* LiveActivityAttributes.swift */,
-				0A963A642DA6B8A9003452F5 /* LiveActivityConfiguration.swift */,
+				0AF5888C2DB8D544008F2CBB /* Linear */,
+				0AF5888F2DB8D54C008F2CBB /* Radial */,
 				0A963A652DA6B8A9003452F5 /* LiveActivityManager.swift */,
 			);
 			path = LiveActivities;
@@ -126,13 +130,30 @@
 				0AA4EE1E2DA6B498004C6AB7 /* activities.swift */,
 				0AA4EE1F2DA6B498004C6AB7 /* activitiesBundle.swift */,
 				0AA4EE202DA6B498004C6AB7 /* activitiesControl.swift */,
-				0AA4EE212DA6B498004C6AB7 /* activitiesLiveActivity.swift */,
 				0AA4EE222DA6B498004C6AB7 /* AppIntent.swift */,
 				0AA4EE232DA6B498004C6AB7 /* Assets.xcassets */,
 				0AA4EE242DA6B498004C6AB7 /* Info.plist */,
 				0A963A662DA6B8A9003452F5 /* LiveActivities */,
 			);
 			path = activities;
+			sourceTree = "<group>";
+		};
+		0AF5888C2DB8D544008F2CBB /* Linear */ = {
+			isa = PBXGroup;
+			children = (
+				0A963A632DA6B8A9003452F5 /* LinearAttributes.swift */,
+				0A963A642DA6B8A9003452F5 /* LinearConfiguration.swift */,
+			);
+			path = Linear;
+			sourceTree = "<group>";
+		};
+		0AF5888F2DB8D54C008F2CBB /* Radial */ = {
+			isa = PBXGroup;
+			children = (
+				0AF5888D2DB8D54C008F2CBB /* RadialAttributes.swift */,
+				0AF5888E2DB8D54C008F2CBB /* RadialConfiguration.swift */,
+			);
+			path = Radial;
 			sourceTree = "<group>";
 		};
 		27E2DDA53C4D2A4D1A88CE4A /* Frameworks */ = {
@@ -343,12 +364,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				0AA4EE282DA6B498004C6AB7 /* activities.swift in Sources */,
+				0AF588932DB8D54C008F2CBB /* RadialConfiguration.swift in Sources */,
 				0AA4EE292DA6B498004C6AB7 /* activitiesBundle.swift in Sources */,
-				0A963A672DA6B8A9003452F5 /* LiveActivityAttributes.swift in Sources */,
-				0A963A682DA6B8A9003452F5 /* LiveActivityConfiguration.swift in Sources */,
+				0A963A672DA6B8A9003452F5 /* LinearAttributes.swift in Sources */,
+				0A963A682DA6B8A9003452F5 /* LinearConfiguration.swift in Sources */,
 				0A963A692DA6B8A9003452F5 /* LiveActivityManager.swift in Sources */,
+				0AF588922DB8D54C008F2CBB /* RadialAttributes.swift in Sources */,
 				0AA4EE2A2DA6B498004C6AB7 /* activitiesControl.swift in Sources */,
-				0AA4EE2B2DA6B498004C6AB7 /* activitiesLiveActivity.swift in Sources */,
 				0AA4EE2C2DA6B498004C6AB7 /* AppIntent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -357,11 +379,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A963A6A2DA6B8A9003452F5 /* LiveActivityAttributes.swift in Sources */,
-				0A963A6B2DA6B8A9003452F5 /* LiveActivityConfiguration.swift in Sources */,
+				0A963A6A2DA6B8A9003452F5 /* LinearAttributes.swift in Sources */,
+				0A963A6B2DA6B8A9003452F5 /* LinearConfiguration.swift in Sources */,
 				0A963A6C2DA6B8A9003452F5 /* LiveActivityManager.swift in Sources */,
 				0A51D0852DA7E3DC0049DB7F /* MyViewController.swift in Sources */,
+				0AF588912DB8D54C008F2CBB /* RadialConfiguration.swift in Sources */,
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
+				0AF588902DB8D54C008F2CBB /* RadialAttributes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
