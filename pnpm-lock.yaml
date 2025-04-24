@@ -33,8 +33,8 @@ importers:
         specifier: ^7.0.1
         version: 7.0.1(@capacitor/core@7.2.0)
       '@outs1x2/capacitor-liveactivities':
-        specifier: ^0.1.3
-        version: 0.1.3(@capacitor/core@7.2.0)
+        specifier: ^0.1.5
+        version: 0.1.5(@capacitor/core@7.2.0)
       '@powersync/web':
         specifier: ^1.18.0
         version: 1.18.0(@journeyapps/wa-sqlite@1.2.2)(@powersync/common@1.27.1)
@@ -547,8 +547,8 @@ packages:
     peerDependencies:
       vue: ^3.3.4
 
-  '@outs1x2/capacitor-liveactivities@0.1.3':
-    resolution: {integrity: sha512-1ihlAoCrPVuyigFvu940Pah4ygSzmiqlCPVw43djpz+Ez+Nlu4KHbVyCWDAl0QkGzLAMPhQ4mdFoDtM/DLwWbw==}
+  '@outs1x2/capacitor-liveactivities@0.1.5':
+    resolution: {integrity: sha512-r++8FpPHmwt1KZDjHCA5G6DXYxn6EAp6UKS/exWTsj+AYE5vGZSSc5sHwmxHgeNk0/ryeqZq+wH+A9U/nIv8mQ==}
     peerDependencies:
       '@capacitor/core': '>=7.0.0'
 
@@ -4157,7 +4157,7 @@ snapshots:
       - vue-tsc
       - yaml
 
-  '@outs1x2/capacitor-liveactivities@0.1.3(@capacitor/core@7.2.0)':
+  '@outs1x2/capacitor-liveactivities@0.1.5(@capacitor/core@7.2.0)':
     dependencies:
       '@capacitor/core': 7.2.0
 

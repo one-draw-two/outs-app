@@ -1,6 +1,16 @@
 export default function (params: any) {
   const { $capacitor } = useNuxtApp()
 
+  const startTokenQueue: Array<{ token: string; activityType: string; instanceId?: string }> = []
+  let isProcessingQueue = false
+  const getLiveActivityPayload = (token: string, activityType: string, instanceId?: string) => ({
+    token,
+    fcmToken: useState<String>('fcmToken').value,
+    activityType,
+    instanceId,
+    platform: $capacitor.$platform,
+  })
+
   if ($capacitor.$platform !== 'web') {
     $capacitor.$pushNotifications.requestPermissions().then(async (result: any) => {
       if (result.receive !== 'granted') console.log('Push notifications permission denied')
@@ -17,31 +27,25 @@ export default function (params: any) {
       await $capacitor.$liveActivities.startLiveActivity()
     })
 
-    const registerLiveActivityListener = (eventName: string, tokenType: string) => {
-      $capacitor.$liveActivities.addListener(eventName, async (data: any) => {
-        console.log(`LA: ${tokenType} token received:`, data.token)
-        await useSecureFetch('push-token-liveactivity', 'auth', 'post', {
-          tokenType,
-          token: data.token,
-          fcmToken: useState<String>('fcmToken').value,
-          activityType: data.activityType || 'default',
-          platform: $capacitor.$platform,
-        })
-      })
-    }
-
-    registerLiveActivityListener('StartTokenReceived', 'start')
-    registerLiveActivityListener('UpdateTokenReceived', 'update')
-
-    /*
-    // Android already generates FCM compatible tokens but to convert the APN tokens to FCM, we need the $fcm package as used above
-    // const fcmToken = await $capacitor.$fcm.getToken()
-
-    $capacitor.$pushNotifications.addListener('registration', async (token) => {
-      console.log(`Push registration success: ${token.value}`)
-      const res = await useSecureFetch('push-token', 'auth', 'post', { token: token.value })
-      console.log(res)
+    $capacitor.$liveActivities.addListener('StartTokenReceived', async (data: any) => {
+      console.log('LA: Start token received:', data.token.substring(0, 15) + '...')
+      startTokenQueue.push({ token: data.token, activityType: data.activityType, instanceId: data.instanceId })
+      if (!isProcessingQueue) processStartTokenQueue()
     })
-    */
+
+    $capacitor.$liveActivities.addListener('UpdateTokenReceived', async (data: any) => {
+      console.log('LA: Update token received:', data.token.substring(0, 15) + '...')
+      await useSecureFetch('push-token-liveactivity-updateend', 'auth', 'post', getLiveActivityPayload(data.token, data.activityType, data.instanceId))
+    })
+  }
+
+  const processStartTokenQueue = async () => {
+    if (isProcessingQueue || startTokenQueue.length === 0) return
+    isProcessingQueue = true
+    const tokenData = startTokenQueue.shift()!
+    const payload = getLiveActivityPayload(tokenData.token, tokenData.activityType, tokenData.instanceId)
+    await useSecureFetch('push-token-liveactivity-start', 'auth', 'post', payload)
+    isProcessingQueue = false
+    if (startTokenQueue.length > 0) setTimeout(processStartTokenQueue, 500)
   }
 }
