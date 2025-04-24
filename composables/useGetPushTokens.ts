@@ -21,7 +21,7 @@ export default function (params: any) {
       if (fcmToken) {
         console.log('FCM Token:', fcmToken)
         useState<String>('fcmToken').value = fcmToken.token
-        await useSecureFetch('push-token-notification', 'auth', 'post', { token: fcmToken.token, platform: $capacitor.$platform })
+        await useSecureFetch('push-token-notification', 'auth', 'post', { token: fcmToken.token, platform: $capacitor.$platform }) // I need to make sure this gets called event when app is closed on my device
       }
 
       await $capacitor.$liveActivities.startLiveActivity()
@@ -35,7 +35,7 @@ export default function (params: any) {
 
     $capacitor.$liveActivities.addListener('UpdateTokenReceived', async (data: any) => {
       console.log('LA: Update token received:', data.token.substring(0, 15) + '...')
-      await useSecureFetch('push-token-liveactivity-updateend', 'auth', 'post', getLiveActivityPayload(data.token, data.activityType, data.instanceId))
+      await useSecureFetch('push-token-liveactivity-updateend', 'auth', 'post', getLiveActivityPayload(data.token, data.activityType, data.instanceId)) // I need to make sure this gets called event when app is closed on my device
     })
   }
 

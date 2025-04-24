@@ -6,10 +6,8 @@ enum LiveActivityTokenType: String {
     case update = "UpdateTokenReceived"
 }
 
-// Protocol for activity attributes to make our manager generic
 protocol OutsLiveActivityAttributes: ActivityAttributes where ContentState: Codable & Hashable {}
 
-// Make your existing and new attributes conform to this protocol
 extension LinearAttributes: OutsLiveActivityAttributes {}
 extension RadialAttributes: OutsLiveActivityAttributes {}
 
@@ -58,23 +56,29 @@ class LiveActivityManager {
 
     // Initialize with default types
     func initialize() {
+        /*
         // Don't clear existing registrations - that would lose track of active activities
         // Instead, only register if not already registered
-
+        
         // Check if the types are already registered
         let linearTypeName = String(describing: LinearAttributes.self)
         let radialTypeName = String(describing: RadialAttributes.self)
-
+        
         // Only register if not already registered
         if registeredTypes[linearTypeName] == nil {
-            register(LinearAttributes.self)
+        
         }
-
+        
         if registeredTypes[radialTypeName] == nil {
+            register(LinearAttributes.self)
             register(RadialAttributes.self)
         }
-
+        
         // Always log current activities for debugging
+        logAllActivities()
+        */
+        register(LinearAttributes.self)
+        register(RadialAttributes.self)
         logAllActivities()
     }
 
@@ -92,10 +96,16 @@ class LiveActivityManager {
     private func monitorActivityUpdates<T: OutsLiveActivityAttributes>(for type: T.Type) {
         let typeName = String(describing: type)
 
-        Task {
+        // Use detached task to continue running in background
+        Task.detached(priority: .background) {
+
             for await activity in Activity<T>.activityUpdates {
+                if Task.isCancelled {
+                    break
+                }
+
                 if var activities = self.activities[typeName] as? [Activity<T>] {
-                    // Update or add the activity in our dictionary
+                    // Update activity in our dictionary
                     if let index = activities.firstIndex(where: { $0.id == activity.id }) {
                         activities[index] = activity
                     } else {
@@ -103,41 +113,25 @@ class LiveActivityManager {
                     }
                     self.activities[typeName] = activities
 
-                    // Set up push token monitoring for this activity
-                    Task {
-                        // Simple monitoring for the first token without try/catch since
-                        // nothing throws in this loop
+                    // Set up token monitoring in a separate detached task
+                    Task.detached(priority: .background) {
+
                         for await pushToken in activity.pushTokenUpdates {
-                            // This code will run for each new token
+                            // Handle token updates
+                            self.notifyToken(pushToken, type: .update, activityTypeName: typeName)
 
-                            print("instanceId: \(activity.id)")
-                            print("activityType: \(typeName)")
-                            print("pushToken: \(Self.formatPushToken(pushToken))")
-                            print("timestamp: \(Date())")
-                            print("korsan: Kemal")
-
-                            NotificationCenter.default.post(
-                                name: Notification.Name(LiveActivityTokenType.update.rawValue),
-                                object: nil,
-                                userInfo: [
-                                    "token": Self.formatPushToken(pushToken),
-                                    "activityType": typeName,
-                                    "instanceId": activity.id,
-                                    "timestamp": Date(),
-                                    "korsan": "Kemal",
-                                ]
-                            )
-
-                            print(
-                                "Live Activity update token received for \(typeName), id: \(activity.id)"
-                            )
-
-                            // We only need the first token from this sequence for now
+                            // Only break if we successfully processed the token
                             break
                         }
+
                     }
                 }
             }
+
+            // If we get here, the monitoring stopped - restart it after delay
+            try? await Task.sleep(nanoseconds: 5_000_000_000)  // 5 seconds
+            print("Activity monitoring for \(typeName) stopped - restarting")
+            self.monitorActivityUpdates(for: type)
         }
     }
 
@@ -160,6 +154,17 @@ class LiveActivityManager {
             .joined(separator: ", ")
 
         print("Currently active: \(statusMessage)")
+    }
+
+    func ensureBackgroundMonitoring() {
+        for (_, typeValue) in registeredTypes {
+            if typeValue is LinearAttributes.Type {
+                monitorActivityUpdates(for: LinearAttributes.self)
+            } else if typeValue is RadialAttributes.Type {
+                monitorActivityUpdates(for: RadialAttributes.self)
+            }
+            // Add more types as needed
+        }
     }
 }
 
