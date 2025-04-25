@@ -4,6 +4,7 @@ import Foundation
 enum LiveActivityTokenType: String {
     case start = "StartTokenReceived"
     case update = "UpdateTokenReceived"
+    case console = "ConsoleMessageReceived"
 }
 
 protocol OutsLiveActivityAttributes: ActivityAttributes where ContentState: Codable & Hashable {}
@@ -14,6 +15,27 @@ extension RadialAttributes: OutsLiveActivityAttributes {}
 class LiveActivityManager {
 
     static let shared = LiveActivityManager()
+
+    enum LogType: String {
+        case info = "INFO"
+        case warning = "WARNING"
+        case error = "ERROR"
+        case debug = "DEBUG"
+    }
+
+    static func logToJS(_ message: String, type: LogType = .info) {
+        let logMessage = "\(type.rawValue): \(message)"
+        let userInfo: [String: Any] = ["message": logMessage, "timestamp": Date()]
+
+        NotificationCenter.default.post(
+            name: Notification.Name(LiveActivityTokenType.console.rawValue),
+            object: nil,
+            userInfo: userInfo
+        )
+
+        // Also print to console for debugging
+        print("LA-\(type.rawValue): \(message)")
+    }
 
     // Dictionary to store registered activity types
     private var registeredTypes: [String: Any.Type] = [:]
@@ -84,6 +106,7 @@ class LiveActivityManager {
 
     // Generic method to monitor start tokens
     private func monitorStartTokens<T: OutsLiveActivityAttributes>(for attributeType: T.Type) {
+        Self.logToJS("LAJS(LM): Monitoring start tokens for \(attributeType)")
         let typeName = String(describing: attributeType)
 
         Task {
@@ -100,6 +123,8 @@ class LiveActivityManager {
         Task.detached(priority: .background) {
 
             for await activity in Activity<T>.activityUpdates {
+                Self.logToJS("LAJS(LM): Monitoring update tokens for \(typeName)")
+
                 if Task.isCancelled {
                     break
                 }

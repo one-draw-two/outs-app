@@ -29,13 +29,18 @@ export default function (params: any) {
 
     $capacitor.$liveActivities.addListener('StartTokenReceived', async (data: any) => {
       console.log('LA: Start token received:', data.token.substring(0, 15) + '...')
-      startTokenQueue.push({ token: data.token, activityType: data.activityType, instanceId: data.instanceId })
-      if (!isProcessingQueue) processStartTokenQueue()
+      // startTokenQueue.push({ token: data.token, activityType: data.activityType, instanceId: data.instanceId })
+      // if (!isProcessingQueue) processStartTokenQueue()
+      await useSecureFetch('push-token-liveactivity-start', 'auth', 'post', getLiveActivityPayload(data.token, data.activityType, data.instanceId)) // I need to make sure this gets called event when app is closed on my device
     })
 
     $capacitor.$liveActivities.addListener('UpdateTokenReceived', async (data: any) => {
       console.log('LA: Update token received:', data.token.substring(0, 15) + '...')
       await useSecureFetch('push-token-liveactivity-updateend', 'auth', 'post', getLiveActivityPayload(data.token, data.activityType, data.instanceId)) // I need to make sure this gets called event when app is closed on my device
+    })
+
+    $capacitor.$liveActivities.addListener('ConsoleMessageReceived', async (data: any) => {
+      console.log('LA CONSOLE:', data.message)
     })
   }
 
