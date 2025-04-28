@@ -85,21 +85,18 @@ const game_bets = new Table(
   { indexes: {} }
 )
 
-const game_groups = new Table(
+const group_tables = new Table(
   {
+    _link: column.text,
+    _season: column.text,
+    _tournament: column.text,
+    order: column.integer,
+    scope: column.text,
     name: column.text,
     status: column.text,
-    type: column.text,
-    order: column.integer,
-    _parentGroup: column.text,
-    // _scopeLevel: column.integer,
-    // _scopeName: column.text,
-    // isFixture: column.integer, // Boolean as integer (0/1)
-    // isBye: column.integer, // Boolean as integer (0/1)
-    _season: column.text,
-    _link: column.text,
-    _linkString: column.text,
+    meta: column.text,
     rows: column.text,
+    _parentGroup: column.text,
   },
   { indexes: {} }
 )
@@ -159,7 +156,7 @@ export const AppSchema = new Schema({
   calendar_rounds,
   game_challenges,
   game_bets,
-  game_groups,
+  group_tables,
   real_fixtures,
   real_teams,
   real_players,
@@ -179,7 +176,8 @@ export type RoundRecord = Database['calendar_rounds']
 
 export type ChallengeRecord = Database['game_challenges']
 export type BetRecord = Database['game_bets']
-export type GroupRecord = Database['game_groups']
+
+export type TableRecord = Database['group_tables']
 
 export type RealFixtureRecord = Database['real_fixtures']
 export type RealTeamRecord = Database['real_teams']

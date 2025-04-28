@@ -1,4 +1,4 @@
-import type { _Season, _Stage, _Round, _Group, _Challenge, _Bet, _P_Bet, _P_Stage, _RealFixture, _RealTeam, _P_Challenge, _P_RealFixture, _RealEvent } from '~/types'
+import type { _Season, _Stage, _Round, _Table, _Challenge, _Bet, _P_Bet, _P_Stage, _RealFixture, _RealTeam, _P_Challenge, _P_RealFixture, _RealEvent } from '~/types'
 
 export const useSeasonWithStages = async (seasonId: string) => {
   const seasonsQuery = usePSWatch<_Season>('SELECT * FROM "calendar_seasons" WHERE id = ?', [seasonId])
@@ -25,7 +25,7 @@ export const useSeasonWithStages = async (seasonId: string) => {
 export const usePopulatedStage = async (stageId: string) => {
   const stageQuery = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE id = ?', [stageId], { detectChanges: true })
   const roundsQuery = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE _stage = ? ORDER BY sePI ASC', [stageId], { detectChanges: true })
-  const groupsQuery = usePSWatch<_Group>('SELECT * FROM "game_groups" WHERE _link LIKE ?', [`%"_refId":"${stageId}"%`], { detectChanges: true })
+  const groupsQuery = usePSWatch<_Table>('SELECT * FROM "group_tables" WHERE _link LIKE ?', [`%"_refId":"${stageId}"%`], { detectChanges: true })
 
   await Promise.all([groupsQuery.await()])
 

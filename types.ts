@@ -1,5 +1,5 @@
 import type { WithPSChange } from '~/composables/usePSUtils'
-import type { BetRecord, SeasonRecord, StageRecord, RoundRecord, ChallengeRecord, RealFixtureRecord, RealTeamRecord, RealPlayerRecord, RealEventRecord, GroupRecord } from '~/powersync/AppSchema'
+import type { BetRecord, SeasonRecord, StageRecord, RoundRecord, ChallengeRecord, RealFixtureRecord, RealTeamRecord, RealPlayerRecord, RealEventRecord, TableRecord } from '~/powersync/AppSchema'
 
 interface Base {
   id: string
@@ -21,7 +21,7 @@ export type _Season = SeasonRecord & WithPSChange
 export type _Stage = StageRecord & WithPSChange
 export type _Round = RoundRecord & WithPSChange
 export type _Challenge = ChallengeRecord & WithPSChange
-export type _Group = GroupRecord & WithPSChange
+export type _Table = TableRecord & WithPSChange
 export type _RealFixture = RealFixtureRecord & WithPSChange
 export type _RealTeam = RealTeamRecord & WithPSChange
 export type _RealPlayer = RealPlayerRecord & WithPSChange
@@ -54,7 +54,7 @@ export interface _P_Stage extends Omit<_Stage, 'rounds' | 'groups'> {
 
   // Simplify the groups structure to match actual data
   groups: Array<
-    _Group & {
+    _Table & {
       // These properties are parsed from JSON strings
       _link: any // More permissive type for _link
       rows: Array<{
@@ -63,12 +63,7 @@ export interface _P_Stage extends Omit<_Stage, 'rounds' | 'groups'> {
         [key: string]: any // Allow any additional properties
       }>
 
-      // Allow nullable fields to match database schema
-      isFixture?: boolean | null
-      isBye?: boolean | null
       _parentGroup?: string | null
-      _scopeLevel?: number | null
-      _scopeName?: string | null
 
       // Allow other properties that might be added
       [key: string]: any
