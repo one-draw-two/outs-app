@@ -60,7 +60,7 @@ const calendar_rounds = new Table(
   { indexes: {} }
 )
 
-const game_challenges = new Table(
+const entry_challenges = new Table(
   {
     name: column.text,
     status: column.text,
@@ -74,7 +74,7 @@ const game_challenges = new Table(
   { indexes: {} }
 )
 
-const game_bets = new Table(
+const entry_bets = new Table(
   {
     _user: column.text,
     _round: column.text,
@@ -154,8 +154,8 @@ export const AppSchema = new Schema({
   calendar_seasons,
   calendar_stages,
   calendar_rounds,
-  game_challenges,
-  game_bets,
+  entry_challenges,
+  entry_bets,
   group_tables,
   real_fixtures,
   real_teams,
@@ -174,8 +174,8 @@ export type SeasonRecord = Database['calendar_seasons']
 export type StageRecord = Database['calendar_stages']
 export type RoundRecord = Database['calendar_rounds']
 
-export type ChallengeRecord = Database['game_challenges']
-export type BetRecord = Database['game_bets']
+export type ChallengeRecord = Database['entry_challenges']
+export type BetRecord = Database['entry_bets']
 
 export type TableRecord = Database['group_tables']
 

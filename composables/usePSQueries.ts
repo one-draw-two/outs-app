@@ -60,7 +60,7 @@ export const usePopulatedStage = async (stageId: string) => {
 export const usePopulatedRound = async (roundId: string) => {
   const roundQuery = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE id = ?', [roundId], { detectChanges: true })
 
-  const challengesQuery = usePSWatch<_Challenge>('SELECT * FROM "game_challenges" WHERE _round = ? ORDER BY "order" ASC', [roundId])
+  const challengesQuery = usePSWatch<_Challenge>('SELECT * FROM "entry_challenges" WHERE _round = ? ORDER BY "order" ASC', [roundId])
 
   await Promise.all([roundQuery.await(), challengesQuery.await()])
 
@@ -87,7 +87,7 @@ export const usePopulatedRound = async (roundId: string) => {
 }
 
 export const usePopulatedChallenge = async (challengeId: string) => {
-  const challengeQuery = usePSWatch<_Challenge>(`SELECT * FROM "game_challenges" WHERE id IN (?)`, [challengeId])
+  const challengeQuery = usePSWatch<_Challenge>(`SELECT * FROM "entry_challenges" WHERE id IN (?)`, [challengeId])
 
   await challengeQuery.await()
 
@@ -172,7 +172,7 @@ export const usePopulatedRealFixture = async (rfId: string) => {
 export const usePopulatedBet = async (challengeId: string) => {
   console.log('OCOCO')
 
-  const betsQuery = usePSWatch<_Bet>('SELECT * FROM "game_bets" WHERE "_challenge" = ?', [challengeId], { detectChanges: true })
+  const betsQuery = usePSWatch<_Bet>('SELECT * FROM "entry_bets" WHERE "_challenge" = ?', [challengeId], { detectChanges: true })
 
   await betsQuery.await()
 
