@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto my-24 space-y-8">
+  <div class="container mx-auto px-4 my-24 space-y-8">
     <LogoutButton v-if="user" :user="user" @clear-user="clearUser" />
     <NuxtLayout>
       <NuxtPage />

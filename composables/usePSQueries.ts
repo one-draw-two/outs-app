@@ -76,6 +76,19 @@ export const usePopulatedRound = async (roundId: string) => {
 
   await snapshotsQuery.await()
 
+  /*
+  const realFixtures = computed(() =>
+    round.value?.challenges
+      ?.flatMap((c: any) => c.fixtureSlots)
+      .map((fs: any) => fs._realFixture)
+      .sort((a: any, b: any) => {
+        const aTime = new Date(a.startingAt).getTime()
+        const bTime = new Date(b.startingAt).getTime()
+        return aTime - bTime
+      })
+  )
+  */
+
   return usePSQueryWatcher<_Round>([roundQuery, challengesQuery, realFixturesQuery], (round) => {
     round.value = {
       ...roundQuery.data.value[0],
@@ -180,17 +193,21 @@ export const usePopulatedRealFixture = async (rfId: string) => {
   })
 }
 
-export const usePopulatedBet = async (challengeId: string) => {
-  console.log('OCOCO')
+export const usePopulatedBet = async (options: { challengeId?: string; roundId?: string }) => {
+  const { challengeId, roundId } = options
 
-  const betsQuery = usePSWatch<_Bet>('SELECT * FROM "entry_bets" WHERE "_challenge" = ?', [challengeId], { detectChanges: true })
+  const betsQuery = challengeId
+    ? usePSWatch<_Bet>('SELECT * FROM "entry_bets" WHERE "_challenge" = ?', [challengeId], { detectChanges: true })
+    : usePSWatch<_Bet>('SELECT * FROM "entry_bets" WHERE "_round" = ?', [roundId!], { detectChanges: true })
 
   await betsQuery.await()
 
-  return usePSQueryWatcher<_P_Bet>([betsQuery], (bet) => {
-    bet.value = {
-      ...betsQuery.data.value[0],
-      betFixtureSlots: JSON.parse(betsQuery.data.value[0]?.betFixtureSlots ?? '[]'),
-    }
+  return usePSQueryWatcher<typeof challengeId extends string ? _P_Bet : _P_Bet[]>([betsQuery], (bet) => {
+    const bets = betsQuery.data.value || []
+    const allBets = bets.map((betRow) => ({ ...betRow, betFixtureSlots: JSON.parse(betRow?.betFixtureSlots ?? '[]') }))
+
+    bet.value = challengeId
+      ? (allBets[0] as any) // Single bet when querying by challengeId
+      : (allBets as any) // Array of bets when querying by roundId
   })
 }

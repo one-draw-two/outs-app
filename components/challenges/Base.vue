@@ -14,13 +14,13 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_Challenge } from '~/types'
+import type { _P_Challenge, _P_Bet } from '~/types'
 
 const { round, isLoading } = inject(roundKey)!
 
 const { challenge, isLoading: challengeIsLoading } = inject(challengeKey)!
 
-const { data: bet } = await usePopulatedBet(challenge?.value?.id as string)
+const { data: bet } = (await usePopulatedBet({ challengeId: challenge?.value?.id as string })) as { data: Ref<_P_Bet | null> }
 
 const returnComponent = (challengeType: string) => {
   if (challengeType === '1x2' || challengeType === 'Goals' || challengeType === 'Bonus') return Challenge_Type_FixtureSlots

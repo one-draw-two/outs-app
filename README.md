@@ -50,3 +50,4 @@
 - Wip: Offline status, pre dayJS last synced diff: 500.25kb, when the network button and tray components ready: 501.96kb
 - Fix: For a wider platform network status detection, using @capacitor/network: 502.89kb
 - Package updates: @powersync/web -> 1.19.0 and nuxt -> 3.17.0: 505.4kb
+- Wip: Snapshots and point columns are getting implemented in the round page: 506.32kb
