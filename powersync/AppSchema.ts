@@ -101,6 +101,20 @@ const group_tables = new Table(
   { indexes: {} }
 )
 
+const group_snapshots = new Table(
+  {
+    _season: column.text,
+    _stage: column.text,
+    _round: column.text,
+    _realFixture: column.text,
+    _realEvent: column.text,
+    pointer: column.text,
+    order: column.integer,
+    _ref: column.text,
+  },
+  { indexes: {} }
+)
+
 const real_fixtures = new Table(
   {
     name: column.text,
@@ -157,6 +171,7 @@ export const AppSchema = new Schema({
   entry_challenges,
   entry_bets,
   group_tables,
+  group_snapshots,
   real_fixtures,
   real_teams,
   real_players,
@@ -178,6 +193,7 @@ export type ChallengeRecord = Database['entry_challenges']
 export type BetRecord = Database['entry_bets']
 
 export type TableRecord = Database['group_tables']
+export type SnapshotRecord = Database['group_snapshots']
 
 export type RealFixtureRecord = Database['real_fixtures']
 export type RealTeamRecord = Database['real_teams']

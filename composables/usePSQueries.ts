@@ -70,17 +70,28 @@ export const usePopulatedRound = async (roundId: string) => {
 
   const realFixturesQuery = usePSWatch<_RealFixture>(`SELECT * FROM "real_fixtures" WHERE id IN (${realFixtures.map(() => '?').join(',')})`, realFixtures, { detectChanges: true })
 
+  const snapshotsQuery = usePSWatch<_Table>('SELECT * FROM "group_snapshots" WHERE "_round" = ?', [roundId], { detectChanges: true })
+
   await realFixturesQuery.await()
+
+  await snapshotsQuery.await()
 
   return usePSQueryWatcher<_Round>([roundQuery, challengesQuery, realFixturesQuery], (round) => {
     round.value = {
       ...roundQuery.data.value[0],
+      challenges: transformedChallenges,
+      /*
       challenges: transformedChallenges.map((challenge) => ({
         ...challenge,
         fixtureSlots: challenge.fixtureSlots.map((fs: { _realFixture: string; slotIndex: number }) => ({
           ...fs,
           _realFixture: realFixturesQuery.data.value.find((rf) => rf.id === fs._realFixture),
         })),
+      })),
+      */
+      snapshots: snapshotsQuery.data.value.map((snapshot) => ({
+        ...snapshot,
+        _realFixture: realFixturesQuery.data.value.find((rf) => rf.id === snapshot._realFixture),
       })),
     }
   })
