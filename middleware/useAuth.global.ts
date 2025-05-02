@@ -7,11 +7,16 @@ export default defineNuxtRouteMiddleware(async (to, _) => {
   try {
     const storedData = await useAuthStorage().getStoredAuth()
     if (storedData) {
+      const res: AuthResponse = await useSecureFetch('refresh', 'auth', 'post')
+      console.log('AUTH: NONETHELESS REFRESH RESPONSE', res)
+
       useInitUser({ success: true, data: storedData })
       return
     }
 
+    console.log('AUTH: DOING REFRESH NOW')
     const res: AuthResponse = await useSecureFetch('refresh', 'auth', 'post')
+    console.log('AUTH: REFRESH RESPONSE', res)
 
     if (!res.success) {
       console.error('Authentication failed:', res.message)
