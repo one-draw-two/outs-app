@@ -1,6 +1,6 @@
 import { Connector } from '~/powersync/Connector'
 
-export default function () {
+export default function (initialize?: boolean) {
   const { $db }: any = useNuxtApp()
   const powerSyncToken = useState<String>('powerSyncToken').value
 
@@ -11,6 +11,8 @@ export default function () {
     },
     { immediate: true }
   )
+
+  if (initialize) useState<any>('powerSyncParams').value = {}
 
   if (!useState<Boolean>('isPSConsoledOnce').value) {
     console.log('Dynamic PS token:', powerSyncToken)

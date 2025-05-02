@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import type { User } from '~/types'
 const user = useState<User | null>('user')
-const { clearAuth } = useAuthStorage()
+const { clearAuth, clearRefresh } = useAuthStorage()
 const { $capacitor } = useNuxtApp()
 
 const clearUser = async () => {
@@ -21,10 +21,11 @@ const clearUser = async () => {
   useState('powerSyncToken').value = null
   useState('fcmToken').value = null
   const unregresp = $capacitor.$platform !== 'web' ? await $capacitor.$pushNotifications.unregister() : null
-  console.log(unregresp)
+  console.log(unregresp) // Check if i need to do this?
   clearAuth()
+  clearRefresh()
   navigateTo('/access/login')
 }
 
-useServiceWorker()
+// useServiceWorker() Promlematic at the moment, disable
 </script>

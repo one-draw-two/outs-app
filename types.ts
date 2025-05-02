@@ -84,6 +84,7 @@ export type AuthResponseSuccess = {
   data: {
     user: User
     accessToken: string
+    refreshToken: string
     powerSyncToken: string
   }
 }

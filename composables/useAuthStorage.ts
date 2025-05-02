@@ -3,6 +3,7 @@ import { jwtDecode } from 'jwt-decode'
 import type { AuthResponseSuccess } from '~/types'
 
 const AUTH_KEY = 'outs-auth'
+const REFRESH_KEY = 'outs-refresh'
 
 export const useAuthStorage = () => {
   const getTokenExpiration = (token: string): number => {
@@ -13,10 +14,12 @@ export const useAuthStorage = () => {
     }
   }
 
-  const saveAuth = async (res: AuthResponseSuccess) => {
+  const saveAuthAndRefreshToken = async (res: AuthResponseSuccess) => {
     try {
       const expiresAt = getTokenExpiration(res.data.accessToken)
-      await Preferences.set({ key: AUTH_KEY, value: JSON.stringify({ ...res.data, expiresAt }) })
+      const { refreshToken, ...authDataWithoutRefresh } = res.data // Remove refreshToken from authData
+      await Preferences.set({ key: AUTH_KEY, value: JSON.stringify({ ...authDataWithoutRefresh, expiresAt }) })
+      await Preferences.set({ key: REFRESH_KEY, value: refreshToken })
     } catch (error) {
       console.error('Failed to save auth data:', error)
       throw error
@@ -43,18 +46,25 @@ export const useAuthStorage = () => {
     }
   }
 
-  const clearAuth = async () => {
+  const getRefreshToken = async (): Promise<string | null> => {
     try {
-      await Preferences.remove({ key: AUTH_KEY })
+      const { value } = await Preferences.get({ key: REFRESH_KEY })
+
+      return value || null
     } catch (error) {
-      console.error('Failed to clear auth data:', error)
-      throw error
+      console.error('Failed to get refresh token:', error)
+      return null
     }
   }
 
+  const clearAuth = async () => await Preferences.remove({ key: AUTH_KEY })
+  const clearRefresh = async () => await Preferences.remove({ key: REFRESH_KEY })
+
   return {
-    saveAuth,
-    getStoredAuth,
+    saveAuthAndRefreshToken,
     clearAuth,
+    clearRefresh,
+    getStoredAuth,
+    getRefreshToken,
   }
 }

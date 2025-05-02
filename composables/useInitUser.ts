@@ -7,10 +7,10 @@ export default function (res: AuthResponseSuccess, navToPath?: string, isToSaveO
   useState<String>('accessToken').value = res.data.accessToken
   useState<String>('powerSyncToken').value = res.data.powerSyncToken
 
-  useDynamicPS() // Parameters will be carried by useState<powerSyncParams>
+  useDynamicPS(true) // Parameters will be carried by useState<powerSyncParams>
   useGetPushTokens()
   useTabVisibility()
 
-  if (isToSaveOffline) useAuthStorage().saveAuth(res)
+  if (isToSaveOffline) useAuthStorage().saveAuthAndRefreshToken(res)
   if (navigateTo) navigateTo(navToPath, { replace: true })
 }

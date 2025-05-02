@@ -1,22 +1,18 @@
 import type { AuthResponse } from '~/types'
 
 export default defineNuxtRouteMiddleware(async (to, _) => {
+  const authStorage = useAuthStorage()
+
   if (useState('user').value) return
   if (to.meta.isPublic) return
 
   try {
-    const storedData = await useAuthStorage().getStoredAuth()
-    if (storedData) {
-      const res: AuthResponse = await useSecureFetch('refresh', 'auth', 'post')
-      console.log('AUTH: NONETHELESS REFRESH RESPONSE', res)
+    const storedData = await authStorage.getStoredAuth() // Note: Clears auth in useAuthStorage if doesnt return successful
+    if (storedData) return useInitUser({ success: true, data: storedData })
 
-      useInitUser({ success: true, data: storedData })
-      return
-    }
-
-    console.log('AUTH: DOING REFRESH NOW')
-    const res: AuthResponse = await useSecureFetch('refresh', 'auth', 'post')
-    console.log('AUTH: REFRESH RESPONSE', res)
+    const storedRefreshToken = await authStorage.getRefreshToken()
+    if (!storedRefreshToken) return navigateTo('/access/login', { replace: true })
+    const res: AuthResponse = await useSecureFetch('refresh', 'auth', 'post', { refreshToken: storedRefreshToken })
 
     if (!res.success) {
       console.error('Authentication failed:', res.message)
