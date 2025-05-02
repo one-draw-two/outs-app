@@ -60,6 +60,7 @@ export default defineNuxtConfig({
       platform: process.env.NUXT_PUBLIC_PLATFORM || 'web',
       authUrl: process.env.DEV ? process.env.DEV_AUTH_URL : process.env.AUTH_URL,
       baseUrl: process.env.DEV ? process.env.DEV_BASE_URL : process.env.BASE_URL,
+      tokenUrl: process.env.DEV ? process.env.DEV_TOKEN_URL : process.env.TOKEN_URL,
     },
   },
 })

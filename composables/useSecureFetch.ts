@@ -1,9 +1,22 @@
 type HttpMethod = 'get' | 'GET' | 'post' | 'POST' | 'put' | 'PUT' | 'delete' | 'DELETE' | 'patch' | 'PATCH' | 'head' | 'HEAD' | 'connect' | 'CONNECT' | 'options' | 'OPTIONS' | 'trace' | 'TRACE'
 
-export default function (url: string, target: string, method?: HttpMethod, body?: any, params?: any) {
+type ServiceType = 'auth' | 'base' | 'token'
+
+export default function (url: string, service: ServiceType, method?: HttpMethod, body?: any, params?: any) {
   const config = useRuntimeConfig()
   const accessToken = useState<String>('accessToken').value
-  return $fetch(`${target === 'auth' ? config.public.authUrl : config.public.baseUrl}/${url}`, {
+
+  const getServiceUrl = (type: ServiceType): string => {
+    const serviceMap: Record<ServiceType, string> = {
+      auth: config.public.authUrl,
+      base: config.public.baseUrl,
+      token: config.public.tokenUrl,
+    }
+
+    return serviceMap[type]
+  }
+
+  return $fetch(`${getServiceUrl(service)}/${url}`, {
     credentials: 'include',
     method: method ?? 'get',
     body,

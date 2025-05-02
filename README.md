@@ -51,3 +51,4 @@
 - Fix: For a wider platform network status detection, using @capacitor/network: 502.89kb
 - Package updates: @powersync/web -> 1.19.0 and nuxt -> 3.17.0: 505.4kb
 - Wip: Snapshots and point columns are getting implemented in the round page: 506.32kb
+- Feat: Added token endpoint and made useSecureFetch more flexible: 506.32kb
