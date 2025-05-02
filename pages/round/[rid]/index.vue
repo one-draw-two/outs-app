@@ -26,7 +26,8 @@ import type { _RealFixture } from '~/types'
 definePageMeta({ layout: 'round' })
 const { round, isLoading } = inject(roundKey)!
 useHead({ title: `${round.value?.name} | Matches` })
-useDynamicPS({ selected_round: round.value?.id })
+
+useState<any>('powerSyncParams').value = { selected_round: round.value?.id }
 
 const route = useRoute()
 const $day = useNuxtApp().vueApp.config.globalProperties.$day

@@ -1,4 +1,4 @@
-export default function (params: any) {
+export default function () {
   const { $capacitor } = useNuxtApp()
 
   const startTokenQueue: Array<{ token: string; activityType: string; instanceId?: string }> = []

@@ -14,5 +14,5 @@ const { stage, isLoading } = inject(stageKey)!
 const pageTitle = computed(() => stage.value?.name)
 useHead({ title: pageTitle })
 
-useDynamicPS({ selected_stid: stage.value?.id })
+useState<any>('powerSyncParams').value = { selected_stid: stage.value?.id }
 </script>

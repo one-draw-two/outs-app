@@ -9,11 +9,15 @@ enum LiveActivityTokenType: String {
 
 protocol OutsLiveActivityAttributes: ActivityAttributes where ContentState: Codable & Hashable {}
 
+struct BaseActivityAttributes: ActivityAttributes {
+    struct ContentState: Codable, Hashable {}
+}
+
 extension LinearAttributes: OutsLiveActivityAttributes {}
 extension RadialAttributes: OutsLiveActivityAttributes {}
 
 class LiveActivityManager {
-
+    
     static let shared = LiveActivityManager()
 
     enum LogType: String {
@@ -72,7 +76,7 @@ class LiveActivityManager {
         activities[typeName] = [Activity<T>]()
 
         // Start monitoring this type
-        monitorStartTokens(for: type)
+        // monitorStartTokens(for: type)
         monitorActivityUpdates(for: type)
     }
 
@@ -99,12 +103,16 @@ class LiveActivityManager {
         // Always log current activities for debugging
         logAllActivities()
         */
+        monitorStartTokens()
+        
         register(LinearAttributes.self)
         register(RadialAttributes.self)
+        
         logAllActivities()
     }
 
     // Generic method to monitor start tokens
+    /*
     private func monitorStartTokens<T: OutsLiveActivityAttributes>(for attributeType: T.Type) {
         Self.logToJS("LAJS(LM): Monitoring start tokens for \(attributeType)")
         let typeName = String(describing: attributeType)
@@ -112,6 +120,18 @@ class LiveActivityManager {
         Task {
             for await token in Activity<T>.pushToStartTokenUpdates {
                 notifyToken(token, type: .start, activityTypeName: typeName)
+            }
+        }
+    }
+     */
+    private func monitorStartTokens() {
+
+        Self.logToJS("LAJS(LM): Starting global start token monitoring")
+        
+        Task {
+            for await token in Activity<BaseActivityAttributes>.pushToStartTokenUpdates {
+                notifyToken(token, type: .start, activityTypeName: "NA")
+                Self.logToJS("LAJS(LM): Start token received and forwarded to JS")
             }
         }
     }
