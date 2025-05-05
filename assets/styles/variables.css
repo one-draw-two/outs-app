@@ -10,5 +10,8 @@
   --xheader-padding-t: calc(max(env(safe-area-inset-top), var(--android-top-inset)) + 2rem);
 }
 .safe-area-padding-top {
+  /*
   padding-top: calc(max(env(safe-area-inset-top), var(--android-top-inset)) + 2rem);
+  */
+  padding-top: env(safe-area-inset-top);
 }

@@ -1,10 +1,5 @@
 import type { _P_Season, _P_Stage, _P_Round, _P_Challenge } from '~/types'
 
-export const subscriptionsKey = Symbol('subscriptions') as InjectionKey<{
-  subscriptions: Ref<any | null>
-  isLoading: Ref<boolean>
-}>
-
 export const seasonKey = Symbol('season') as InjectionKey<{
   season: Ref<_P_Season | null>
   isLoading: Ref<boolean>

@@ -7,7 +7,7 @@ export const useSeasonWithStages = async (seasonId: string) => {
 
   await seasonsQuery.await()
 
-  const blueprintQuery = usePSWatch<_Stage>('SELECT * FROM "blueprint_seasons" WHERE id = ?', [seasonsQuery.data.value[0]._bpSeason])
+  const blueprintQuery = usePSWatch<_Stage>('SELECT * FROM "blueprint_seasons" WHERE id = ?', [seasonsQuery.data.value[0]?._bpSeason])
 
   return usePSQueryWatcher<_Season>([seasonsQuery, stagesQuery, roundsQuery], (season) => {
     season.value = {

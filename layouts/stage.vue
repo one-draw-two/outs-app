@@ -11,5 +11,7 @@ const nativeRoute = useNativeRoute()
 const { data: stage, isLoading } = await usePopulatedStage(nativeRoute.params.stid as string)
 useLoadingWatcher(isLoading, stage, 'Stage fully populated')
 
+useState<any>('pickerSeason').value = stage.value?._season
+
 provide(stageKey, { stage, isLoading })
 </script>

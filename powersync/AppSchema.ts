@@ -13,6 +13,7 @@ const account_subscriptions = new Table(
     status: column.text,
     _user: column.text,
     _season: column.text,
+    _updatedAt: column.text,
   },
   { indexes: {} }
 )

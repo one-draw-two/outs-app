@@ -12,12 +12,20 @@ const route = useRoute()
 const { data: seasons, isLoading: ilse } = usePSWatch<any>('SELECT * FROM "calendar_seasons" ORDER BY name ASC', [], { abortController: new AbortController() })
 const { data: subscriptions, isLoading: ilsb } = usePSWatch<any>('SELECT * FROM "account_subscriptions"', [], { abortController: new AbortController() })
 
-const selectedSeason = ref((route.params.sid as string) || '')
+// Initialize selected season from route params
+// const selectedSeason = ref((route.params.sid as string) || '')
+const selectedSeason = useState<any>('pickerSeason')
 
+/*
 watch(
-  () => route.params.sid,
-  (newSid) => (selectedSeason.value = (newSid as string) || '')
+  () => useState<any>('pickerSeason').value,
+  (newSid) => {
+    console.log('newSid', newSid)
+    if (newSid )selectedSeason.value = newSid as string
+  },
+  { immediate: true }
 )
+  */
 
 const change = (event: any) => navigateTo(event.target.value ? `/season/${event.target.value}` : '/season')
 
