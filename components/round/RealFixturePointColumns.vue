@@ -17,9 +17,9 @@ const props = defineProps<{
   realFixtures?: any[]
 }>()
 const headers = ref([{ name: 'Result' }, { name: 'You' }])
-wecl(props.realFixtures)
+// wecl(props.realFixtures)
 
 const { data: bets } = (await usePopulatedBet({ roundId: props.round.id })) as { data: Ref<_P_Bet[]> }
 
-wecl(bets, 'bet')
+// wecl(bets, 'bet')
 </script>

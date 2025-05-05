@@ -58,6 +58,10 @@ export interface _P_Table extends Omit<_Table, 'rows'> {
   [key: string]: any
 }
 
+export interface _P_Round extends Omit<_Round, '_stage'> {
+  _stage: _Stage
+}
+
 export interface _P_Stage extends Omit<_Stage, 'rounds' | 'groups'> {
   rounds: _Round[]
   groups: _P_Table[]

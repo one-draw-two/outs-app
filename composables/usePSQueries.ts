@@ -1,8 +1,7 @@
-import type { _Season, _Stage, _Round, _Table, _Challenge, _Bet, _P_Bet, _P_Stage, _RealFixture, _RealTeam, _P_Challenge, _P_RealFixture, _RealEvent } from '~/types'
+import type { _Season, _Stage, _P_Round, _Round, _Table, _Challenge, _Bet, _P_Bet, _P_Stage, _RealFixture, _RealTeam, _P_Challenge, _P_RealFixture, _RealEvent } from '~/types'
 
 export const useSeasonWithStages = async (seasonId: string) => {
   const seasonsQuery = usePSWatch<_Season>('SELECT * FROM "calendar_seasons" WHERE id = ?', [seasonId])
-
   const stagesQuery = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE _season = ? ORDER BY sePI ASC', [seasonId])
   const roundsQuery = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE _season = ? ORDER BY sePI ASC', [seasonId])
 
@@ -25,35 +24,13 @@ export const useSeasonWithStages = async (seasonId: string) => {
 export const usePopulatedStage = async (stageId: string) => {
   const stageQuery = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE id = ?', [stageId], { detectChanges: true })
   const roundsQuery = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE _stage = ? ORDER BY sePI ASC', [stageId], { detectChanges: true })
-  const groupsQuery = usePSWatch<_Table>('SELECT * FROM "group_tables" WHERE _link LIKE ?', [`%"_refId":"${stageId}"%`], { detectChanges: true })
+  const { processedGroups } = await useGroupsWithUsers(`%"_refId":"${stageId}"%`, [])
 
-  await Promise.all([groupsQuery.await()])
-
-  const userIds = groupsQuery.data.value
-    .flatMap((group) => JSON.parse((group.rows as string) || '[]'))
-    .map((row) => row._user)
-    .filter(Boolean)
-
-  const usersQuery = usePSWatch<any>(`SELECT * FROM "account_users" WHERE id IN (${userIds.map(() => '?').join(',')})`, userIds)
-
-  return usePSQueryWatcher<_P_Stage>([stageQuery, roundsQuery, groupsQuery, usersQuery], (stage) => {
-    const userMap = Object.fromEntries(usersQuery.data.value.map((user) => [user.id, user]))
-
+  return usePSQueryWatcher<_P_Stage>([stageQuery, roundsQuery], (stage) => {
     stage.value = {
       ...stageQuery.data.value[0],
       rounds: roundsQuery.data.value,
-      groups: groupsQuery.data.value.map((group) => {
-        const parsedRows = JSON.parse((group.rows as string) || '[]')
-        return {
-          ...group,
-          _link: JSON.parse(group._link as string),
-          meta: JSON.parse(group.meta as string),
-          rows: parsedRows.map((row: any) => ({
-            ...row,
-            _user: userMap[row._user] || row._user,
-          })),
-        }
-      }),
+      groups: processedGroups,
     }
   })
 }
@@ -73,40 +50,20 @@ export const usePopulatedRound = async (roundId: string) => {
 
   const snapshotsQuery = usePSWatch<_Table>('SELECT * FROM "group_snapshots" WHERE "_round" = ?', [roundId], { detectChanges: true })
 
-  await realFixturesQuery.await()
+  const stageQuery = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE id = ?', [roundQuery.data.value[0]._stage], { detectChanges: true })
 
-  await snapshotsQuery.await()
+  const { processedGroups } = await useGroupsWithUsers(`%"_refId":"${roundId}"%`, [])
 
-  /*
-  const realFixtures = computed(() =>
-    round.value?.challenges
-      ?.flatMap((c: any) => c.fixtureSlots)
-      .map((fs: any) => fs._realFixture)
-      .sort((a: any, b: any) => {
-        const aTime = new Date(a.startingAt).getTime()
-        const bTime = new Date(b.startingAt).getTime()
-        return aTime - bTime
-      })
-  )
-  */
-
-  return usePSQueryWatcher<_Round>([roundQuery, challengesQuery, realFixturesQuery], (round) => {
+  return usePSQueryWatcher<_P_Round>([roundQuery, challengesQuery, realFixturesQuery, stageQuery], (round) => {
     round.value = {
       ...roundQuery.data.value[0],
       challenges: transformedChallenges,
-      /*
-      challenges: transformedChallenges.map((challenge) => ({
-        ...challenge,
-        fixtureSlots: challenge.fixtureSlots.map((fs: { _realFixture: string; slotIndex: number }) => ({
-          ...fs,
-          _realFixture: realFixturesQuery.data.value.find((rf) => rf.id === fs._realFixture),
-        })),
-      })),
-      */
+      _stage: stageQuery.data.value[0],
       snapshots: snapshotsQuery.data.value.map((snapshot) => ({
         ...snapshot,
         _realFixture: realFixturesQuery.data.value.find((rf) => rf.id === snapshot._realFixture),
       })),
+      groups: processedGroups,
     }
   })
 }
@@ -211,4 +168,35 @@ export const usePopulatedBet = async (options: { challengeId?: string; roundId?:
       ? (allBets[0] as any) // Single bet when querying by challengeId
       : (allBets as any) // Array of bets when querying by roundId
   })
+}
+
+export const useGroupsWithUsers = async (filter: string, filterParams: any[]) => {
+  const groupsQuery = usePSWatch<_Table>('SELECT * FROM "group_tables" WHERE _link LIKE ?', [filter], { detectChanges: true })
+  await groupsQuery.await()
+
+  const userIds = groupsQuery.data.value
+    .flatMap((group) => JSON.parse((group.rows as string) || '[]'))
+    .map((row) => row._user)
+    .filter(Boolean)
+
+  const usersQuery = userIds.length > 0 ? usePSWatch<any>(`SELECT * FROM "account_users" WHERE id IN (${userIds.map(() => '?').join(',')})`, userIds) : { data: { value: [] }, await: async () => {} }
+  await usersQuery.await()
+  const userMap = Object.fromEntries(usersQuery.data.value.map((user) => [user.id, user]))
+
+  const processedGroups = groupsQuery.data.value.map((group) => {
+    const parsedRows = JSON.parse((group.rows as string) || '[]')
+    return {
+      ...group,
+      _link: JSON.parse(group._link as string),
+      meta: JSON.parse(group.meta as string),
+      rows: parsedRows.map((row: any) => ({
+        ...row,
+        _user: userMap[row._user] || row._user,
+      })),
+    }
+  })
+
+  return {
+    processedGroups,
+  }
 }
