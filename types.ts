@@ -48,27 +48,19 @@ export interface _P_Bet extends Omit<_Bet, 'betFixtureSlots'> {
   }[]
 }
 
+export interface _P_Table extends Omit<_Table, 'rows'> {
+  _link: any
+  rows: Array<{
+    _user: any
+    [key: string]: any
+  }>
+  _parentGroup?: string | null
+  [key: string]: any
+}
+
 export interface _P_Stage extends Omit<_Stage, 'rounds' | 'groups'> {
-  // Include the rounds array
   rounds: _Round[]
-
-  // Simplify the groups structure to match actual data
-  groups: Array<
-    _Table & {
-      // These properties are parsed from JSON strings
-      _link: any // More permissive type for _link
-      rows: Array<{
-        _user: any // Allow any user representation (proxy or plain object)
-        side?: string
-        [key: string]: any // Allow any additional properties
-      }>
-
-      _parentGroup?: string | null
-
-      // Allow other properties that might be added
-      [key: string]: any
-    }
-  >
+  groups: _P_Table[]
 }
 
 // UTIL

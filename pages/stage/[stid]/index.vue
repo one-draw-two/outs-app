@@ -4,6 +4,9 @@
     <div class="flex gap-8">
       <div v-for="group of stage?.groups" class="flex-1">
         <h2>{{ group.name }}</h2>
+        <div v-for="row of group.rows" class="flex-1">
+          <p>{{ row._user.name }}</p>
+        </div>
       </div>
     </div>
   </main>

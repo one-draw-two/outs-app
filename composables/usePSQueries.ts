@@ -47,6 +47,7 @@ export const usePopulatedStage = async (stageId: string) => {
         return {
           ...group,
           _link: JSON.parse(group._link as string),
+          meta: JSON.parse(group.meta as string),
           rows: parsedRows.map((row: any) => ({
             ...row,
             _user: userMap[row._user] || row._user,
