@@ -12,7 +12,8 @@
     <div class="flex gap-8">
       <div class="flex-1 space-y-8">
         <div class="flex gap-8">
-          <NuxtLink :to="`/round/${round?.id}`"><h2>Matches</h2></NuxtLink>
+          <NuxtLink :to="`/round/${round?.id}`"><h2>Overview</h2></NuxtLink>
+          <NuxtLink :to="`/round/${round?.id}/matches`"><h2>Matches</h2></NuxtLink>
           <NuxtLink :to="`/round/${round?.id}/challenges`"><h2>Challenges</h2></NuxtLink>
           <NuxtLink :to="`/round/${round?.id}/fixtures`"><h2>Fixtures</h2></NuxtLink>
         </div>
@@ -28,6 +29,8 @@ const nativeRoute = useNativeRoute()
 
 const { data: round, isLoading } = await usePopulatedRound(nativeRoute.params.rid as string)
 useLoadingWatcher(isLoading, round, 'Round fully populated')
+
+useState<any>('powerSyncParams').value = { selected_round: round.value?.id }
 
 provide(roundKey, { round, isLoading })
 </script>
