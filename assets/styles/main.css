@@ -8,6 +8,10 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+.main-container {
+  @apply container mx-auto;
+}
+
 .flex-center {
   @apply flex items-center justify-center;
 }

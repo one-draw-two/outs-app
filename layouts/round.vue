@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-8">
+  <div class="main-container space-y-8">
     <div class="flex gap-8">
       <NuxtLink :to="`/stage/${round?._stage?.id}`">{{ round?._stage?.name }}</NuxtLink>
       <h1>Round {{ round?.name }}</h1>

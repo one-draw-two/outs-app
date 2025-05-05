@@ -5,5 +5,8 @@
 <script setup lang="ts">
 const connectionColorClass = useState<string>('network:connectionColorClass')
 const toggleTrigger = useState<number>('network:networkTrayToggleTrigger')
-const toggleNetworkTray = () => (toggleTrigger.value += 1)
+const toggleNetworkTray = () => {
+  useState<any>('powerSyncParams').value = { ...useState<any>('powerSyncParams').value }
+  toggleTrigger.value += 1
+}
 </script>

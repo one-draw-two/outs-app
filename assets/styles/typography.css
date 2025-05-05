@@ -18,6 +18,16 @@
   --font-noto: 'NotoSansCondensed';
 }
 
+* {
+  @apply font-noto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 h1 {
   @apply font-noto font-[900];
+}
+
+.text-stroke {
+  text-shadow: -0.6px -0.6px 0 #000, 0.6px -0.6px 0 #000, -0.6px 0.6px 0 #000, 0.6px 0.6px 0 #000;
 }

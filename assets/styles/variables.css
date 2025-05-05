@@ -1,0 +1,14 @@
+:root {
+  --android-top-inset: 0px;
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom);
+  --sal: env(safe-area-inset-left);
+}
+
+:root {
+  --xheader-padding-t: calc(max(env(safe-area-inset-top), var(--android-top-inset)) + 2rem);
+}
+.safe-area-padding-top {
+  padding-top: calc(max(env(safe-area-inset-top), var(--android-top-inset)) + 2rem);
+}

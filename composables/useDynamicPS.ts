@@ -13,7 +13,7 @@ export default function (initialize?: boolean) {
     if (pendingConnectionTimeout.value) clearTimeout(pendingConnectionTimeout.value)
 
     pendingConnectionTimeout.value = setTimeout(() => {
-      // console.log('Connecting to PowerSync with params:', params || 'none')
+      console.log('Connecting to PowerSync with params:', params || 'none')
 
       const rawParams = params ? toRaw(params) : null
       const hasParams = rawParams && typeof rawParams === 'object' && Object.keys(rawParams).length > 0
