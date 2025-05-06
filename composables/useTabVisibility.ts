@@ -4,7 +4,8 @@ export default function () {
   const visibilityFunc = () => {
     if (document.visibilityState == 'visible') {
       // console.log('VisibilityChange: Tab is active, init dynamicPS')
-      useState<any>('powerSyncParams').value = { ...useState<any>('powerSyncParams').value }
+      // console.log(`PS connected already?: ${useState<boolean>('network:powerSyncConnected').value}`)
+      if (!useState<boolean>('network:powerSyncConnected').value) useState<any>('powerSyncParams').value = { ...useState<any>('powerSyncParams').value }
     } else {
       // console.log('VisibilityChange: Tab is inactive')
     }

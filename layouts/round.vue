@@ -30,7 +30,6 @@ const nativeRoute = useNativeRoute()
 const { data: round, isLoading } = await usePopulatedRound(nativeRoute.params.rid as string)
 useLoadingWatcher(isLoading, round, 'Round fully populated')
 
-useState<any>('powerSyncParams').value = { selected_round: round.value?.id }
 useState<any>('pickerSeason').value = round.value?._season
 
 provide(roundKey, { round, isLoading })

@@ -35,8 +35,5 @@ export default function (initialize?: boolean) {
 
   if (initialize && powerSyncToken && !useState<any>('powerSyncParams').value && Date.now() - lastConnectionTime.value > THROTTLE) useState<any>('powerSyncParams').value = {}
 
-  if (!useState<Boolean>('isPSConsoledOnce').value && powerSyncToken) {
-    console.log('Dynamic PS token available:', powerSyncToken ? 'yes' : 'no')
-    useState<Boolean>('isPSConsoledOnce').value = true
-  }
+  if (!useState<Boolean>('isPSConsoledOnce').value && powerSyncToken) useState<Boolean>('isPSConsoledOnce').value = true
 }

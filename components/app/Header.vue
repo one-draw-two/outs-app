@@ -1,5 +1,5 @@
 <template>
-  <div class="main-container flex justify-between bg-gray-100">
+  <div class="main-container flex justify-between">
     <SeasonPicker />
     <AppUserButton :user="user" />
   </div>

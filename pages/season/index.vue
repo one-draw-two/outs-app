@@ -1,7 +1,4 @@
-<template>
-  <h1>Seasons</h1>
-  <NuxtLink to="/">Back to home</NuxtLink>
-</template>
+<template></template>
 
 <script setup lang="ts">
 definePageMeta({
