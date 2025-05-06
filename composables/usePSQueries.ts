@@ -1,15 +1,17 @@
 import type { _Season, _Stage, _P_Round, _Round, _Table, _Challenge, _Bet, _P_Bet, _P_Stage, _RealFixture, _RealTeam, _P_Challenge, _P_RealFixture, _RealEvent } from '~/types'
 
-export const useSeasonWithStages = async (seasonId: string) => {
-  const seasonsQuery = usePSWatch<_Season>('SELECT * FROM "calendar_seasons" WHERE id = ?', [seasonId])
-  const stagesQuery = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE _season = ? ORDER BY sePI ASC', [seasonId])
-  const roundsQuery = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE _season = ? ORDER BY sePI ASC', [seasonId])
+export const useSeasonWithStages = async (seasonId: Ref<string> | string) => {
+  const isReactiveId = isRef(seasonId)
+  const seasonIdRef = isReactiveId ? seasonId : computed(() => seasonId)
 
-  await seasonsQuery.await()
+  const seasonsQuery = usePSWatch<_Season>('SELECT * FROM "calendar_seasons" WHERE id = ?', [seasonIdRef.value], { watchSource: seasonIdRef })
+  const stagesQuery = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE _season = ? ORDER BY sePI ASC', [seasonIdRef.value], { watchSource: seasonIdRef })
+  const roundsQuery = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE _season = ? ORDER BY sePI ASC', [seasonIdRef.value], { watchSource: seasonIdRef })
 
-  const blueprintQuery = usePSWatch<_Stage>('SELECT * FROM "blueprint_seasons" WHERE id = ?', [seasonsQuery.data.value[0]?._bpSeason])
+  const blueprintId = computed(() => seasonsQuery.data.value[0]?._bpSeason)
+  const blueprintQuery = usePSWatch<_Stage>('SELECT * FROM "blueprint_seasons" WHERE id = ?', [blueprintId.value], { watchSource: blueprintId })
 
-  return usePSQueryWatcher<_Season>([seasonsQuery, stagesQuery, roundsQuery], (season) => {
+  return usePSQueryWatcher<_Season>([seasonsQuery, stagesQuery, roundsQuery, blueprintQuery], (season) => {
     season.value = {
       ...seasonsQuery.data.value[0],
       stages: stagesQuery.data.value.map((stage) => ({

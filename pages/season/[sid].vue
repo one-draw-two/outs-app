@@ -24,8 +24,9 @@
 </template>
 
 <script setup lang="ts">
+import type { _P_Season } from '~/types'
 definePageMeta({ layout: 'season' })
-const { season, isLoading } = inject(seasonKey)!
-const pageTitle = computed(() => season.value?.name)
+const season = useState<_P_Season>('season')
+const pageTitle = computed(() => `Season ${season.value?.name}`)
 useHead({ title: pageTitle })
 </script>

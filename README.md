@@ -55,3 +55,4 @@
 - Wip: Group fixtures / stage queryies and PS watcher reworking (and powersync/web 1.20.0): 502.81kb
 - Pre: Starting front-end layout (round/stage/season views): 503.95kb
 - Feat: Capacitor plugin for insets: 505.17kb
+- Switched to GPT-4.1: And upgradedPSUtils for a watchSource (to use in season picker from children round components): 505.36kb
