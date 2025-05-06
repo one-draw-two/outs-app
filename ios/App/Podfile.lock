@@ -9,6 +9,8 @@ PODS:
   - CapacitorCordova (7.2.0)
   - CapacitorNetwork (7.0.1):
     - Capacitor
+  - CapacitorPluginSafeArea (4.0.0):
+    - Capacitor
   - CapacitorPreferences (7.0.1):
     - Capacitor
   - CapacitorPushNotifications (7.0.1):
@@ -75,6 +77,7 @@ DEPENDENCIES:
   - "CapacitorCommunityFcm (from `../../node_modules/.pnpm/@capacitor-community+fcm@7.1.1_@capacitor+core@7.2.0/node_modules/@capacitor-community/fcm`)"
   - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@7.2.0_@capacitor+core@7.2.0/node_modules/@capacitor/ios`)"
   - "CapacitorNetwork (from `../../node_modules/.pnpm/@capacitor+network@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/network`)"
+  - "CapacitorPluginSafeArea (from `../../node_modules/.pnpm/capacitor-plugin-safe-area@4.0.0_@capacitor+core@7.2.0/node_modules/capacitor-plugin-safe-area`)"
   - "CapacitorPreferences (from `../../node_modules/.pnpm/@capacitor+preferences@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/preferences`)"
   - "CapacitorPushNotifications (from `../../node_modules/.pnpm/@capacitor+push-notifications@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/push-notifications`)"
   - "Outs1x2CapacitorLiveactivities (from `../../node_modules/.pnpm/@outs1x2+capacitor-liveactivities@0.2.6_@capacitor+core@7.2.0/node_modules/@outs1x2/capacitor-liveactivities`)"
@@ -101,6 +104,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/.pnpm/@capacitor+ios@7.2.0_@capacitor+core@7.2.0/node_modules/@capacitor/ios"
   CapacitorNetwork:
     :path: "../../node_modules/.pnpm/@capacitor+network@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/network"
+  CapacitorPluginSafeArea:
+    :path: "../../node_modules/.pnpm/capacitor-plugin-safe-area@4.0.0_@capacitor+core@7.2.0/node_modules/capacitor-plugin-safe-area"
   CapacitorPreferences:
     :path: "../../node_modules/.pnpm/@capacitor+preferences@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/preferences"
   CapacitorPushNotifications:
@@ -114,6 +119,7 @@ SPEC CHECKSUMS:
   CapacitorCommunityFcm: 15b0b44dcb160adc28f120719dcf9fbf72e14e1d
   CapacitorCordova: 5967b9ba03915ef1d585469d6e31f31dc49be96f
   CapacitorNetwork: 07ec4c69c1bb696f41c23e00d31bda1bbb221bba
+  CapacitorPluginSafeArea: af80830df43015a915e504a56318a3027d3fc806
   CapacitorPreferences: cbf154e5e5519b7f5ab33817a334dda1e98387f9
   CapacitorPushNotifications: 0b653a3264d56daccf0e8769fff15d2f48306de6
   FirebaseCore: 3cf438f431f18c12cdf2aaf64434648b63f7e383
@@ -126,6 +132,6 @@ SPEC CHECKSUMS:
   Outs1x2CapacitorLiveactivities: 1305e140fbea2a76d9c12f9bce5568c16c3f378d
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
 
-PODFILE CHECKSUM: 0283aecefefe795fcce69cecf9cd254bfa5ab4d8
+PODFILE CHECKSUM: 3411e450010b3d7d9241f388e7351046e1cf12d4
 
 COCOAPODS: 1.16.2

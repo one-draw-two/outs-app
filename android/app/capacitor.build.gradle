@@ -15,6 +15,7 @@ dependencies {
     implementation project(':capacitor-preferences')
     implementation project(':capacitor-push-notifications')
     implementation project(':outs1x2-capacitor-liveactivities')
+    implementation project(':capacitor-plugin-safe-area')
 
 }
 

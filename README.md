@@ -54,3 +54,4 @@
 - Feat: Added token endpoint and made useSecureFetch more flexible: 506.32kb. With RefreshToken fix: 506.41kb
 - Wip: Group fixtures / stage queryies and PS watcher reworking (and powersync/web 1.20.0): 502.81kb
 - Pre: Starting front-end layout (round/stage/season views): 503.95kb
+- Feat: Capacitor plugin for insets: 505.17kb
