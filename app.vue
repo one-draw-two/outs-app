@@ -1,10 +1,12 @@
 <template>
-  <div class="space-y-8 safe-area-padding-top">
-    <AppHeader v-if="user" :user="user" @clear-user="clearUser" />
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-    <NetworkTray />
+  <div class="safe-area-padding-top">
+    <div class="space-y-8">
+      <AppHeader v-if="user" :user="user" @clear-user="clearUser" />
+      <NuxtLayout> <NuxtPage /> </NuxtLayout>
+    </div>
+
+    <AppUserOverlay v-if="user" />
+    <AppNetworkTray />
   </div>
 </template>
 
@@ -26,6 +28,8 @@ const clearUser = async () => {
   clearRefresh()
   navigateTo('/access/login')
 }
+
+useKeyboard()
 
 // useServiceWorker() Promlematic at the moment, disable
 </script>
