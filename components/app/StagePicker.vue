@@ -4,6 +4,7 @@
       <option value="">Select a stage</option>
       <option v-for="stage in season.stages" :key="stage.id" :value="stage.id">Stage {{ stage.name }}</option>
     </select>
+    <button v-if="selectedStageId" @click="goToDetails" class="stroke-text">→</button>
   </div>
 </template>
 
@@ -11,15 +12,9 @@
 import { useRoute as useNativeRoute } from 'vue-router'
 const nativeRoute = useNativeRoute()
 
-const season = useState<any>('season')
-
 const selectedStageId = useState<any>('pickerStageId')
-if (!selectedStageId.value && nativeRoute.params.stid) {
-  console.log('Setting selectedStageId from route', nativeRoute.params.stid)
-  selectedStageId.value = nativeRoute.params.stid as string
-}
+if (!selectedStageId.value && nativeRoute.params.stid) selectedStageId.value = nativeRoute.params.stid as string
 
-// const selectedStage = computed(() => season.value?.stages?.find((stage: any) => stage.id === selectedStageId.value))
 const { data: stage, isLoading } = await usePopulatedStage(selectedStageId)
 useLoadingWatcher(isLoading, stage, '', {
   onDataChange: (value) => {
@@ -28,26 +23,8 @@ useLoadingWatcher(isLoading, stage, '', {
   },
 })
 
+const season = useState<any>('season')
+
 const change = (event: any) => navigateTo(event.target.value ? `/stage/${event.target.value}` : '/stage')
-
-/*
-
-import { useRoute as useNativeRoute } from 'vue-router'
-const nativeRoute = useNativeRoute()
-
-const selectedSeasonId = useState<any>('pickerSeasonId')
-if (!selectedSeasonId.value && nativeRoute.params.sid) selectedSeasonId.value = nativeRoute.params.sid as string
-
-const { data: seasons } = usePSWatch<any>('SELECT * FROM "calendar_seasons" ORDER BY name ASC', [], { abortController: new AbortController() })
-const { data: subscriptions } = usePSWatch<any>('SELECT * FROM "account_subscriptions"', [], { abortController: new AbortController() })
-const { data: season, isLoading } = await useSeasonWithStages(selectedSeasonId)
-
-useLoadingWatcher(isLoading, season, '', {
-  onDataChange: (value) => (useState<any>('season').value = value),
-})
-
-const change = (event: any) => navigateTo(event.target.value ? `/season/${event.target.value}` : '/season')
-const activeUserSubscriptionSeasons = computed(() => subscriptions.value.filter((sb: any) => sb.status === 'active').map((sb) => sb._season))
-
-*/
+const goToDetails = () => navigateTo(`/stage/${selectedStageId.value}`)
 </script>
