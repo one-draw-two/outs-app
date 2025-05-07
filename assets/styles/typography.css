@@ -28,6 +28,11 @@ h1 {
   @apply font-noto font-[900];
 }
 
+.stroke-text {
+  @apply italic font-[900] text-[white];
+  text-shadow: -0.6px -0.6px 0 #000, 0.6px -0.6px 0 #000, -0.6px 0.6px 0 #000, 0.6px 0.6px 0 #000;
+}
+
 .text-stroke {
   text-shadow: -0.6px -0.6px 0 #000, 0.6px -0.6px 0 #000, -0.6px 0.6px 0 #000, 0.6px 0.6px 0 #000;
 }

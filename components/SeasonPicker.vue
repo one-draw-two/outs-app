@@ -1,8 +1,8 @@
 <template>
-  <div class="w-48 h-12 rounded-md flex-center bg-repeat-x bg-[length:512px_auto]" :style="{ backgroundImage: season?.blueprint?.bgUrl ? `url(${getSanityUrl(season.blueprint?.bgUrl)})` : 'none' }">
-    <select v-model="selectedSeason" @change="change">
+  <div class="w-48 h-12 rounded-xl flex-center bg-repeat-x bg-[length:256px_auto]" :style="{ backgroundImage: season?.blueprint?.bgUrl ? `url(${getSanityUrl(season.blueprint?.bgUrl)})` : 'none' }">
+    <select v-model="selectedSeason" @change="change" class="stroke-text">
       <option value="">Select a season</option>
-      <option v-for="season of seasons" :value="season.id" :disabled="false && !activeUserSubscriptionSeasons?.includes(season.id)">{{ season.name }}</option>
+      <option v-for="season of seasons" :value="season.id" :disabled="false && !activeUserSubscriptionSeasons?.includes(season.id)">Season {{ season.name }}</option>
     </select>
   </div>
 </template>
@@ -15,8 +15,11 @@ const { data: seasons, isLoading: ilse } = usePSWatch<any>('SELECT * FROM "calen
 const { data: subscriptions, isLoading: ilsb } = usePSWatch<any>('SELECT * FROM "account_subscriptions"', [], { abortController: new AbortController() })
 
 const selectedSeason = useState<any>('pickerSeasonId')
-const { data: season, isLoading } = await useSeasonWithStages((nativeRoute.params.sid as string) || useState<any>('pickerSeasonId')) // This is what im trying to make so that it watches the useState<any>('pickerSeasonId')
-useLoadingWatcher(isLoading, season, 'Season fully populated', {
+if (!selectedSeason.value && nativeRoute.params.sid) selectedSeason.value = nativeRoute.params.sid as string
+
+const { data: season, isLoading } = await useSeasonWithStages(selectedSeason)
+
+useLoadingWatcher(isLoading, season, '', {
   onDataChange: (value) => (useState<any>('season').value = value),
 })
 

@@ -2,7 +2,7 @@
   <div>
     <div v-if="season?.blueprint" class="h-48 bg-repeat-x bg-[length:512px_auto]" :style="{ backgroundImage: season?.blueprint?.bgUrl ? `url(${getSanityUrl(season.blueprint?.bgUrl)})` : 'none' }">
       <div class="main-container flex justify-between items-center h-full">
-        <h1 class="text-5xl italic font-[900] text-white text-stroke">Season {{ season?.name }}</h1>
+        <h1 class="text-5xl stroke-text">Season {{ season?.name }}</h1>
       </div>
     </div>
 

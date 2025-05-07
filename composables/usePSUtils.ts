@@ -164,7 +164,7 @@ export function usePSWatch<T extends WithPSChange>(
 export const useLoadingWatcher = <T>(
   isLoading: Ref<boolean>,
   data: Ref<T>,
-  label: string = 'Data',
+  label?: string,
   options?: {
     changeInfo?: Ref<ChangeInfo<any> | null>
     onChangeCallback?: (info: ChangeInfo<any>) => void
@@ -172,7 +172,7 @@ export const useLoadingWatcher = <T>(
   }
 ) => {
   watchEffect(() => {
-    console.log(label, data.value)
+    if (label) console.log(label, data.value)
 
     // Call the data change callback when data changes
     if (options?.onDataChange && data.value) {
