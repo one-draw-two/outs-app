@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@source inline("bg-{red,blue,green,yellow,purple,pink,indigo,gray,orange,teal,cyan,lime,amber,emerald,fuchsia,rose,sky,violet,stone,neutral,zinc,slate}-500");
+
 body::-webkit-scrollbar {
   display: none;
 }

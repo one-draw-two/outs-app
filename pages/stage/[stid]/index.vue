@@ -12,8 +12,9 @@
   </main>
 </template>
 <script setup lang="ts">
+import type { _P_Stage } from '~/types'
 definePageMeta({ layout: 'stage' })
-const { stage, isLoading } = inject(stageKey)!
+const stage = useState<_P_Stage>('stage')
 const pageTitle = computed(() => stage.value?.name)
 useHead({ title: pageTitle })
 

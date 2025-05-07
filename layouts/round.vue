@@ -31,6 +31,7 @@ const { data: round, isLoading } = await usePopulatedRound(nativeRoute.params.ri
 useLoadingWatcher(isLoading, round, 'Round fully populated')
 
 useState<any>('pickerSeasonId').value = round.value?._season
+useState<any>('pickerStageId').value = round.value?._stage?.id
 
 provide(roundKey, { round, isLoading })
 </script>

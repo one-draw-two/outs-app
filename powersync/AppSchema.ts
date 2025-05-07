@@ -41,6 +41,7 @@ const calendar_stages = new Table(
   {
     name: column.text,
     status: column.text,
+    color: column.text,
     _season: column.text,
     sePI: column.integer,
   },

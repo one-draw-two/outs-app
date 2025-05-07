@@ -23,10 +23,14 @@ export const useSeasonWithStages = async (seasonId: Ref<string> | string) => {
   })
 }
 
-export const usePopulatedStage = async (stageId: string) => {
-  const stageQuery = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE id = ?', [stageId], { detectChanges: true })
-  const roundsQuery = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE _stage = ? ORDER BY sePI ASC', [stageId], { detectChanges: true })
-  const { processedGroups } = await useGroupsWithUsers(`%"_refId":"${stageId}"%`, [])
+export const usePopulatedStage = async (stageId: Ref<string> | string) => {
+  const isReactiveId = isRef(stageId)
+  const stageIdRef = isReactiveId ? stageId : computed(() => stageId)
+
+  const stageQuery = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE id = ?', [stageIdRef.value], { detectChanges: true, watchSource: stageIdRef })
+  const roundsQuery = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE _stage = ? ORDER BY sePI ASC', [stageIdRef.value], { detectChanges: true, watchSource: stageIdRef })
+
+  const { processedGroups } = await useGroupsWithUsers(`%"_refId":"${stageIdRef.value}"%`, [], { watchSource: stageIdRef })
 
   return usePSQueryWatcher<_P_Stage>([stageQuery, roundsQuery], (stage) => {
     stage.value = {
@@ -172,8 +176,11 @@ export const usePopulatedBet = async (options: { challengeId?: string; roundId?:
   })
 }
 
-export const useGroupsWithUsers = async (filter: string, filterParams: any[]) => {
-  const groupsQuery = usePSWatch<_Table>('SELECT * FROM "group_tables" WHERE _link LIKE ?', [filter], { detectChanges: true })
+export const useGroupsWithUsers = async (filter: string, filterParams: any[], options?: { watchSource?: Ref<any> | ComputedRef<any> }) => {
+  const groupsQuery = usePSWatch<_Table>('SELECT * FROM "group_tables" WHERE _link LIKE ?', [filter], {
+    detectChanges: true,
+    watchSource: options?.watchSource,
+  })
   await groupsQuery.await()
 
   const userIds = groupsQuery.data.value
@@ -181,7 +188,13 @@ export const useGroupsWithUsers = async (filter: string, filterParams: any[]) =>
     .map((row) => row._user)
     .filter(Boolean)
 
-  const usersQuery = userIds.length > 0 ? usePSWatch<any>(`SELECT * FROM "account_users" WHERE id IN (${userIds.map(() => '?').join(',')})`, userIds) : { data: { value: [] }, await: async () => {} }
+  const usersQuery =
+    userIds.length > 0
+      ? usePSWatch<any>(`SELECT * FROM "account_users" WHERE id IN (${userIds.map(() => '?').join(',')})`, userIds, {
+          watchSource: options?.watchSource,
+        })
+      : { data: { value: [] }, await: async () => {} }
+
   await usersQuery.await()
   const userMap = Object.fromEntries(usersQuery.data.value.map((user) => [user.id, user]))
 
