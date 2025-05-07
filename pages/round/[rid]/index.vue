@@ -25,7 +25,7 @@ import type { _RealFixture } from '~/types'
 
 definePageMeta({ layout: 'round' })
 const { round, isLoading } = inject(roundKey)!
-useHead({ title: `${round.value?.name} | Matches` })
+useHead({ title: `${round.value?.name}` })
 
 const route = useRoute()
 const $day = useNuxtApp().vueApp.config.globalProperties.$day

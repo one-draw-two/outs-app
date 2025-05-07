@@ -9,7 +9,7 @@ body::-webkit-scrollbar {
 }
 
 .main-container {
-  @apply container mx-auto px-4;
+  @apply container mx-auto px-8;
 }
 
 .flex-center {
