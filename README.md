@@ -1,4 +1,4 @@
-# Outs-Nuxt
+# Outs-App
 
 ## Notes:
 
