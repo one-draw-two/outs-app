@@ -33,6 +33,7 @@ const calendar_seasons = new Table(
     status: column.text,
     _bpSeason: column.text,
     _currentRound: column.text,
+    bgUrl: column.text,
   },
   { indexes: {} }
 )
