@@ -1,6 +1,16 @@
 <template>
   <main class="main-container space-y-8">
     <h1>{{ stage?.name }}</h1>
+    <div>
+      <NuxtLink v-for="round in stage?.rounds" :to="useSL(`round/${round.id}`)" class="flex gap-8" :class="round.status === 'current' ? 'bg-green-500' : ''">
+        <div class="font-mono">
+          {{ round.name }}
+        </div>
+        <div>
+          {{ round.status }}
+        </div>
+      </NuxtLink>
+    </div>
     <div class="flex gap-8">
       <div v-for="group of processedGroups" class="flex-1">
         <h2>{{ group.name }}</h2>

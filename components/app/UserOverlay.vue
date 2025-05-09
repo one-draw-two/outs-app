@@ -13,6 +13,7 @@
           <ClearButton />
           <LogoutButton @clear-user="clearUser" />
         </div>
+        <NuxtLink to="/admin" class="text-blue-500 hover:underline">Admin</NuxtLink>
       </div>
     </aside>
   </Transition>

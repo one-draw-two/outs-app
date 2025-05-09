@@ -32,6 +32,6 @@ useLoadingWatcher(isLoading, season, '', {
 
 const activeUserSubscriptionSeasons = computed(() => subscriptions.value.filter((sb: any) => sb.status === 'active').map((sb) => sb._season))
 
-const change = (event: any) => navigateTo(event.target.value ? `/season/${event.target.value}` : '/season')
-const goToDetails = () => navigateTo(`/season/${selectedSeasonId.value}`)
+const change = (event: any) => navigateTo(event.target.value ? useSL(`season/${event.target.value}`) : useSL(''))
+const goToDetails = () => navigateTo(useSL(`season/${selectedSeasonId.value}`))
 </script>

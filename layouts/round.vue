@@ -13,13 +13,10 @@
     <div class="main-container flex gap-8">
       <div class="flex-1 space-y-8">
         <div class="flex gap-8">
-          <!-- 
-                    <NuxtLink :to="`${$route.path}`"><h2>Overview</h2></NuxtLink>
-          -->
-
-          <NuxtLink :to="`${$route.path}/matches`"><h2>Matches</h2></NuxtLink>
-          <NuxtLink :to="`${$route.path}/challenges`"><h2>Challenges</h2></NuxtLink>
-          <NuxtLink :to="`${$route.path}/fixtures`"><h2>Fixtures</h2></NuxtLink>
+          <NuxtLink :to="useSL(`round/${round?.id}`)"><h2>Overview</h2></NuxtLink>
+          <NuxtLink :to="useSL(`round/${round?.id}/matches`)"><h2>Matches</h2></NuxtLink>
+          <NuxtLink :to="useSL(`round/${round?.id}/challenges`)"><h2>Challenges</h2></NuxtLink>
+          <NuxtLink :to="useSL(`round/${round?.id}/fixtures`)"><h2>Fixtures</h2></NuxtLink>
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@
       <h3 class="font-mono font-bold bg-gray-50">{{ dateGroup.dateLabel }}</h3>
       <div>
         <div v-for="(rf, rfi) in dateGroup.realFixtures" :key="rf?.id" class="lg:flex items-center py-4 hover:bg-gray-100">
-          <NuxtLink :to="`/round/${route.params.rid}/match/${rf?.id}`" class="block flex-1">
+          <NuxtLink :to="useSL(`round/${route.params.rid}/match/${rf?.id}`)" class="block flex-1">
             <div class="grid grid-cols-[2rem_4rem_3rem_1fr_3rem] gap-4">
               <div class="font-mono">{{ (rf.$index + 1).toString().padStart(2, '0') }}</div>
               <div class="font-mono">{{ $day(rf?.startingAt).format('HH:mm') }}</div>

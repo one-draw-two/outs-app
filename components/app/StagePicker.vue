@@ -25,6 +25,6 @@ useLoadingWatcher(isLoading, stage, '', {
 
 const season = useState<any>('season')
 
-const change = (event: any) => navigateTo(event.target.value ? `/stage/${event.target.value}` : '/stage')
-const goToDetails = () => navigateTo(`/stage/${selectedStageId.value}`)
+const change = (event: any) => navigateTo(event.target.value ? useSL(`stage/${event.target.value}`) : useSL(`season/${useState<any>('stage').value?._season}`))
+const goToDetails = () => navigateTo(useSL(`stage/${selectedStageId.value}`))
 </script>

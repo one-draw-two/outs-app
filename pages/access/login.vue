@@ -15,12 +15,6 @@
 
       <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors">Login</button>
     </form>
-
-    <div class="text-center">
-      <NuxtLink to="/season" class="text-blue-500 hover:underline">Season</NuxtLink>
-      <span class="mx-2">|</span>
-      <NuxtLink to="/admin" class="text-blue-500 hover:underline">Admin</NuxtLink>
-    </div>
   </main>
 </template>
 <script setup lang="ts">
