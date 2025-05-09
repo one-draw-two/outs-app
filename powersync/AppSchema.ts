@@ -21,6 +21,7 @@ const account_subscriptions = new Table(
 const blueprint_seasons = new Table(
   {
     name: column.text,
+    shortName: column.text,
     status: column.text,
     bgUrl: column.text,
   },

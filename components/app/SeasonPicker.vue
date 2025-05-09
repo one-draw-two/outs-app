@@ -2,7 +2,7 @@
   <div
     class="px-4 w-48 h-12 rounded-xl flex items-center gap-2"
     :class="season?.id ? 'bg-repeat-x bg-[length:256px_auto]' : 'bg-gray-300'"
-    :style="season?.blueprint?.bgUrl ? { backgroundImage: `url(${getSanityUrl(season.blueprint.bgUrl)})` } : {}"
+    :style="season?.bgUrl ? { backgroundImage: `url(${getSanityUrl(season.bgUrl)})` } : {}"
   >
     <select v-model="selectedSeasonId" @change="change" class="stroke-text !not-italic w-full min-w-0 truncate">
       <option class="truncate" value="">Select a season</option>

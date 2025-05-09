@@ -4,6 +4,8 @@
   "exclude": [
     "android",
     "ios",
-    "_unused"
+    "_unused",
+    "node_modules",
+    "dist",
   ]
 }

@@ -1,5 +1,17 @@
 import type { WithPSChange } from '~/composables/usePSUtils'
-import type { BetRecord, SeasonRecord, StageRecord, RoundRecord, ChallengeRecord, RealFixtureRecord, RealTeamRecord, RealPlayerRecord, RealEventRecord, TableRecord } from '~/powersync/AppSchema'
+import type {
+  BetRecord,
+  SeasonRecord,
+  StageRecord,
+  RoundRecord,
+  ChallengeRecord,
+  RealFixtureRecord,
+  RealTeamRecord,
+  RealPlayerRecord,
+  RealEventRecord,
+  TableRecord,
+  BPSeasonRecord,
+} from '~/powersync/AppSchema'
 
 interface Base {
   id: string
@@ -26,6 +38,7 @@ export type _RealFixture = RealFixtureRecord & WithPSChange
 export type _RealTeam = RealTeamRecord & WithPSChange
 export type _RealPlayer = RealPlayerRecord & WithPSChange
 export type _RealEvent = RealEventRecord & WithPSChange
+export type _BPSeasonRecord = BPSeasonRecord & WithPSChange
 
 export interface _P_RealFixture extends Omit<_RealFixture, '_homeTeam' | '_awayTeam'> {
   _homeTeam: _RealTeam | undefined
