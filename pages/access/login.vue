@@ -31,6 +31,6 @@ const handleLogin = async () => {
   const password = formData.get('password') as string
 
   const res = await useSecureFetch('login', 'auth', 'post', { email, password })
-  if (res.success) useInitUser(res, '/', true)
+  if (res.success) useInitUser(res, useSL(''), true)
 }
 </script>

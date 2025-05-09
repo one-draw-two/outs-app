@@ -61,3 +61,4 @@
 - Wip: Also adding a stage picker (at the header), but the routing / latest data doesnt work as good as expected yet: 507.05kb
 - Wip: Major refactroing in routing, pre moving to a generic entry route [eid] under seasons: 509.07kb
 - Wip: [eid] idea dropped, now continuing with Nuxt pages/routing but not nested calendar entities, need to fix pickers: 508.22kb
+- Pre: Dismantling usePSQueries largely to fix reactivity in places where i need: 50853kb

@@ -7,7 +7,7 @@
     </div>
     <main class="main-container py-8 space-y-4">
       <h1>All avaliable seasons</h1>
-      <NuxtLink class="block" v-for="season of seasons" :to="useSL(`season/${season.id}`)">{{ season.id }} / {{ season.name }}</NuxtLink>
+      <NuxtLink class="block" v-for="season of seasons" :to="useSL(`campaign/${season.id}`)">{{ season.id }} / {{ season.name }}</NuxtLink>
     </main>
   </div>
 </template>

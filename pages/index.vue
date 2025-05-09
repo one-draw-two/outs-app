@@ -13,7 +13,7 @@ definePageMeta({
 
       if (mostRecentSubscription) {
         useState<Boolean>('subscriptionsLoaded').value = true
-        return navigateTo(`/season/${useRuntimeConfig().public.cBPSsn}/season/${mostRecentSubscription?._season}`, { replace: true })
+        return navigateTo(`/season/${useRuntimeConfig().public.cBPSsn}/campaign/${mostRecentSubscription?._season}`, { replace: true })
       }
     },
   ],

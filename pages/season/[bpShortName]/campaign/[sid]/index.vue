@@ -33,6 +33,19 @@
 <script setup lang="ts">
 import type { _P_Season } from '~/types'
 const season = useState<_P_Season>('season')
+
+if (!season.value?.id) {
+  console.log('LOADING SEASON FROM ROUTE')
+
+  const { data: seasonToUpdate, isLoading } = await useSeasonWithStages(useRoute().params.sid as string)
+  useLoadingWatcher(isLoading, seasonToUpdate, '', {
+    onDataChange: (value) => {
+      useState<any>('season').value = value
+      if (value?.id) useState<any>('pickerSeasonId').value = value.id
+    },
+  })
+}
+
 const pageTitle = computed(() => `Season ${season.value?.name}`)
 useHead({ title: pageTitle })
 </script>

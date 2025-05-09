@@ -178,8 +178,6 @@ export const usePopulatedBet = async (options: { challengeId?: string; roundId?:
 }
 
 export const useGroupsWithUsers = async (filter: string, filterParams: any[], options?: { watchSource?: Ref<any> | ComputedRef<any> }) => {
-  console.log('useGroupsWithUsers', filter)
-
   const groupsQuery = usePSWatch<_Table>('SELECT * FROM "group_tables" WHERE _link LIKE ?', [filter], {
     detectChanges: true,
     watchSource: options?.watchSource,
