@@ -30,13 +30,14 @@ export const usePopulatedStage = async (stageId: Ref<string> | string) => {
   const stageQuery = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE id = ?', [stageIdRef.value], { detectChanges: true, watchSource: stageIdRef })
   const roundsQuery = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE _stage = ? ORDER BY sePI ASC', [stageIdRef.value], { detectChanges: true, watchSource: stageIdRef })
 
-  const { processedGroups } = await useGroupsWithUsers(`%"_refId":"${stageIdRef.value}"%`, [], { watchSource: stageIdRef })
+  // const { processedGroups } = await useGroupsWithUsers(`%"_refId":"${stageIdRef.value}"%`, [], { watchSource: stageIdRef })
 
   return usePSQueryWatcher<_P_Stage>([stageQuery, roundsQuery], (stage) => {
     stage.value = {
       ...stageQuery.data.value[0],
       rounds: roundsQuery.data.value,
-      groups: processedGroups,
+      groups: [], // processedGroups,
+      // groups: processedGroups,
     }
   })
 }
@@ -177,6 +178,8 @@ export const usePopulatedBet = async (options: { challengeId?: string; roundId?:
 }
 
 export const useGroupsWithUsers = async (filter: string, filterParams: any[], options?: { watchSource?: Ref<any> | ComputedRef<any> }) => {
+  console.log('useGroupsWithUsers', filter)
+
   const groupsQuery = usePSWatch<_Table>('SELECT * FROM "group_tables" WHERE _link LIKE ?', [filter], {
     detectChanges: true,
     watchSource: options?.watchSource,
