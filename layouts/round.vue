@@ -32,7 +32,7 @@ import { useRoute as useNativeRoute } from 'vue-router'
 const nativeRoute = useNativeRoute()
 
 const { data: round, isLoading } = await usePopulatedRound(nativeRoute.params.rid as string)
-useLoadingWatcher(isLoading, round, 'Round fully populated')
+useLoadingWatcher(round, 'Round fully populated')
 
 useState<any>('pickerSeasonId').value = round.value?._season
 useState<any>('pickerStageId').value = round.value?._stage?.id

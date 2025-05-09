@@ -31,20 +31,14 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_Season } from '~/types'
-const season = useState<_P_Season>('season')
+import type { _Season, _Stage, _Round } from '~/types'
 
-if (!season.value?.id) {
-  console.log('LOADING SEASON FROM ROUTE')
+const sid = useRoute().params.sid
+const { data: seasons } = usePSWatch<_Season>('SELECT * FROM "calendar_seasons" WHERE id = ?', [sid])
+const { data: stages } = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE _season = ? ORDER BY sePI ASC', [sid])
+const { data: rounds } = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE _season = ? ORDER BY sePI ASC', [sid])
 
-  const { data: seasonToUpdate, isLoading } = await useSeasonWithStages(useRoute().params.sid as string)
-  useLoadingWatcher(isLoading, seasonToUpdate, '', {
-    onDataChange: (value) => {
-      useState<any>('season').value = value
-      if (value?.id) useState<any>('pickerSeasonId').value = value.id
-    },
-  })
-}
+const season = computed(() => ({ ...seasons.value[0], stages: stages.value?.map((stage) => ({ ...stage, rounds: rounds.value?.filter((round) => round._stage === stage.id) || [] })) || [] }))
 
 const pageTitle = computed(() => `Season ${season.value?.name}`)
 useHead({ title: pageTitle })

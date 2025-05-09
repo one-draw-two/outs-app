@@ -162,20 +162,19 @@ export function usePSWatch<T extends WithPSChange>(
 }
 
 export const useLoadingWatcher = <T>(
-  isLoading: Ref<boolean>,
   data: Ref<T>,
   label?: string,
   options?: {
     changeInfo?: Ref<ChangeInfo<any> | null>
     onChangeCallback?: (info: ChangeInfo<any>) => void
     onDataChange?: (value: T) => void // Add generic data change callback
+    skipEmptyArrays?: boolean
   }
 ) => {
   watchEffect(() => {
     if (label) console.log(label, data.value)
-
-    // Call the data change callback when data changes
     if (options?.onDataChange && data.value) {
+      if (options.skipEmptyArrays && Array.isArray(data.value) && data.value.length === 0) return
       options.onDataChange(data.value)
     }
   })

@@ -9,21 +9,29 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute as useNativeRoute } from 'vue-router'
-const nativeRoute = useNativeRoute()
-
-const selectedStageId = useState<any>('pickerStageId')
-if (!selectedStageId.value && nativeRoute.params.stid) selectedStageId.value = nativeRoute.params.stid as string
-
-const { data: stage, isLoading } = await usePopulatedStage(selectedStageId)
-useLoadingWatcher(isLoading, stage, '', {
-  onDataChange: (value) => {
-    useState<any>('stage').value = value
-    useState<any>('pickerSeasonId').value = stage.value?._season
-  },
-})
+import type { _Stage } from '~/types'
 
 const season = useState<any>('season')
+const stage = useState<any>('stage')
+const selectedStageId = useState<any>('pickerStageId')
+
+if (!selectedStageId.value) selectedStageId.value = useRoute().params.stid
+
+watch(
+  selectedStageId,
+  async (to) => {
+    if (!to || stage.value?.id === to) return
+    const { data: stages } = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE id = ?', [to])
+    watch(stages, (to) => {
+      if (!to || to.length === 0) return
+      const value = to[0]
+      useState<any>('stage').value = value
+      useState<any>('pickerStageId').value = value.id
+      useState<any>('pickerSeasonId').value = value._season
+    })
+  },
+  { immediate: true }
+)
 
 const change = (event: any) => navigateTo(event.target.value ? useSL(`stage/${event.target.value}`) : useSL(`campaign/${useState<any>('stage').value?._season}`))
 const goToDetails = () => navigateTo(useSL(`stage/${selectedStageId.value}`))

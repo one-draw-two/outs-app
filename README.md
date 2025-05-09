@@ -17,6 +17,13 @@
 - Monetization related:
   - https://developer.apple.com/app-store/small-business-program/
 
+- Previously there was an issue with not getting parameters in Nuxt layouts but its resolved with the latest architecture therefore these blocks have been removed:
+```
+import { useRoute as useNativeRoute } from 'vue-router'
+const nativeRoute = useNativeRoute()
+nativeRoute.params.stid // Then use like this
+```
+
 
 
 ## Bundle Logs
@@ -61,4 +68,5 @@
 - Wip: Also adding a stage picker (at the header), but the routing / latest data doesnt work as good as expected yet: 507.05kb
 - Wip: Major refactroing in routing, pre moving to a generic entry route [eid] under seasons: 509.07kb
 - Wip: [eid] idea dropped, now continuing with Nuxt pages/routing but not nested calendar entities, need to fix pickers: 508.22kb
-- Pre: Dismantling usePSQueries largely to fix reactivity in places where i need: 50853kb
+- Pre: Dismantling usePSQueries largely to fix reactivity in places where i need: 508.53kb
+- Wip: Ditching psQuery composables and now using more granular queries directly where i need them, this optimises performance and reduces errors: 508.45kb

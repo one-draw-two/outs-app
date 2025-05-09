@@ -8,12 +8,18 @@ definePageMeta({
       if (useState<Boolean>('subscriptionsLoaded').value) return
 
       const { $db }: any = useNuxtApp()
-      const subscriptions = await $db.execute('SELECT * FROM "account_subscriptions" ORDER BY "_updatedAt" DESC', [])
-      const mostRecentSubscription = subscriptions?.rows?._array?.[0]
+      const subscriptionsQuery = await $db.execute('SELECT * FROM "account_subscriptions" ORDER BY "_updatedAt" DESC', [])
+      const mostRecentSubscription = subscriptionsQuery?.rows?._array?.[0]
 
       if (mostRecentSubscription) {
         useState<Boolean>('subscriptionsLoaded').value = true
-        return navigateTo(`/season/${useRuntimeConfig().public.cBPSsn}/campaign/${mostRecentSubscription?._season}`, { replace: true })
+
+        const seasonQuery = await $db.execute('SELECT * FROM "calendar_seasons" WHERE id = ?', [mostRecentSubscription._season])
+        const toBeRoutedSeason = seasonQuery?.rows?._array?.[0]
+
+        const destination = toBeRoutedSeason?._currentRound ? useSL(`round/${toBeRoutedSeason?._currentRound}`) : useSL(`campaign/${mostRecentSubscription?._season}`)
+
+        return navigateTo(destination, { replace: true })
       }
     },
   ],

@@ -2,7 +2,7 @@
   <main class="main-container space-y-8">
     <h1>Rounds</h1>
     <div>
-      <NuxtLink v-for="round in stage?.rounds" :to="useSL(`round/${round.id}`)" class="flex gap-8" :class="round.status === 'current' ? 'bg-green-500' : ''">
+      <NuxtLink v-for="round in rounds" :to="useSL(`round/${round.id}`)" class="flex gap-8" :class="round.status === 'current' ? 'bg-green-500' : ''">
         <div class="font-mono">
           {{ round.name }}
         </div>
@@ -23,12 +23,18 @@
   </main>
 </template>
 <script setup lang="ts">
-import type { _P_Stage } from '~/types'
+import type { _Stage, _Round } from '~/types'
 
-const stage = useState<_P_Stage>('stage')
+const stid = useRoute().params.stid
+const { data: stages } = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE id = ?', [stid], { detectChanges: true })
+const { data: rounds } = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE _stage = ? ORDER BY sePI ASC', [stid], { detectChanges: true })
+
+const stage = computed(() => stages.value[0])
+
+const { processedGroups } = await useGroupsWithUsers(`%"_refId":"${useRoute().params.stid}"%`, [])
+
 const pageTitle = computed(() => stage.value?.name)
 useHead({ title: pageTitle })
 
-const { processedGroups } = await useGroupsWithUsers(`%"_refId":"${useRoute().params.stid}"%`, [])
 // useState<any>('powerSyncParams').value = { selected_stid: stage.value?.id }
 </script>
