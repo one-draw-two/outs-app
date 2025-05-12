@@ -14,9 +14,9 @@
               <div v-highlight="rf">{{ rf?.result }}</div>
             </div>
             <div>
-              <div v-for="challenge of rf?.$challenges" class="flex justify-between">
-                <div class="font-mono text-sm inline">{{ `${challenge.id} / ${challenge.name} / ${challenge.type}` }}</div>
-                <div class="font-mono text-sm inline">{{ challenge.$userBet }}</div>
+              <div v-for="$challenge of rf?.$challenges" class="flex justify-between">
+                <div class="font-mono text-sm inline">{{ `${$challenge.id} / ${$challenge.name} / ${$challenge.type}` }}</div>
+                <div class="font-mono text-sm inline" :class="$challenge.$userBet?.potentialPoints ? '' : 'text-gray-200'">{{ $challenge.$userBet?.bet }}</div>
               </div>
             </div>
           </NuxtLink>
@@ -30,43 +30,13 @@
 import type { _RealFixture } from '~/types'
 
 definePageMeta({ layout: 'round' })
-const { round, bets } = inject(roundKey)!
+const { round } = inject(roundKey)!
 useHead({ title: `${round.value?.name} | Matches` })
 
 const route = useRoute()
 const $day = useNuxtApp().vueApp.config.globalProperties.$day
 
-const realFixtures = computed(() =>
-  round.value?.snapshots
-    .map((s: any) => s._realFixture)
-    .sort((a: any, b: any) => new Date(a.startingAt).getTime() - new Date(b.startingAt).getTime())
-    .map((f: any, index: number) => {
-      const fixtureId = f.id
-
-      // Get challenges for this fixture and add bet info
-      const challengesWithBets = round.value?.challenges
-        .filter((challenge: any) => challenge.fixtureSlots?.some((slot: any) => slot._realFixture === fixtureId))
-        .map((challenge: any) => {
-          const userBet = bets.value?.find((bet: any) => bet._challenge === challenge.id)
-
-          const betSlot = userBet?.betFixtureSlots?.find((slot: any) => slot._realFixture === fixtureId)
-
-          return {
-            ...challenge,
-            $userBet: betSlot?.bet || null,
-            // $points: betSlot?.potentialPoints || null
-          }
-        })
-
-      return {
-        ...f,
-        $index: index,
-        $challenges: challengesWithBets,
-      }
-    })
-)
-
-wecl(bets)
+const realFixtures = computed(() => round.value?.snapshots?.map((s: any) => s._realFixture).filter(Boolean))
 
 const groupedRealFixtures = computed(() => {
   if (!realFixtures.value?.length) return []

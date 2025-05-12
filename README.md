@@ -70,4 +70,4 @@ nativeRoute.params.stid // Then use like this
 - Wip: [eid] idea dropped, now continuing with Nuxt pages/routing but not nested calendar entities, need to fix pickers: 508.22kb
 - Pre: Dismantling usePSQueries largely to fix reactivity in places where i need: 508.53kb
 - Wip: Ditching psQuery composables and now using more granular queries directly where i need them, this optimises performance and reduces errors: 508.45kb
-- Wip: Improving round routes data fetching: 508.83kb
+- Wip: Improving round routes data fetching: 508.83kb, then further refactoring and fixes: 508.88kb

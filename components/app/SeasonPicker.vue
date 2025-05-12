@@ -20,20 +20,7 @@ const selectedSeasonId = useState<any>('pickerSeasonId')
 
 if (!selectedSeasonId.value) selectedSeasonId.value = useRoute().params.sid
 
-watch(
-  selectedSeasonId,
-  async (to) => {
-    if (!to || season.value?.id === to) return
-
-    const seasonsQuery = usePSWatch<_Season>('SELECT * FROM "calendar_seasons" WHERE id = ?', [to])
-    const stagesQuery = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE _season = ? ORDER BY sePI ASC', [to])
-
-    await Promise.all([seasonsQuery.await(), stagesQuery.await()])
-
-    useState<any>('season').value = { ...seasonsQuery.data.value[0], stages: stagesQuery.data.value.map((stage) => ({ ...stage })) }
-  },
-  { immediate: true }
-)
+watch(selectedSeasonId, async (to) => !to || season.value?.id === to || (useState<any>('season').value = (await usePopulatedSeason(to)).data.value), { immediate: true })
 
 const { data: seasons } = usePSWatch<any>('SELECT * FROM "calendar_seasons" ORDER BY name ASC', [], { abortController: new AbortController() })
 const { data: subscriptions } = usePSWatch<any>('SELECT * FROM "account_subscriptions"', [], { abortController: new AbortController() })

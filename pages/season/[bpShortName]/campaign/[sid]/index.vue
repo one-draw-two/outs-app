@@ -32,14 +32,8 @@
 
 <script setup lang="ts">
 import type { _Season, _Stage, _Round } from '~/types'
-
-const sid = useRoute().params.sid
-const { data: seasons } = usePSWatch<_Season>('SELECT * FROM "calendar_seasons" WHERE id = ?', [sid])
-const { data: stages } = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE _season = ? ORDER BY sePI ASC', [sid])
-const { data: rounds } = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE _season = ? ORDER BY sePI ASC', [sid])
-
-const season = computed(() => ({ ...seasons.value[0], stages: stages.value?.map((stage) => ({ ...stage, rounds: rounds.value?.filter((round) => round._stage === stage.id) || [] })) || [] }))
-
+const season = useState<any>('season')
+watch(toRef(useRoute().params.sid as string), async (to) => !to || season.value?.id === to || (useState<any>('season').value = (await usePopulatedSeason(to)).data.value), { immediate: true })
 const pageTitle = computed(() => `Season ${season.value?.name}`)
 useHead({ title: pageTitle })
 </script>

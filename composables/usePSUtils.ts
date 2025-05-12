@@ -161,6 +161,25 @@ export function usePSWatch<T extends WithPSChange>(
   }
 }
 
+export function usePSQueryWatcher<T>(queries: { data: Ref<any>; isLoading?: Ref<boolean> }[], callback: (data: Ref<UnwrapRef<T> | null>) => void) {
+  const isLoading = ref(true)
+  const data = ref<UnwrapRef<T> | null>(null)
+
+  watchEffect(() => {
+    const allQueriesPopulated = queries.every((q) => q.data.value)
+
+    if (allQueriesPopulated) {
+      callback(data as Ref<UnwrapRef<T> | null>)
+      isLoading.value = false
+    } else {
+      isLoading.value = true
+    }
+  })
+
+  return { data, isLoading }
+}
+
+/*
 export const useLoadingWatcher = <T>(
   data: Ref<T>,
   label?: string,
@@ -188,21 +207,4 @@ export const useLoadingWatcher = <T>(
     })
   }
 }
-
-export function usePSQueryWatcher<T>(queries: { data: Ref<any>; isLoading?: Ref<boolean> }[], callback: (data: Ref<UnwrapRef<T> | null>) => void) {
-  const isLoading = ref(true)
-  const data = ref<UnwrapRef<T> | null>(null)
-
-  watchEffect(() => {
-    const allQueriesPopulated = queries.every((q) => q.data.value)
-
-    if (allQueriesPopulated) {
-      callback(data as Ref<UnwrapRef<T> | null>)
-      isLoading.value = false
-    } else {
-      isLoading.value = true
-    }
-  })
-
-  return { data, isLoading }
-}
+*/

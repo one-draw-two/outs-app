@@ -46,19 +46,52 @@ export interface _P_RealFixture extends Omit<_RealFixture, '_homeTeam' | '_awayT
   _events?: _RealEvent[]
 }
 
-export interface _P_Challenge extends Omit<_Challenge, 'fixtureSlots'> {
-  fixtureSlots: {
-    _realFixture: _P_RealFixture
-    slotIndex: number
-  }[]
+// Add these type definitions for fixture slots
+export interface FixtureSlot {
+  _realFixture: string
+  slotIndex: number
+  totalPoints?: number
+  pointsMatrix?: any[]
+  isBetPointsDistributedOnce?: number
+  [key: string]: any
 }
 
+export interface BetFixtureSlot {
+  _realFixture?: string
+  slotIndex: number
+  bet?: string
+  potentialPoints?: number[]
+  correctPointIndex?: number
+  [key: string]: any
+}
+
+// Update your existing _P_Challenge interface
+export interface _P_Challenge extends Omit<_Challenge, 'fixtureSlots'> {
+  fixtureSlots: FixtureSlot[]
+}
+
+// Update your _P_Bet interface
 export interface _P_Bet extends Omit<_Bet, 'betFixtureSlots'> {
-  betFixtureSlots: {
-    _realFixture: string
-    slotIndex: number
-    bet?: string
+  betFixtureSlots: BetFixtureSlot[]
+}
+
+// Add a type for the enhanced challenges with user bets
+export interface EnhancedChallenge extends _Challenge {
+  $userBet?: BetFixtureSlot
+  $points?: number[] | null
+  [key: string]: any
+}
+
+// export interface _P_Round extends Omit<_Round, '_stage'> {
+export interface _P_Round extends _Round {
+  // _stage: _Stage | null
+  challenges?: _P_Challenge[]
+  snapshots?: {
+    _realFixture?: EnhancedRealFixture | null
+    [key: string]: any
   }[]
+  groups?: _P_Table[]
+  userBets?: _P_Bet[]
 }
 
 export interface _P_Table extends Omit<_Table, 'rows'> {
@@ -78,10 +111,12 @@ export interface _P_Stage extends Omit<_Stage, 'rounds' | 'groups'> {
   groups: _P_Table[]
 }
 
-export interface _P_Round extends Omit<_Round, '_stage'> {
-  _stage: _Stage
+// Also ensure your EnhancedRealFixture allows for nullability
+export interface EnhancedRealFixture extends Partial<_RealFixture> {
+  $index?: number
+  $challenges?: EnhancedChallenge[]
+  [key: string]: any
 }
-
 // UTIL
 
 export type AuthResponseError = {

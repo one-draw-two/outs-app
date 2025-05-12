@@ -19,9 +19,5 @@ definePageMeta({ layout: 'round' })
 const { round } = inject(roundKey)!
 useHead({ title: `${round.value?.name} | Fixtures` })
 
-// await sleep(1000) // Wait for the round to be populated
-// const { data: roundWithDynamicGroups, isLoading: ilrdg } = await usePopulatedRound(round.value?.id)
-// useLoadingWatcher(roundWithDynamicGroups, 'Round fully populated')
-
 const { processedGroups: groups } = await useGroupsWithUsers({ _refId: useRoute().params.rid, _tournament: 'BTLEAG', 'meta.isFixture': true })
 </script>

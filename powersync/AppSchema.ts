@@ -28,11 +28,31 @@ const blueprint_seasons = new Table(
   { indexes: {} }
 )
 
+const blueprint_domains = new Table(
+  {
+    name: column.text,
+    challenges: column.text,
+    tournaments: column.text,
+  },
+  { indexes: {} }
+)
+
+const blueprint_tournaments = new Table(
+  {
+    name: column.text,
+    color: column.text,
+    scopeConfig: column.text,
+    snapshotConfig: column.text,
+  },
+  { indexes: {} }
+)
+
 const calendar_seasons = new Table(
   {
     name: column.text,
     status: column.text,
     _bpSeason: column.text,
+    _bpDomain: column.text,
     _currentRound: column.text,
     bgUrl: column.text,
   },
@@ -166,16 +186,24 @@ const real_events = new Table(
 )
 
 export const AppSchema = new Schema({
+  //
   account_users,
   account_subscriptions,
+  //
   blueprint_seasons,
+  blueprint_domains,
+  blueprint_tournaments,
+  //
   calendar_seasons,
   calendar_stages,
   calendar_rounds,
+  //
   entry_challenges,
   entry_bets,
+  //
   group_tables,
   group_snapshots,
+  //
   real_fixtures,
   real_teams,
   real_players,
@@ -188,6 +216,8 @@ export type UserRecord = Database['account_users']
 export type SubscriptionRecord = Database['account_subscriptions']
 
 export type BPSeasonRecord = Database['blueprint_seasons']
+export type BPDomainRecord = Database['blueprint_domains']
+export type BPTournamentRecord = Database['blueprint_tournaments']
 
 export type SeasonRecord = Database['calendar_seasons']
 export type StageRecord = Database['calendar_stages']

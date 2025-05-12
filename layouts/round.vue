@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-8">
-    <div :class="`bg-${round?._stage?.color}-500/50`">
+    <div :class="`bg-${stage?.color}-500/50`">
       <div class="h-12 main-container flex gap-8 items-center">
         <h1>Round {{ round?.name }}</h1>
         <div class="flex-1 flex justify-end gap-8">
@@ -29,22 +29,21 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_Bet } from '~/types'
-
 import { useRoute as useNativeRoute } from 'vue-router' // Necessary in layouts (Nuxt router limitation)
 
 const rid = useNativeRoute().params.rid as string
 
-const { data: round, isLoading } = await usePopulatedRound(rid as string)
-useLoadingWatcher(round, 'Round fully populated')
+const season = useState<any>('season') // Will use this in views to get tournament columns
+const stage = useState<any>('stage')
 
-const { data: bets } = (await usePopulatedBet({ roundId: rid as string })) as { data: Ref<_P_Bet[]> }
-useLoadingWatcher(bets, 'Bets fully populated')
+const { data: round } = await usePopulatedRound(rid)
 
 useState<any>('pickerSeasonId').value = round.value?._season
-useState<any>('pickerStageId').value = round.value?._stage?.id
+useState<any>('pickerStageId').value = round.value?._stage
 
-provide(roundKey, { round, bets, isLoading })
+wecl(round, 'ROUND')
+
+provide(roundKey, { round })
 
 useState<any>('powerSyncParams').value = { selected_round: rid } // Need to decide whether to move above usePopulatedRound or not
 </script>
