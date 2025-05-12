@@ -31,7 +31,7 @@ const { data: rounds } = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHE
 
 const stage = computed(() => stages.value[0])
 
-const { processedGroups } = await useGroupsWithUsers(`%"_refId":"${useRoute().params.stid}"%`, [])
+const { processedGroups } = await useGroupsWithUsers({ _refId: useRoute().params.stid })
 
 const pageTitle = computed(() => stage.value?.name)
 useHead({ title: pageTitle })

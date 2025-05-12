@@ -1,4 +1,4 @@
-import type { _P_Season, _P_Stage, _P_Round, _P_Challenge } from '~/types'
+import type { _P_Season, _P_Stage, _P_Round, _P_Challenge, _P_Bet } from '~/types'
 
 /*
 export const seasonKey = Symbol('season') as InjectionKey<{
@@ -14,6 +14,7 @@ export const stageKey = Symbol('stage') as InjectionKey<{
 
 export const roundKey = Symbol('round') as InjectionKey<{
   round: Ref<_P_Round | null>
+  bets: Ref<_P_Bet[]>
   isLoading: Ref<boolean>
 }>
 
