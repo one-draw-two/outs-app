@@ -27,6 +27,14 @@ export function usePSWatch<T extends WithPSChange>(
     watchSource?: Ref<any> | ComputedRef<any>
   }
 ) {
+  if ((Array.isArray(parameters) && parameters.length === 0) || (sql.includes(' IN (') && parameters.length === 0))
+    return {
+      data: ref<T[]>([]),
+      isLoading: ref(false),
+      error: ref(null),
+      await: async () => {},
+    }
+
   const { $db }: any = useNuxtApp()
   const data = ref<T[]>([])
   const previousData = ref<T[]>([])

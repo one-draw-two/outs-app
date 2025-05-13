@@ -20,8 +20,6 @@ import type {
 } from '~/types'
 
 export const usePopulatedSeason = async (seasonId: string) => {
-  console.log('usePopulatedSeason', seasonId)
-
   const seasonQuery = usePSWatch<_Season>('SELECT * FROM "calendar_seasons" WHERE id = ?', [seasonId])
   const stagesQuery = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE _season = ? ORDER BY sePI ASC', [seasonId])
   const roundsQuery = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE _season = ? ORDER BY sePI ASC', [seasonId])
@@ -35,11 +33,9 @@ export const usePopulatedSeason = async (seasonId: string) => {
   const domain = domainQuery.data.value[0] || {}
   const tournamentIds = JSON.parse(domain?.tournaments ?? '[]')
 
-  const tournamentsQuery = tournamentIds.length
-    ? usePSWatch<any>(`SELECT * FROM "blueprint_tournaments" WHERE id IN (${tournamentIds.map(() => '?').join(',')})`, tournamentIds)
-    : { data: { value: [] }, await: async () => {} }
+  const tournamentsQuery = usePSWatch<any>(`SELECT * FROM "blueprint_tournaments" WHERE id IN (${tournamentIds.map(() => '?').join(',')})`, tournamentIds)
 
-  if (tournamentIds.length) await tournamentsQuery.await()
+  await tournamentsQuery.await()
 
   const queries = [seasonQuery, stagesQuery, roundsQuery, domainQuery]
   if (tournamentIds.length) queries.push(tournamentsQuery as any)
@@ -233,8 +229,7 @@ export const useGroupsWithUsers = async (filters: Record<string, any> = {}) => {
     .map((row) => row._user)
     .filter(Boolean)
 
-  const usersQuery = userIds.length > 0 ? usePSWatch<any>(`SELECT * FROM "account_users" WHERE id IN (${userIds.map(() => '?').join(',')})`, userIds) : { data: { value: [] }, await: async () => {} }
-
+  const usersQuery = usePSWatch<any>(`SELECT * FROM "account_users" WHERE id IN (${userIds.map(() => '?').join(',')})`, userIds)
   await usersQuery.await()
   const userMap = Object.fromEntries(usersQuery.data.value.map((user) => [user.id, user]))
 
