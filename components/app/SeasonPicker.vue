@@ -25,6 +25,10 @@ watch(selectedSeasonId, async (to) => !to || season.value?.id === to || (useStat
 const { data: seasons } = usePSWatch<any>('SELECT * FROM "calendar_seasons" ORDER BY name ASC', [], { abortController: new AbortController() })
 const { data: subscriptions } = usePSWatch<any>('SELECT * FROM "account_subscriptions"', [], { abortController: new AbortController() })
 
+// Will fix the missing season selection options when considering which seasons sould immediately be available to users in the header/picker
+// wecl(seasons, 'seasons')
+// wecl(subscriptions, 'subscriptions')
+
 const activeUserSubscriptionSeasons = computed(() => subscriptions.value.filter((sb: any) => sb.status === 'active').map((sb) => sb._season))
 
 const change = (event: any) => navigateTo(event.target.value ? useSL(`campaign/${event.target.value}`) : useSL(''))

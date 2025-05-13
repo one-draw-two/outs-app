@@ -64,4 +64,11 @@ export default defineNuxtConfig({
       tokenUrl: process.env.DEV ? process.env.DEV_TOKEN_URL : process.env.TOKEN_URL,
     },
   },
+  /*
+  router: {
+    options: {
+      scrollBehaviorType: 'smooth',
+    },
+  },
+  */
 })

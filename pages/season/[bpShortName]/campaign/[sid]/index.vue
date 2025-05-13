@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="h-48 bg-repeat-x bg-[length:512px_auto]" :style="{ backgroundImage: season.bgUrl ? `url(${getSanityUrl(season.bgUrl)})` : 'none' }">
+    <div class="h-48 bg-repeat-x bg-[length:512px_auto]" :style="{ backgroundImage: season?.bgUrl ? `url(${getSanityUrl(season.bgUrl)})` : 'none' }">
       <div class="main-container flex justify-between items-center h-full">
         <h1 class="text-5xl stroke-text">Season {{ season?.name }}</h1>
       </div>

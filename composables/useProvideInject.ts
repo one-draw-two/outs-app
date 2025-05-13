@@ -14,6 +14,7 @@ export const stageKey = Symbol('stage') as InjectionKey<{
 
 export const roundKey = Symbol('round') as InjectionKey<{
   round: Ref<_P_Round | null>
+  tournamentCols: Ref<any[]>
   isLoading?: Ref<boolean>
 }>
 

@@ -1,5 +1,8 @@
 import type { WithPSChange } from '~/composables/usePSUtils'
 import type {
+  BPSeasonRecord,
+  BPDomainRecord,
+  BPTournamentRecord,
   BetRecord,
   SeasonRecord,
   StageRecord,
@@ -10,7 +13,6 @@ import type {
   RealPlayerRecord,
   RealEventRecord,
   TableRecord,
-  BPSeasonRecord,
 } from '~/powersync/AppSchema'
 
 interface Base {
@@ -28,6 +30,11 @@ export interface User extends Base {
 }
 
 // Export combined types for all records
+
+export type _BPSeasonRecord = BPSeasonRecord & WithPSChange
+export type _BPDomainRecord = BPDomainRecord & WithPSChange
+export type _BPTournamentRecord = BPTournamentRecord & WithPSChange
+
 export type _Bet = BetRecord & WithPSChange
 export type _Season = SeasonRecord & WithPSChange
 export type _Stage = StageRecord & WithPSChange
@@ -38,7 +45,6 @@ export type _RealFixture = RealFixtureRecord & WithPSChange
 export type _RealTeam = RealTeamRecord & WithPSChange
 export type _RealPlayer = RealPlayerRecord & WithPSChange
 export type _RealEvent = RealEventRecord & WithPSChange
-export type _BPSeasonRecord = BPSeasonRecord & WithPSChange
 
 export interface _P_RealFixture extends Omit<_RealFixture, '_homeTeam' | '_awayTeam'> {
   _homeTeam: _RealTeam | undefined
@@ -104,7 +110,21 @@ export interface _P_Table extends Omit<_Table, 'rows'> {
   [key: string]: any
 }
 
-export interface _P_Season extends Omit<_Season, ''> {}
+export interface BPTournamentConfig {
+  name: 'season' | 'stage' | 'round' | 'real-fixture'
+  order?: number
+  options?: Record<string, any>
+}
+
+export interface ParsedBPTournament extends Omit<_BPTournamentRecord, 'scopeConfig' | 'snapshotConfig'> {
+  scopeConfig: BPTournamentConfig[]
+  snapshotConfig: BPTournamentConfig[]
+}
+
+// Update _P_Season to use the parsed tournament type
+export interface _P_Season extends Omit<_Season, ''> {
+  tournaments?: ParsedBPTournament[]
+}
 
 export interface _P_Stage extends Omit<_Stage, 'rounds' | 'groups'> {
   rounds: _Round[]

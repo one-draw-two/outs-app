@@ -4,7 +4,9 @@
       <div class="h-12 main-container flex gap-8 items-center">
         <h1>Round {{ round?.name }}</h1>
         <div class="flex-1 flex justify-end gap-8">
-          <p>Deadline {{ $day(round?._h_roundDeadline).format('ddd DD/MM HH:mm') }}</p>
+          <NuxtLink :to="useSL(`round/${round?.id}/challenges`)"
+            ><p>Challenges Deadline {{ $day(round?._h_roundDeadline).format('ddd DD/MM HH:mm') }}</p></NuxtLink
+          >
           <p v-highlight="round">Cursor {{ round?._h_lastFinishedMatchIndex }}</p>
           <p v-highlight="round">{{ round?.status }}</p>
         </div>
@@ -16,7 +18,6 @@
         <div class="flex gap-8">
           <NuxtLink :to="useSL(`round/${round?.id}`)"><h2>Overview</h2></NuxtLink>
           <NuxtLink :to="useSL(`round/${round?.id}/matches`)"><h2>Matches</h2></NuxtLink>
-          <NuxtLink :to="useSL(`round/${round?.id}/challenges`)"><h2>Challenges</h2></NuxtLink>
           <NuxtLink :to="useSL(`round/${round?.id}/fixtures`)"><h2>Fixtures</h2></NuxtLink>
         </div>
       </div>
@@ -29,11 +30,12 @@
 </template>
 
 <script setup lang="ts">
+import type { _P_Season, ParsedBPTournament } from '~/types'
 import { useRoute as useNativeRoute } from 'vue-router' // Necessary in layouts (Nuxt router limitation)
 
 const rid = useNativeRoute().params.rid as string
 
-const season = useState<any>('season') // Will use this in views to get tournament columns
+const season = useState<_P_Season>('season')
 const stage = useState<any>('stage')
 
 const { data: round } = await usePopulatedRound(rid)
@@ -41,9 +43,12 @@ const { data: round } = await usePopulatedRound(rid)
 useState<any>('pickerSeasonId').value = round.value?._season
 useState<any>('pickerStageId').value = round.value?._stage
 
-wecl(round, 'ROUND')
-
-provide(roundKey, { round })
-
 useState<any>('powerSyncParams').value = { selected_round: rid } // Need to decide whether to move above usePopulatedRound or not
+
+const getOrder = (t: ParsedBPTournament) => t.snapshotConfig?.find((c) => c.name === 'real-fixture')?.order || 0
+const roundTournaments = computed(() => (season.value?.tournaments?.filter((t) => t.snapshotConfig?.some((c) => c.name === 'real-fixture')) || []).sort((a, b) => getOrder(a) - getOrder(b)))
+
+const headers = computed(() => [{ name: 'Result' }, { name: 'You' }, ...(roundTournaments.value?.map((t) => ({ name: t.name })) || [])])
+
+provide(roundKey, { round, tournamentCols: headers })
 </script>

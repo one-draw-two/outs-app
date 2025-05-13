@@ -34,11 +34,15 @@ export const usePopulatedSeason = async (seasonId: string) => {
   const tournamentIds = JSON.parse(domain?.tournaments ?? '[]')
 
   const tournamentsQuery = usePSWatch<any>(`SELECT * FROM "blueprint_tournaments" WHERE id IN (${tournamentIds.map(() => '?').join(',')})`, tournamentIds)
-
   await tournamentsQuery.await()
 
-  const queries = [seasonQuery, stagesQuery, roundsQuery, domainQuery]
-  if (tournamentIds.length) queries.push(tournamentsQuery as any)
+  const transformedTournaments = tournamentsQuery.data.value.map((tournament) => ({
+    ...tournament,
+    scopeConfig: JSON.parse(tournament.scopeConfig || '[]'),
+    snapshotConfig: JSON.parse(tournament.snapshotConfig || '[]'),
+  }))
+
+  const queries = [seasonQuery, stagesQuery, roundsQuery, domainQuery, tournamentsQuery]
 
   return usePSQueryWatcher<any>(queries, (populatedSeason) => {
     populatedSeason.value = {
@@ -46,7 +50,7 @@ export const usePopulatedSeason = async (seasonId: string) => {
       _domain: domain,
       stages: stagesQuery.data.value.map((stage) => ({ ...stage, rounds: roundsQuery.data.value.filter((round) => round._stage === stage.id) })),
       rounds: roundsQuery.data.value, // All rounds flat
-      tournaments: tournamentsQuery.data.value,
+      tournaments: transformedTournaments,
     }
   })
 }
