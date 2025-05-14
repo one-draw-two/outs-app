@@ -36,5 +36,5 @@ const { processedGroups } = await useGroupsWithUsers({ _refId: useRoute().params
 const pageTitle = computed(() => stage.value?.name)
 useHead({ title: pageTitle })
 
-// useState<any>('powerSyncParams').value = { selected_stid: stage.value?.id }
+// useDynamicPS().updatePowerSyncParams({ selected_stid: stage.value?.id })
 </script>

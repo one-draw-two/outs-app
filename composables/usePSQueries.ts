@@ -82,6 +82,8 @@ export const usePopulatedRound = async (roundId: string) => {
       .map((snapshot, index) => {
         const fixtureId = snapshot._realFixture?.id
 
+        // console.log('snapshot', snapshot)
+
         const fixtureWithChallenges = {
           ...snapshot,
           _realFixture: {

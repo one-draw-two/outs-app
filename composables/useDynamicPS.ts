@@ -1,5 +1,9 @@
 import { Connector } from '~/powersync/Connector'
 
+let watcherInitialized = false
+
+const DEBUG = false
+
 export default function (initialize?: boolean) {
   const { $db }: any = useNuxtApp()
   const powerSyncToken = useState<String>('powerSyncToken').value
@@ -8,32 +12,61 @@ export default function (initialize?: boolean) {
 
   const lastConnectionTime = ref(0)
   const pendingConnectionTimeout = ref<NodeJS.Timeout | null>(null)
+  const lastParams = ref<Record<string, any>>({})
+
+  const updatePowerSyncParams = (newParams: Record<string, any>) => {
+    const currentParams = useState<Record<string, any>>('powerSyncParams').value || {}
+    const mergedParams = { ...currentParams, ...newParams }
+    useState<Record<string, any>>('powerSyncParams').value = mergedParams
+  }
+
+  const haveParamsChanged = (newParams: Record<string, any> | null | undefined) => {
+    if (!newParams) return Object.keys(lastParams.value).length > 0
+    const newKeys = Object.keys(newParams)
+    const lastKeys = Object.keys(lastParams.value)
+    return newKeys.length !== lastKeys.length || newKeys.some((key) => lastParams.value[key] !== newParams[key]) || lastKeys.some((key) => !(key in newParams))
+  }
 
   const connectWithThrottle = (params: any) => {
     if (pendingConnectionTimeout.value) clearTimeout(pendingConnectionTimeout.value)
 
     pendingConnectionTimeout.value = setTimeout(() => {
-      console.log('Connecting to PowerSync with params:', params || 'none')
-
       const rawParams = params ? toRaw(params) : null
       const hasParams = rawParams && typeof rawParams === 'object' && Object.keys(rawParams).length > 0
 
-      $db.connect(new Connector(powerSyncToken as string), hasParams ? { params: rawParams } : {})
+      // Only connect if params have actually changed
+      if (haveParamsChanged(rawParams)) {
+        if (DEBUG) {
+          console.log('CONNECTING TO PS (Network Request)...')
+          console.log(rawParams)
+        }
+        $db.connect(new Connector(powerSyncToken as string), hasParams ? { params: rawParams } : {})
+        lastParams.value = rawParams ? { ...rawParams } : {}
+      } else {
+        if (DEBUG) console.log('Skipping PowerSync connection - params unchanged')
+      }
 
       lastConnectionTime.value = Date.now()
       pendingConnectionTimeout.value = null
     }, THROTTLE)
   }
 
-  watch(
-    () => useState<any>('powerSyncParams').value,
-    (to) => {
-      if (to !== undefined && powerSyncToken) connectWithThrottle(to)
-    },
-    { immediate: true }
-  )
+  if (!watcherInitialized) {
+    watcherInitialized = true
+    watch(
+      () => useState<any>('powerSyncParams').value,
+      (to) => {
+        if (to !== undefined && powerSyncToken) connectWithThrottle(to)
+      },
+      { immediate: true }
+    )
+  }
 
   if (initialize && powerSyncToken && !useState<any>('powerSyncParams').value && Date.now() - lastConnectionTime.value > THROTTLE) useState<any>('powerSyncParams').value = {}
 
   if (!useState<Boolean>('isPSConsoledOnce').value && powerSyncToken) useState<Boolean>('isPSConsoledOnce').value = true
+
+  return {
+    updatePowerSyncParams,
+  }
 }

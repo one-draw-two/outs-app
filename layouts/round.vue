@@ -45,7 +45,7 @@ const { data: round } = await usePopulatedRound(rid)
 useState<any>('pickerSeasonId').value = round.value?._season
 useState<any>('pickerStageId').value = round.value?._stage
 
-useState<any>('powerSyncParams').value = { selected_round: rid } // Need to decide whether to move above usePopulatedRound or not
+useDynamicPS().updatePowerSyncParams({ selected_round: rid })
 
 const sKey = 'real-fixture'
 const roundTournaments = computed(() => (season.value?.tournaments?.filter((t) => t.snapshotConfig?.some((c) => c.name === sKey)) || []).sort((a, b) => getOrder(a, sKey) - getOrder(b, sKey)))
