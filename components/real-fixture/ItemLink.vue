@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import type { _RealFixture } from '~/types'
 
-const props = defineProps<{
+defineProps<{
   rf: _RealFixture
 }>()
 </script>

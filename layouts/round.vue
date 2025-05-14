@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_Season, ParsedBPTournament } from '~/types'
+import type { _P_Season } from '~/types'
 import { useRoute as useNativeRoute } from 'vue-router' // Necessary in layouts (Nuxt router limitation)
 
 const rid = useNativeRoute().params.rid as string
@@ -47,8 +47,8 @@ useState<any>('pickerStageId').value = round.value?._stage
 
 useState<any>('powerSyncParams').value = { selected_round: rid } // Need to decide whether to move above usePopulatedRound or not
 
-const getOrder = (t: ParsedBPTournament) => t.snapshotConfig?.find((c) => c.name === 'real-fixture')?.order || 0
-const roundTournaments = computed(() => (season.value?.tournaments?.filter((t) => t.snapshotConfig?.some((c) => c.name === 'real-fixture')) || []).sort((a, b) => getOrder(a) - getOrder(b)))
+const sKey = 'real-fixture'
+const roundTournaments = computed(() => (season.value?.tournaments?.filter((t) => t.snapshotConfig?.some((c) => c.name === sKey)) || []).sort((a, b) => getOrder(a, sKey) - getOrder(b, sKey)))
 const headers = computed(() => [{ name: 'Result' }, { name: 'You' }, ...(roundTournaments.value?.map((t) => ({ name: t.name })) || [])])
 
 provide(roundKey, { round, tournamentCols: headers })
