@@ -109,7 +109,9 @@ const entry_bets = new Table(
   { indexes: {} }
 )
 
-const group_tables = new Table(
+// Group
+
+const group_standings = new Table(
   {
     _link: column.text,
     _season: column.text,
@@ -125,19 +127,16 @@ const group_tables = new Table(
   { indexes: {} }
 )
 
-const group_snapshots = new Table(
+const group_fixtures = new Table(
   {
-    _season: column.text,
-    _stage: column.text,
-    _round: column.text,
-    _realFixture: column.text,
-    _realEvent: column.text,
-    pointer: column.text,
-    order: column.integer,
-    _ref: column.text,
+    name: column.text,
+    rows: column.text,
+    _users: column.text,
   },
   { indexes: {} }
 )
+
+// Real
 
 const real_fixtures = new Table(
   {
@@ -185,6 +184,22 @@ const real_events = new Table(
   { indexes: {} }
 )
 
+// Timeline
+
+const timeline_snapshots = new Table(
+  {
+    _season: column.text,
+    _stage: column.text,
+    _round: column.text,
+    _realFixture: column.text,
+    _realEvent: column.text,
+    pointer: column.text,
+    order: column.integer,
+    _ref: column.text,
+  },
+  { indexes: {} }
+)
+
 export const AppSchema = new Schema({
   //
   account_users,
@@ -201,13 +216,15 @@ export const AppSchema = new Schema({
   entry_challenges,
   entry_bets,
   //
-  group_tables,
-  group_snapshots,
+  group_standings,
+  group_fixtures,
   //
   real_fixtures,
   real_teams,
   real_players,
   real_events,
+  //
+  timeline_snapshots,
 })
 
 export type Database = (typeof AppSchema)['types']
@@ -226,10 +243,12 @@ export type RoundRecord = Database['calendar_rounds']
 export type ChallengeRecord = Database['entry_challenges']
 export type BetRecord = Database['entry_bets']
 
-export type TableRecord = Database['group_tables']
-export type SnapshotRecord = Database['group_snapshots']
+export type StandingRecord = Database['group_standings']
+export type FixtureRecord = Database['group_fixtures']
 
 export type RealFixtureRecord = Database['real_fixtures']
 export type RealTeamRecord = Database['real_teams']
 export type RealPlayerRecord = Database['real_players']
 export type RealEventRecord = Database['real_events']
+
+export type SnapshotRecord = Database['timeline_snapshots']

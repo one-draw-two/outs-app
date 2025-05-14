@@ -10,10 +10,12 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   const isUseIndexDB = Capacitor.getPlatform() === 'android'
 
+  const baseFlags = { broadcastLogs: true } // Where to display these? Asked on Discord
+
   const db = new PowerSyncDatabase({
     schema: AppSchema,
     database: isUseIndexDB ? { dbFilename: 'outs-ps-idb.db' } : new WASQLiteOpenFactory({ dbFilename: 'outs-ps-opfs.db', vfs: WASQLiteVFS.OPFSCoopSyncVFS }),
-    flags: isUseIndexDB ? { enableMultiTabs: typeof SharedWorker !== 'undefined' } : undefined,
+    flags: isUseIndexDB ? Object.assign({}, baseFlags, { enableMultiTabs: typeof SharedWorker !== 'undefined' }) : baseFlags,
   })
 
   nuxtApp.provide('db', db)

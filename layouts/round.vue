@@ -52,4 +52,6 @@ const roundTournaments = computed(() => (season.value?.tournaments?.filter((t) =
 const headers = computed(() => [{ name: 'Result' }, { name: 'You' }, ...(roundTournaments.value?.map((t) => ({ name: t.name })) || [])])
 
 provide(roundKey, { round, tournamentCols: headers })
+
+wecl(round)
 </script>

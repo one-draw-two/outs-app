@@ -3,7 +3,7 @@ import type {
   _Stage,
   _P_Round,
   _Round,
-  _Table,
+  _Standing,
   _Challenge,
   _Bet,
   _P_Bet,
@@ -67,7 +67,8 @@ export const usePopulatedRound = async (roundId: string) => {
 
   const realFixtures = transformedChallenges?.flatMap((c: any) => c.fixtureSlots).map((fs: any) => fs._realFixture)
   const realFixturesQuery = usePSWatch<_RealFixture>(`SELECT * FROM "real_fixtures" WHERE id IN (${realFixtures.map(() => '?').join(',')})`, realFixtures, { detectChanges: true })
-  const snapshotsQuery = usePSWatch<_Table>('SELECT * FROM "group_snapshots" WHERE "_round" = ?', [roundId], { detectChanges: true })
+
+  const snapshotsQuery = usePSWatch<_Standing>('SELECT * FROM "timeline_snapshots" WHERE "_round" = ?', [roundId], { detectChanges: true })
 
   // const stageQuery = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE id = ?', [roundQuery.data.value[0]?._stage], { detectChanges: true })
   // const { processedGroups } = await useGroupsWithUsers({ _refId: roundId })
@@ -215,7 +216,7 @@ export const usePopulatedBet = async (options: { challengeId?: string; roundId?:
 }
 
 export const useGroupsWithUsers = async (filters: Record<string, any> = {}) => {
-  let query = 'SELECT * FROM "group_tables" WHERE 1=1'
+  let query = 'SELECT * FROM "group_standings" WHERE 1=1'
   const params: any[] = []
 
   Object.entries(filters).forEach(([k, v]) =>
@@ -226,7 +227,7 @@ export const useGroupsWithUsers = async (filters: Record<string, any> = {}) => {
       : ((query += ` AND ${k} = ?`), params.push(v))
   )
 
-  const groupsQuery = usePSWatch<_Table>(query, params, { detectChanges: true })
+  const groupsQuery = usePSWatch<_Standing>(query, params, { detectChanges: true })
 
   await groupsQuery.await()
 

@@ -27,13 +27,17 @@ export function usePSWatch<T extends WithPSChange>(
     watchSource?: Ref<any> | ComputedRef<any>
   }
 ) {
-  if ((Array.isArray(parameters) && parameters.length === 0) || (sql.includes(' IN (') && parameters.length === 0))
+  // if ((Array.isArray(parameters) && parameters.length === 0) || (sql.includes(' IN (') && parameters.length === 0))
+  if (sql.includes(' IN (') && parameters.length === 0) {
+    console.warn('Avoiding SQL error: IN clause with empty parameters array detected')
     return {
       data: ref<T[]>([]),
       isLoading: ref(false),
       error: ref(null),
+      changeInfo: ref(null),
       await: async () => {},
     }
+  }
 
   const { $db }: any = useNuxtApp()
   const data = ref<T[]>([])

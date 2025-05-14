@@ -12,7 +12,7 @@ import type {
   RealTeamRecord,
   RealPlayerRecord,
   RealEventRecord,
-  TableRecord,
+  StandingRecord,
 } from '~/powersync/AppSchema'
 
 interface Base {
@@ -40,7 +40,9 @@ export type _Season = SeasonRecord & WithPSChange
 export type _Stage = StageRecord & WithPSChange
 export type _Round = RoundRecord & WithPSChange
 export type _Challenge = ChallengeRecord & WithPSChange
-export type _Table = TableRecord & WithPSChange
+
+export type _Standing = StandingRecord & WithPSChange
+
 export type _RealFixture = RealFixtureRecord & WithPSChange
 export type _RealTeam = RealTeamRecord & WithPSChange
 export type _RealPlayer = RealPlayerRecord & WithPSChange
@@ -96,11 +98,11 @@ export interface _P_Round extends _Round {
     _realFixture?: EnhancedRealFixture | null
     [key: string]: any
   }[]
-  groups?: _P_Table[]
+  groups?: _P_Standing[]
   userBets?: _P_Bet[]
 }
 
-export interface _P_Table extends Omit<_Table, 'rows'> {
+export interface _P_Standing extends Omit<_Standing, 'rows'> {
   _link: any
   rows: Array<{
     _user: any
@@ -128,7 +130,7 @@ export interface _P_Season extends Omit<_Season, ''> {
 
 export interface _P_Stage extends Omit<_Stage, 'rounds' | 'groups'> {
   rounds: _Round[]
-  groups: _P_Table[]
+  groups: _P_Standing[]
 }
 
 // Also ensure your EnhancedRealFixture allows for nullability
