@@ -2,11 +2,13 @@
   <div class="space-y-8">
     <div :class="`bg-${stage?.color}-500/50`">
       <div class="h-12 main-container flex gap-8 items-center">
-        <h1>Round {{ round?.name }}</h1>
+        <div class="flex gap-4">
+          <NuxtLink :to="useSL(`stage/${round?._stage}`)">Stage {{ stage?.name }}</NuxtLink>
+          <NuxtLink :to="useSL(`round/${round?.id}`)">Round {{ round?.name }}</NuxtLink>
+        </div>
+
         <div class="flex-1 flex justify-end gap-8">
-          <NuxtLink :to="useSL(`round/${round?.id}/challenges`)"
-            ><p>Challenges Deadline {{ $day(round?._h_roundDeadline).format('ddd DD/MM HH:mm') }}</p></NuxtLink
-          >
+          <NuxtLink :to="useSL(`round/${round?.id}/challenges`)">Challenges Deadline {{ $day(round?._h_roundDeadline).format('ddd DD/MM HH:mm') }}</NuxtLink>
           <p v-highlight="round">Cursor {{ round?._h_lastFinishedMatchIndex }}</p>
           <p v-highlight="round">{{ round?.status }}</p>
         </div>
@@ -47,7 +49,6 @@ useState<any>('powerSyncParams').value = { selected_round: rid } // Need to deci
 
 const getOrder = (t: ParsedBPTournament) => t.snapshotConfig?.find((c) => c.name === 'real-fixture')?.order || 0
 const roundTournaments = computed(() => (season.value?.tournaments?.filter((t) => t.snapshotConfig?.some((c) => c.name === 'real-fixture')) || []).sort((a, b) => getOrder(a) - getOrder(b)))
-
 const headers = computed(() => [{ name: 'Result' }, { name: 'You' }, ...(roundTournaments.value?.map((t) => ({ name: t.name })) || [])])
 
 provide(roundKey, { round, tournamentCols: headers })
