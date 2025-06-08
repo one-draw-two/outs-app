@@ -34,10 +34,17 @@ export default function (initialize?: boolean) {
       const rawParams = params ? toRaw(params) : null
       const hasParams = rawParams && typeof rawParams === 'object' && Object.keys(rawParams).length > 0
 
-      // Only connect if params have actually changed or force connect is true
-      if (forceConnect || haveParamsChanged(rawParams)) {
+      // Track if this is the very first connection attempt since page load
+      const isFirstConnectionAttempt = lastConnectionTime.value === 0
+
+      // Force connection on first attempt or if params changed or if explicitly forced
+      if (isFirstConnectionAttempt || forceConnect || haveParamsChanged(rawParams)) {
         if (DEBUG) {
-          console.log('CONNECTING TO PS (Network Request)...')
+          if (isFirstConnectionAttempt) {
+            console.log('CONNECTING TO PS (First connection after page load)...')
+          } else {
+            console.log('CONNECTING TO PS (Network Request)...')
+          }
           console.log(rawParams)
         }
         $db.connect(new Connector(powerSyncToken as string), hasParams ? { params: rawParams } : {})
