@@ -7,7 +7,6 @@ export default function (res: AuthResponseSuccess, navToPath?: string, isToSaveO
   useState<String>('accessToken').value = res.data.accessToken
   useState<String>('powerSyncToken').value = res.data.powerSyncToken
 
-  console.log('INIT USER NOW')
   useDynamicPS(true) // Parameters will be carried by useState<powerSyncParams>
   useGetPushTokens()
   useTabVisibility()

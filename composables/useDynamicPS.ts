@@ -40,11 +40,7 @@ export default function (initialize?: boolean) {
       // Force connection on first attempt or if params changed or if explicitly forced
       if (isFirstConnectionAttempt || forceConnect || haveParamsChanged(rawParams)) {
         if (DEBUG) {
-          if (isFirstConnectionAttempt) {
-            console.log('CONNECTING TO PS (First connection after page load)...')
-          } else {
-            console.log('CONNECTING TO PS (Network Request)...')
-          }
+          console.log(isFirstConnectionAttempt ? 'CONNECTING TO PS (First connection after page load)...' : 'CONNECTING TO PS (Network Request)...')
           console.log(rawParams)
         }
         $db.connect(new Connector(powerSyncToken as string), hasParams ? { params: rawParams } : {})
