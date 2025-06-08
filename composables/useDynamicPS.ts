@@ -27,15 +27,15 @@ export default function (initialize?: boolean) {
     return newKeys.length !== lastKeys.length || newKeys.some((key) => lastParams.value[key] !== newParams[key]) || lastKeys.some((key) => !(key in newParams))
   }
 
-  const connectWithThrottle = (params: any) => {
+  const connectWithThrottle = (params: any, forceConnect = false) => {
     if (pendingConnectionTimeout.value) clearTimeout(pendingConnectionTimeout.value)
 
     pendingConnectionTimeout.value = setTimeout(() => {
       const rawParams = params ? toRaw(params) : null
       const hasParams = rawParams && typeof rawParams === 'object' && Object.keys(rawParams).length > 0
 
-      // Only connect if params have actually changed
-      if (haveParamsChanged(rawParams)) {
+      // Only connect if params have actually changed or force connect is true
+      if (forceConnect || haveParamsChanged(rawParams)) {
         if (DEBUG) {
           console.log('CONNECTING TO PS (Network Request)...')
           console.log(rawParams)
@@ -62,7 +62,14 @@ export default function (initialize?: boolean) {
     )
   }
 
-  if (initialize && powerSyncToken && !useState<any>('powerSyncParams').value && Date.now() - lastConnectionTime.value > THROTTLE) useState<any>('powerSyncParams').value = {}
+  // If initialize flag is true and we have a token but no params yet
+  if (initialize && powerSyncToken && !useState<any>('powerSyncParams').value && Date.now() - lastConnectionTime.value > THROTTLE) {
+    // For a new session, force the connection
+    const isFirstConnection = lastConnectionTime.value === 0
+    useState<any>('powerSyncParams').value = {}
+    // Directly trigger a forced connection for new users
+    if (isFirstConnection) connectWithThrottle({}, true)
+  }
 
   if (!useState<Boolean>('isPSConsoledOnce').value && powerSyncToken) useState<Boolean>('isPSConsoledOnce').value = true
 
