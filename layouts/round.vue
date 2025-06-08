@@ -32,15 +32,16 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_Season } from '~/types'
+import type { User, _P_Season } from '~/types'
 import { useRoute as useNativeRoute } from 'vue-router' // Necessary in layouts (Nuxt router limitation)
 
 const rid = useNativeRoute().params.rid as string
 
+const user = useState<User>('user')
 const season = useState<_P_Season>('season')
 const stage = useState<any>('stage')
 
-const { data: round } = await usePopulatedRound(rid)
+const { data: round } = await usePopulatedRound(rid, user.value?.id)
 
 useState<any>('pickerSeasonId').value = round.value?._season
 useState<any>('pickerStageId').value = round.value?._stage
@@ -49,9 +50,37 @@ useDynamicPS().updatePowerSyncParams({ selected_round: rid })
 
 const sKey = 'real-fixture'
 const roundTournaments = computed(() => (season.value?.tournaments?.filter((t) => t.snapshotConfig?.some((c) => c.name === sKey)) || []).sort((a, b) => getOrder(a, sKey) - getOrder(b, sKey)))
-const headers = computed(() => [{ name: 'Result' }, { name: 'You' }, ...(roundTournaments.value?.map((t) => ({ name: t.name })) || [])])
+
+interface FixturesByTournament {
+  [tournamentId: string]: any[]
+}
+
+const tournamentFixtures = computed<FixturesByTournament>(() => {
+  if (!round.value?.userFixtures) return {} as FixturesByTournament
+
+  const fixturesByTournament: FixturesByTournament = {}
+  roundTournaments.value?.forEach((tournament) => {
+    if (tournament.id) {
+      fixturesByTournament[tournament.id] = round.value?.userFixtures.filter((fixture: any) => fixture._tournament === tournament.id) || []
+    }
+  })
+
+  return fixturesByTournament
+})
+
+const headers = computed(() => [
+  { name: 'Result' },
+  { name: 'You' },
+  ...roundTournaments.value?.map((t) => ({
+    name: t.name,
+    fixture: tournamentFixtures.value[t.id]?.[0], // Should only be one fixture per tournament
+  })),
+])
 
 provide(roundKey, { round, tournamentCols: headers })
+
+const { data: userFixtures } = usePSWatch<any>('SELECT * FROM "group_fixtures"', [''])
+wecl(userFixtures)
 
 wecl(round)
 </script>

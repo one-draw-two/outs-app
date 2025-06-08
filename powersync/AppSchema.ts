@@ -111,27 +111,30 @@ const entry_bets = new Table(
 
 // Group
 
+const groupColumns = {
+  _link: column.text,
+  _season: column.text,
+  _tournament: column.text,
+  order: column.integer,
+  scope: column.text,
+  name: column.text,
+  status: column.text,
+  meta: column.text,
+  rows: column.text,
+  _parentGroup: column.text,
+}
+
 const group_standings = new Table(
   {
-    _link: column.text,
-    _season: column.text,
-    _tournament: column.text,
-    order: column.integer,
-    scope: column.text,
-    name: column.text,
-    status: column.text,
-    meta: column.text,
-    rows: column.text,
-    _parentGroup: column.text,
+    ...groupColumns,
   },
   { indexes: {} }
 )
 
 const group_fixtures = new Table(
   {
-    name: column.text,
-    rows: column.text,
-    _users: column.text,
+    ...groupColumns,
+    psKeys: column.text,
   },
   { indexes: {} }
 )

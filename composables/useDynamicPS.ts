@@ -2,7 +2,7 @@ import { Connector } from '~/powersync/Connector'
 
 let watcherInitialized = false
 
-const DEBUG = false
+const DEBUG = true
 
 export default function (initialize?: boolean) {
   const { $db }: any = useNuxtApp()

@@ -19,7 +19,7 @@ definePageMeta({ layout: 'round' })
 const { round } = inject(roundKey)!
 useHead({ title: `${round.value?.name} | Fixtures` })
 
-const { processedGroups: groups } = await useGroupsWithUsers({ _refId: useRoute().params.rid, _tournament: 'BTLEAG', 'meta.isFixture': true })
+const { processedGroups: groups } = await useGroupsWithUsers({ _refId: useRoute().params.rid, _tournament: 'BTLEAG' }, true)
 
 const user = useState<User>('user')
 const isCurrentUserRow = (row: any): boolean => user.value?.id === row._user?.id

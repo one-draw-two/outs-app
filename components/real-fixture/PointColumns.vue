@@ -4,8 +4,15 @@
       <slot />
     </div>
     <div class="flex-2 bg-blue-200 flex items-stretch gap-4">
-      <div v-for="h in tournamentCols" class="flex-1 bg-blue-200 flex-center">
-        {{ h.name }}
+      <div v-for="h in tournamentCols" class="flex-1 bg-blue-200 flex-center flex-col gap-2">
+        <NuxtLink :to="useSL(`round/${useRoute().params.rid}/fixtures`)" class="block">
+          {{ h.name }}
+        </NuxtLink>
+
+        <NuxtLink v-if="h.fixture" :to="useSL(`round/${useRoute().params.rid}/fixture/${h.fixture.id}`)" class="block">
+          <div>vs {{ h.fixture.oppoRow?._user.name }}</div>
+          <div>{{ h.fixture.oppoRow?.points }}</div>
+        </NuxtLink>
       </div>
     </div>
   </div>

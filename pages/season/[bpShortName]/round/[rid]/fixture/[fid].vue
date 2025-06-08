@@ -14,13 +14,10 @@ import type { _P_RealFixture } from '~/types'
 definePageMeta({ layout: 'round' })
 
 const fid = useRoute().params.fid
-const { processedGroups } = await useGroupsWithUsers({ id: fid })
+const { processedGroups } = await useGroupsWithUsers({ id: fid }, true)
 const thisFixture = computed(() => processedGroups?.[0])
 
 wecl(processedGroups)
-
-const { data: userFixtures } = usePSWatch<any>('SELECT * FROM "group_fixtures"', [''])
-wecl(userFixtures)
 
 const pageTitle = computed(() => `Fixture ${fid}`)
 useHead({ title: pageTitle })

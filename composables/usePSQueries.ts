@@ -15,8 +15,6 @@ import type {
   _RealEvent,
   FixtureSlot,
   BetFixtureSlot,
-  EnhancedChallenge,
-  EnhancedRealFixture,
 } from '~/types'
 
 export const usePopulatedSeason = async (seasonId: string) => {
@@ -55,7 +53,7 @@ export const usePopulatedSeason = async (seasonId: string) => {
   })
 }
 
-export const usePopulatedRound = async (roundId: string) => {
+export const usePopulatedRound = async (roundId: string, userId?: string) => {
   const roundQuery = usePSWatch<_Round>('SELECT * FROM "calendar_rounds" WHERE id = ?', [roundId], { detectChanges: true })
   const challengesQuery = usePSWatch<_Challenge>('SELECT * FROM "entry_challenges" WHERE _round = ? ORDER BY "order" ASC', [roundId])
   const betsQuery = usePSWatch<_Bet>('SELECT * FROM "entry_bets" WHERE "_round" = ?', [roundId], { detectChanges: true })
@@ -72,6 +70,9 @@ export const usePopulatedRound = async (roundId: string) => {
 
   // const stageQuery = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE id = ?', [roundQuery.data.value[0]?._stage], { detectChanges: true })
   // const { processedGroups } = await useGroupsWithUsers({ _refId: roundId })
+
+  const { processedGroups } = await useGroupsWithUsers({ _refId: roundId }, true, userId)
+  const enhancedFixtures = enhanceFixturesWithUserData(processedGroups, userId)
 
   return usePSQueryWatcher<_P_Round>([roundQuery, challengesQuery, realFixturesQuery, betsQuery], (round) => {
     const processedSnapshots = snapshotsQuery.data.value
@@ -105,10 +106,10 @@ export const usePopulatedRound = async (roundId: string) => {
     round.value = {
       ...roundQuery.data.value[0],
       challenges: transformedChallenges,
-      userBets: transformedBets,
       snapshots: processedSnapshots,
+      userBets: transformedBets,
+      userFixtures: enhancedFixtures,
       // _stage: stageQuery.data.value[0],
-      // groups: processedGroups,
     }
   })
 }
@@ -215,8 +216,10 @@ export const usePopulatedBet = async (options: { challengeId?: string; roundId?:
   })
 }
 
-export const useGroupsWithUsers = async (filters: Record<string, any> = {}) => {
-  let query = 'SELECT * FROM "group_standings" WHERE 1=1'
+export const useGroupsWithUsers = async (filters: Record<string, any> = {}, isFixture = false, userInPsKeys?: string) => {
+  const tableName = isFixture ? 'group_fixtures' : 'group_standings'
+
+  let query = `SELECT * FROM "${tableName}" WHERE 1=1`
   const params: any[] = []
 
   Object.entries(filters).forEach(([k, v]) =>
@@ -227,8 +230,12 @@ export const useGroupsWithUsers = async (filters: Record<string, any> = {}) => {
       : ((query += ` AND ${k} = ?`), params.push(v))
   )
 
-  const groupsQuery = usePSWatch<_Standing>(query, params, { detectChanges: true })
+  if (isFixture && userInPsKeys) {
+    query += ` AND (psKeys LIKE ? OR psKeys IS NULL)`
+    params.push(`%${userInPsKeys}%`)
+  }
 
+  const groupsQuery = usePSWatch<_Standing>(query, params, { detectChanges: true })
   await groupsQuery.await()
 
   const userIds = groupsQuery.data.value
@@ -236,9 +243,12 @@ export const useGroupsWithUsers = async (filters: Record<string, any> = {}) => {
     .map((row) => row._user)
     .filter(Boolean)
 
-  const usersQuery = usePSWatch<any>(`SELECT * FROM "account_users" WHERE id IN (${userIds.map(() => '?').join(',')})`, userIds)
-  await usersQuery.await()
-  const userMap = Object.fromEntries(usersQuery.data.value.map((user) => [user.id, user]))
+  let userMap: Record<string, any> = {}
+  if (userIds.length > 0) {
+    const usersQuery = usePSWatch<any>(`SELECT * FROM "account_users" WHERE id IN (${userIds.map(() => '?').join(',')})`, userIds)
+    await usersQuery.await()
+    userMap = Object.fromEntries(usersQuery.data.value.map((user) => [user.id, user]))
+  }
 
   const processedGroups = groupsQuery.data.value.map((group) => {
     const parsedRows = JSON.parse((group.rows as string) || '[]')

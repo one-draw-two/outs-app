@@ -10,8 +10,11 @@
     <main class="main-container py-8">
       <div class="space-y-4">
         <SeasonPointColumns :tournamentCols="headers" />
-        <div v-for="row of processedSeasonRows" class="flex justify-between">
-          <div class="flex-1">{{ row._user.name }}</div>
+        <div v-for="(row, ri) of processedSeasonRows" class="flex justify-between">
+          <div class="flex-1 space-x-4">
+            <span class="tabular-nums">{{ (ri + 1).toString().padStart(2, '0') }}</span>
+            {{ row._user.name }}
+          </div>
           <SeasonPointRows :tournamentCols="headers" :row="row" class="flex-2" />
         </div>
       </div>
