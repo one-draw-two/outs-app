@@ -5,26 +5,26 @@
       "name": "outs-app",
       "dependencies": {
         "@capacitor-community/fcm": "^7.1.1",
-        "@capacitor/android": "^7.2.0",
+        "@capacitor/android": "^7.3.0",
         "@capacitor/app": "^7.0.1",
-        "@capacitor/core": "^7.2.0",
-        "@capacitor/ios": "^7.2.0",
+        "@capacitor/core": "^7.3.0",
+        "@capacitor/ios": "^7.3.0",
         "@capacitor/network": "^7.0.1",
         "@capacitor/preferences": "^7.0.1",
         "@capacitor/push-notifications": "^7.0.1",
         "@outs1x2/capacitor-liveactivities": "^0.2.6",
-        "@powersync/web": "^1.20.1",
-        "@tailwindcss/vite": "^4.1.7",
+        "@powersync/web": "^1.21.1",
+        "@tailwindcss/vite": "^4.1.8",
         "capacitor-plugin-safe-area": "^4.0.0",
         "dayjs": "^1.11.13",
         "jwt-decode": "^4.0.0",
-        "nuxt": "^3.17.4",
-        "tailwindcss": "^4.1.7",
+        "nuxt": "^3.17.5",
+        "tailwindcss": "^4.1.8",
         "vue": "latest",
         "vue-router": "latest",
       },
       "devDependencies": {
-        "@capacitor/cli": "^7.2.0",
+        "@capacitor/cli": "^7.3.0",
         "concurrently": "^9.1.2",
         "localtunnel": "^2.0.2",
         "typescript": "^5.8.3",
@@ -326,9 +326,9 @@
 
     "@poppinss/exception": ["@poppinss/exception@1.2.1", "", {}, "sha512-aQypoot0HPSJa6gDPEPTntc1GT6QINrSbgRlRhadGW2WaYqUK3tK4Bw9SBMZXhmxd3GeAlZjVcODHgiu+THY7A=="],
 
-    "@powersync/common": ["@powersync/common@1.31.1", "", { "dependencies": { "js-logger": "^1.6.1" } }, "sha512-e/7wTl+TqoRHfo57hbfGofezQ14l6cQ3bougFaH5BwsTIQO9KDgKR2hL4Zfkk8NmoucWEoKQ4P3mf4ACCASnRQ=="],
+    "@powersync/common": ["@powersync/common@1.32.0", "", { "dependencies": { "js-logger": "^1.6.1" } }, "sha512-2dSspy3Xk6j3Q2LbLWD8X792I0Rr5DgAbEXGmL3UnE2WGSRWTWiPVMnwUnZ7lBLcQbCQU1YSddRaoOvSq9XGsQ=="],
 
-    "@powersync/web": ["@powersync/web@1.21.1", "", { "dependencies": { "@powersync/common": "1.31.1", "async-mutex": "^0.4.0", "bson": "^6.6.0", "comlink": "^4.4.2", "commander": "^12.1.0" }, "peerDependencies": { "@journeyapps/wa-sqlite": "^1.2.4" }, "bin": { "powersync-web": "bin/powersync.js" } }, "sha512-whaf36M2QzT7+mPOMfMuymFiWBsqN9JVYyKB+/iU6YKfYU8kVyZCAl4qHNy+oFJcLTZyOkSK83Yl/Oc+L/Qf4w=="],
+    "@powersync/web": ["@powersync/web@1.22.0", "", { "dependencies": { "@powersync/common": "1.32.0", "async-mutex": "^0.4.0", "bson": "^6.6.0", "comlink": "^4.4.2", "commander": "^12.1.0" }, "peerDependencies": { "@journeyapps/wa-sqlite": "^1.2.4" }, "bin": { "powersync-web": "bin/powersync.js" } }, "sha512-HP2wAyEhmic++FLKm+nm82C3s8RmL2u9eM7yPqwqxlFjY9L/Hm2mvRu0eXwJDfRJKx+tunOsDV4eZSzGwO8aNQ=="],
 
     "@rolldown/pluginutils": ["@rolldown/pluginutils@1.0.0-beta.9", "", {}, "sha512-e9MeMtVWo186sgvFFJOPGy7/d2j2mZhLJIdVW0C/xDluuOvymEATqz6zKsP0ZmXGzQtqlyjz5sC1sYQUoJG98w=="],
 
