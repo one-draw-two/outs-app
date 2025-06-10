@@ -1,5 +1,3 @@
-import type { AuthResponse } from '~/types'
-
 export default defineNuxtRouteMiddleware(async (to, _) => {
   const authStorage = useAuthStorage()
 
@@ -10,9 +8,13 @@ export default defineNuxtRouteMiddleware(async (to, _) => {
     const storedData = await authStorage.getStoredAuth() // Note: Clears auth in useAuthStorage if doesnt return successful
     if (storedData) return useInitUser({ success: true, data: storedData })
 
+    /*
     const storedRefreshToken = await authStorage.getRefreshToken()
     if (!storedRefreshToken) return navigateTo('/access/login', { replace: true })
     const res: AuthResponse = await useSecureFetch('refresh', 'auth', 'post', { refreshToken: storedRefreshToken })
+    */
+
+    const res = await useAuthRefresh()
 
     if (!res.success) {
       console.error('Authentication failed:', res.message)

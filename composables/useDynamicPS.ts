@@ -20,6 +20,13 @@ export default function (initialize?: boolean) {
     useState<Record<string, any>>('powerSyncParams').value = mergedParams
   }
 
+  const forceReconnect = () => {
+    if (powerSyncToken) {
+      const params = useState<Record<string, any>>('powerSyncParams').value || {}
+      connectWithThrottle(params, true)
+    }
+  }
+
   const haveParamsChanged = (newParams: Record<string, any> | null | undefined) => {
     if (!newParams) return Object.keys(lastParams.value).length > 0
     const newKeys = Object.keys(newParams)
@@ -78,5 +85,6 @@ export default function (initialize?: boolean) {
 
   return {
     updatePowerSyncParams,
+    forceReconnect,
   }
 }

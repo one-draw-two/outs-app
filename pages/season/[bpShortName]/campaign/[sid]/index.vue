@@ -32,13 +32,13 @@ watch(toRef(sid), async (to) => !to || season.value?.id === to || (useState<any>
 
 const { processedGroups } = await useGroupsWithUsers({ _refId: sid })
 
-const mainTournamentGroup = computed(() => processedGroups.find((group) => group._tournament === 'BTCAMP'))
+const mainTournamentGroup = computed(() => processedGroups.value.find((group) => group._tournament === 'BTCAMP'))
 const headers = computed(() => [{ name: 'BTCURV' }, { name: 'BTCAMP' }])
 
 const processedSeasonRows = computed(() => {
   return mainTournamentGroup.value?.rows.map((row: any) => ({
     ...row,
-    $BTCURV: processedGroups.find((group) => group._tournament === 'BTCURV')?.rows.find((r: any) => r._user.id === row._user.id)?.rowMeta,
+    $BTCURV: processedGroups.value.find((group) => group._tournament === 'BTCURV')?.rows.find((r: any) => r._user.id === row._user.id)?.rowMeta,
   }))
 })
 
