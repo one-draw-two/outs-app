@@ -72,7 +72,8 @@ export const usePopulatedRound = async (roundId: string, userId?: string) => {
   // const { processedGroups } = await useGroupsWithUsers({ _refId: roundId })
 
   const { processedGroups } = await useGroupsWithUsers({ _refId: roundId }, true, userId)
-  const enhancedFixtures = enhanceFixturesWithUserData(processedGroups, userId)
+  // const enhancedFixtures = enhanceFixturesWithUserData(processedGroups, userId)
+  const enhancedFixtures = computed(() => enhanceFixturesWithUserData(processedGroups.value, userId))
 
   return usePSQueryWatcher<_P_Round>([roundQuery, challengesQuery, realFixturesQuery, betsQuery], (round) => {
     const processedSnapshots = snapshotsQuery.data.value
@@ -216,6 +217,7 @@ export const usePopulatedBet = async (options: { challengeId?: string; roundId?:
   })
 }
 
+/*
 export const useGroupsWithUsers = async (filters: Record<string, any> = {}, isFixture = false, userInPsKeys?: string) => {
   const tableName = isFixture ? 'group_fixtures' : 'group_standings'
 
@@ -263,6 +265,77 @@ export const useGroupsWithUsers = async (filters: Record<string, any> = {}, isFi
     }
   })
 
+  return {
+    processedGroups,
+  }
+}
+*/
+
+export const useGroupsWithUsers = async (filters: Record<string, any> = {}, isFixture = false, userInPsKeys?: string) => {
+  const tableName = isFixture ? 'group_fixtures' : 'group_standings'
+
+  let query = `SELECT * FROM "${tableName}" WHERE 1=1`
+  const params: any[] = []
+
+  Object.entries(filters).forEach(([k, v]) =>
+    k === '_refId'
+      ? ((query += ` AND _link LIKE ?`), params.push(`%"_refId":"${v}"%`))
+      : k.includes('.')
+      ? ((query += ` AND json_extract(${k.split('.')[0]}, '$.${k.split('.')[1]}') = ?`), params.push(v))
+      : ((query += ` AND ${k} = ?`), params.push(v))
+  )
+
+  if (isFixture && userInPsKeys) {
+    query += ` AND (psKeys LIKE ? OR psKeys IS NULL)`
+    params.push(`%${userInPsKeys}%`)
+  }
+
+  // Use detectChanges: true to make the query reactive
+  const groupsQuery = usePSWatch<_Standing>(query, params, { detectChanges: true })
+  await groupsQuery.await()
+
+  // Create a reactive reference for the user map
+  const userMap = ref<Record<string, any>>({})
+
+  // Function to update user map when group data changes
+  const updateUserMap = async () => {
+    const userIds = groupsQuery.data.value
+      .flatMap((group) => JSON.parse((group.rows as string) || '[]'))
+      .map((row) => row._user)
+      .filter(Boolean)
+
+    if (userIds.length > 0) {
+      const usersQuery = usePSWatch<any>(`SELECT * FROM "account_users" WHERE id IN (${userIds.map(() => '?').join(',')})`, userIds)
+      await usersQuery.await()
+      userMap.value = Object.fromEntries(usersQuery.data.value.map((user) => [user.id, user]))
+    } else {
+      userMap.value = {}
+    }
+  }
+
+  // Initial user map update
+  await updateUserMap()
+
+  // Watch for changes in groups and update user map
+  watch(groupsQuery.data, updateUserMap, { deep: true })
+
+  // Create a computed property that updates when groups or user map changes
+  const processedGroups = computed(() =>
+    groupsQuery.data.value.map((group) => {
+      const parsedRows = JSON.parse((group.rows as string) || '[]')
+      return {
+        ...group,
+        _link: JSON.parse(group._link as string),
+        meta: JSON.parse(group.meta as string),
+        rows: parsedRows.map((row: any) => ({
+          ...row,
+          _user: userMap.value[row._user] || row._user,
+        })),
+      }
+    })
+  )
+
+  // Return the same format but with reactive data
   return {
     processedGroups,
   }

@@ -6,6 +6,7 @@
       <div class="flex gap-8">
         <div v-for="row of group.rows">
           {{ row._user?.name }}
+          {{ row.points }}
         </div>
       </div>
     </NuxtLink>
@@ -17,9 +18,12 @@ import type { User } from '~/types'
 
 definePageMeta({ layout: 'round' })
 const { round } = inject(roundKey)!
-useHead({ title: `${round.value?.name} | Fixtures` })
+useHead({ title: `${round.value?.name} | Fixtures | YOBYOB` })
 
-const { processedGroups: groups } = await useGroupsWithUsers({ _refId: useRoute().params.rid, _tournament: 'BTLEAG' }, true)
+const route = useRoute()
+
+const { processedGroups: groups } = await useGroupsWithUsers({ _refId: route.params.rid, _tournament: route.params.tid }, true)
+// const { processedGroups: groups } = await useGroupsWithUsers({ _refId: useRoute().params.rid }, true)
 
 const user = useState<User>('user')
 const isCurrentUserRow = (row: any): boolean => user.value?.id === row._user?.id

@@ -20,7 +20,6 @@
         <div class="flex gap-8">
           <NuxtLink :to="useSL(`round/${round?.id}`)"><h2>Overview</h2></NuxtLink>
           <NuxtLink :to="useSL(`round/${round?.id}/matches`)"><h2>Matches</h2></NuxtLink>
-          <NuxtLink :to="useSL(`round/${round?.id}/fixtures`)"><h2>Fixtures</h2></NuxtLink>
         </div>
       </div>
     </div>
@@ -72,6 +71,7 @@ const headers = computed(() => [
   { name: 'Result' },
   { name: 'You' },
   ...roundTournaments.value?.map((t) => ({
+    id: t.id,
     name: t.name,
     fixture: tournamentFixtures.value[t.id]?.[0], // Should only be one fixture per tournament
   })),
@@ -79,8 +79,8 @@ const headers = computed(() => [
 
 provide(roundKey, { round, tournamentCols: headers })
 
-const { data: userFixtures } = usePSWatch<any>('SELECT * FROM "group_fixtures"', [''])
-wecl(userFixtures)
+// const { data: userFixtures } = usePSWatch<any>('SELECT * FROM "group_fixtures"', [''])
+// wecl(userFixtures, 'userFixturesWhy')
 
-wecl(round)
+wecl(round, 'round')
 </script>
