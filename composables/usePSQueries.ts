@@ -198,6 +198,18 @@ export const usePopulatedRealFixture = async (rfId: string) => {
   })
 }
 
+export const usePopulatedGroupCursor = async (fid: string) => {
+  const cursorQuery = usePSWatch(`SELECT *, "_group" FROM "group_cursors" WHERE "_group" IN (?)`, [fid])
+
+  await cursorQuery.await()
+
+  return usePSQueryWatcher([cursorQuery], (cursor) => {
+    cursor.value = {
+      ...cursorQuery.data.value[0],
+    }
+  })
+}
+
 export const usePopulatedBet = async (options: { challengeId?: string; roundId?: string }) => {
   const { challengeId, roundId } = options
 

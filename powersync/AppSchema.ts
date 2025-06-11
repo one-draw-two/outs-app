@@ -139,6 +139,15 @@ const group_fixtures = new Table(
   { indexes: {} }
 )
 
+const group_cursors = new Table(
+  {
+    _group: column.text,
+    _link: column.text,
+    rows: column.text,
+  },
+  { indexes: {} }
+)
+
 // Real
 
 const real_fixtures = new Table(
@@ -221,6 +230,7 @@ export const AppSchema = new Schema({
   //
   group_standings,
   group_fixtures,
+  group_cursors,
   //
   real_fixtures,
   real_teams,
@@ -248,6 +258,7 @@ export type BetRecord = Database['entry_bets']
 
 export type StandingRecord = Database['group_standings']
 export type FixtureRecord = Database['group_fixtures']
+export type CursorRecord = Database['group_cursors']
 
 export type RealFixtureRecord = Database['real_fixtures']
 export type RealTeamRecord = Database['real_teams']
