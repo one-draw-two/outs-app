@@ -5,8 +5,13 @@
 
       <template v-else-if="col.name === 'You'">
         <div class="flex flex-col justify-center w-full">
+          <!--
           <div v-for="$challenge of props.rf?.$challenges" class="font-mono text-sm text-center py-1" :class="$challenge.$userBet?.potentialPoints ? '' : 'text-gray-200'">
             {{ $challenge.$userBet?.bet || '???' }}
+          </div>          
+          -->
+          <div class="font-mono text-sm text-center py-1" :class="props.rf?.$challenge.$userBet?.potentialPoints ? '' : 'text-gray-200'">
+            {{ props.rf?.$challenge.$userBet?.bet || '???' }}
           </div>
         </div>
       </template>

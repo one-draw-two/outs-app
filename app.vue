@@ -7,6 +7,7 @@
 
     <AppUserOverlay v-if="user" />
     <AppNetworkTray />
+    <AppDecorations />
   </div>
 </template>
 

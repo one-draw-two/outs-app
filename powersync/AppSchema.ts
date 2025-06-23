@@ -205,6 +205,7 @@ const timeline_snapshots = new Table(
     _round: column.text,
     _realFixture: column.text,
     _realEvent: column.text,
+    _challenge: column.text,
     pointer: column.text,
     order: column.integer,
     _ref: column.text,

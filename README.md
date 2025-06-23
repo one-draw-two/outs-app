@@ -75,3 +75,4 @@ nativeRoute.params.stid // Then use like this
 - Wip: Initial horizontal season calendar: 510.72kb
 - Feat: Tournament based round fixture pages (quick): 515.2kb
 - Wip: Trying the PS token reissue logic: 515.64kb. After package updates including powersync/web and dependencies: 503.79kb
+- Feat: With Decorations and TripleCrop svg clip components (dummy): 504.77kb

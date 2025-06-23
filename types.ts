@@ -13,6 +13,7 @@ import type {
   RealPlayerRecord,
   RealEventRecord,
   StandingRecord,
+  SnapshotRecord,
 } from '~/powersync/AppSchema'
 
 interface Base {
@@ -53,6 +54,8 @@ export interface _P_RealFixture extends Omit<_RealFixture, '_homeTeam' | '_awayT
   _awayTeam: _RealTeam | undefined
   _events?: _RealEvent[]
 }
+
+export type _Snapshot = SnapshotRecord & WithPSChange
 
 // Add these type definitions for fixture slots
 export interface FixtureSlot {
@@ -96,6 +99,7 @@ export interface _P_Round extends _Round {
   challenges?: _P_Challenge[]
   snapshots?: {
     _realFixture?: EnhancedRealFixture | null
+    _challenge?: string // Has to be there
     [key: string]: any
   }[]
   groups?: _P_Standing[]
@@ -136,7 +140,8 @@ export interface _P_Stage extends Omit<_Stage, 'rounds' | 'groups'> {
 // Also ensure your EnhancedRealFixture allows for nullability
 export interface EnhancedRealFixture extends Partial<_RealFixture> {
   $index?: number
-  $challenges?: EnhancedChallenge[]
+  // $challenges?: EnhancedChallenge[]
+  $challenge?: EnhancedChallenge
   [key: string]: any
 }
 // UTIL

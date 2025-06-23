@@ -15,6 +15,7 @@ import type {
   _RealEvent,
   FixtureSlot,
   BetFixtureSlot,
+  _Snapshot,
 } from '~/types'
 
 export const usePopulatedSeason = async (seasonId: string) => {
@@ -66,7 +67,7 @@ export const usePopulatedRound = async (roundId: string, userId?: string) => {
   const realFixtures = transformedChallenges?.flatMap((c: any) => c.fixtureSlots).map((fs: any) => fs._realFixture)
   const realFixturesQuery = usePSWatch<_RealFixture>(`SELECT * FROM "real_fixtures" WHERE id IN (${realFixtures.map(() => '?').join(',')})`, realFixtures, { detectChanges: true })
 
-  const snapshotsQuery = usePSWatch<_Standing>('SELECT * FROM "timeline_snapshots" WHERE "_round" = ?', [roundId], { detectChanges: true })
+  const snapshotsQuery = usePSWatch<_Snapshot>('SELECT * FROM "timeline_snapshots" WHERE "_round" = ? ORDER BY "order" ASC', [roundId], { detectChanges: true })
 
   // const stageQuery = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE id = ?', [roundQuery.data.value[0]?._stage], { detectChanges: true })
   // const { processedGroups } = await useGroupsWithUsers({ _refId: roundId })
@@ -79,25 +80,34 @@ export const usePopulatedRound = async (roundId: string, userId?: string) => {
     const processedSnapshots = snapshotsQuery.data.value
       .map((snapshot) => ({
         ...snapshot,
+        _challenge: snapshot._challenge || undefined,
         _realFixture: realFixturesQuery.data.value.find((rf) => rf.id === snapshot._realFixture),
       }))
-      .sort((a, b) => new Date(a._realFixture?.startingAt || 0).getTime() - new Date(b._realFixture?.startingAt || 0).getTime())
+      // .sort((a, b) => new Date(a._realFixture?.startingAt || 0).getTime() - new Date(b._realFixture?.startingAt || 0).getTime())
       .map((snapshot, index) => {
         const fixtureId = snapshot._realFixture?.id
 
         // console.log('snapshot', snapshot)
+
+        const challenge = transformedChallenges.find((c) => c.id === snapshot._challenge)
 
         const fixtureWithChallenges = {
           ...snapshot,
           _realFixture: {
             ...snapshot._realFixture,
             $index: index,
+            /*
             $challenges: transformedChallenges
               .filter((challenge) => challenge.fixtureSlots?.some((slot: FixtureSlot) => slot._realFixture === fixtureId))
               .map((challenge) => ({
                 ...challenge,
                 $userBet: transformedBets.find((bet) => bet._challenge === challenge.id)?.betFixtureSlots?.find((slot: BetFixtureSlot) => slot._realFixture === fixtureId),
               })),
+            */
+            $challenge: challenge && {
+              ...challenge,
+              $userBet: transformedBets.find((bet) => bet._challenge === challenge.id)?.betFixtureSlots?.find((slot: BetFixtureSlot) => slot._realFixture === fixtureId),
+            },
           },
         }
 
