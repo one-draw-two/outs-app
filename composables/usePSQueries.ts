@@ -204,8 +204,15 @@ export const usePopulatedGroupCursor = async (fid: string) => {
   await cursorQuery.await()
 
   return usePSQueryWatcher([cursorQuery], (cursor) => {
-    cursor.value = {
-      ...cursorQuery.data.value[0],
+    const rawCursor = cursorQuery.data.value[0]
+    if (rawCursor) {
+      cursor.value = {
+        ...rawCursor,
+        _link: JSON.parse(rawCursor._link || '{}'),
+        rows: JSON.parse(rawCursor.rows || '[]'),
+      }
+    } else {
+      cursor.value = null
     }
   })
 }

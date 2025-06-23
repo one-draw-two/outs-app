@@ -38,7 +38,7 @@ wecl(enhancedFixtures)
 
 useDynamicPS().updatePowerSyncParams({ selected_fixture: fid })
 const { data: cursor } = await usePopulatedGroupCursor(fid as string)
-wecl(cursor)
+wecl(cursor, 'cursor')
 
 const pageTitle = computed(() => `Fixture ${fid}`)
 useHead({ title: pageTitle })
