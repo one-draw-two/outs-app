@@ -215,11 +215,12 @@ export const usePopulatedGroupCursor = async (fid: string) => {
 
   return usePSQueryWatcher([cursorQuery], (cursor) => {
     const rawCursor = cursorQuery.data.value[0]
+
     if (rawCursor) {
       cursor.value = {
         ...rawCursor,
         _link: JSON.parse(rawCursor._link || '{}'),
-        rows: JSON.parse(rawCursor.rows || '[]'),
+        betsAddedSnapshots: JSON.parse(rawCursor.betsAddedSnapshots || '[]'),
       }
     } else {
       cursor.value = null

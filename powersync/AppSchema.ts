@@ -143,7 +143,8 @@ const group_cursors = new Table(
   {
     _group: column.text,
     _link: column.text,
-    rows: column.text,
+    betsAddedSnapshots: column.text,
+    psKeys: column.text,
   },
   { indexes: {} }
 )
