@@ -1,5 +1,5 @@
 <template>
-  <div :class="isNoFit ? 'w-fit' : ''">
+  <div :class="isNoFit ? 'w-fit' : ''" :title="title">
     <div class="box-content" :style="clipStyle" :class="isNoOutline ? '' : `${padding} !bg-black`">
       <div class="box-content" :style="clipStyle" :class="isNoOutline ? '' : `${padding} !bg-white`">
         <div class="box-content" :style="clipStyle" :class="isNoOutline ? '' : `${padding} !bg-black`">
@@ -26,6 +26,7 @@ const props = defineProps<{
   isNoOutline?: boolean
   isLarge?: boolean
   isNoFit?: boolean
+  title?: string
 }>()
 
 const padding = computed(() => (props.isLarge ? 'p-[3px]' : 'p-[2px]'))

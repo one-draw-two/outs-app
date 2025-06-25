@@ -77,3 +77,4 @@ nativeRoute.params.stid // Then use like this
 - Wip: Trying the PS token reissue logic: 515.64kb. After package updates including powersync/web and dependencies: 503.79kb
 - Feat: With Decorations and TripleCrop svg clip components (dummy): 504.77kb
 - Pre: Refactoring the fixtures into the match point columns: 505.31kb, first round of refactoring: 506.12kb
+- Feat: Initial, not functioning round horizontal progress component: 507.15kb

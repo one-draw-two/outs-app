@@ -10,6 +10,9 @@
       <clipPath id="octagon" clipPathUnits="objectBoundingBox">
         <path d="M0.5,0 l0.354,0.146 L1,0.5 l-0.146,0.354 L0.5,1,0.146,0.854,0,0.5,0.146,0.146" />
       </clipPath>
+      <clipPath id="circle" clipPathUnits="objectBoundingBox">
+        <path d="M1,0.5 C1,0.776,0.776,1,0.5,1 C0.224,1,0,0.776,0,0.5 C0,0.224,0.224,0,0.5,0 C0.776,0,1,0.224,1,0.5" />
+      </clipPath>
     </defs>
   </svg>
 </template>

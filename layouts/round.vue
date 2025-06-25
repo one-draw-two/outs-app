@@ -1,19 +1,26 @@
 <template>
   <div class="space-y-8">
-    <div :class="`bg-${stage?.color}-500/50`">
+    <div :class="`bg-${roundStatusColor}-500/50`">
       <div class="h-12 main-container flex gap-8 items-center">
-        <div class="flex gap-4">
+        <div class="flex items-center gap-4">
           <!-- 
           <NuxtLink :to="useSL(`stage/${round?._stage}`)" class="hover:underline">Stage {{ stage?.name }}</NuxtLink>
           -->
 
           <NuxtLink :to="useSL(`round/${round?.id}`)" class="hover:underline">Round {{ round?.name }}</NuxtLink>
+
+          <PrevTripleCrop :clip="'circle'" :title="`Round status: ${round?.status}`">
+            <div class="size-3" :class="`bg-${roundStatusColor}-500`" />
+          </PrevTripleCrop>
         </div>
 
-        <div class="flex-1 flex justify-end gap-8">
+        <div class="flex-1 flex justify-end items-center gap-8">
           <NuxtLink :to="useSL(`round/${round?.id}/challenges`)">Challenges Deadline {{ $day(round?._h_roundDeadline).format('ddd DD/MM HH:mm') }}</NuxtLink>
           <p v-highlight="round">Cursor {{ round?._h_lastFinishedMatchIndex }}</p>
-          <p v-highlight="round">{{ round?.status }}</p>
+          <RoundHorizontalProgress :round="round" :status-color="`bg-${roundStatusColor}-500`" />
+          <!--
+                    <p v-highlight="round">{{ round?.status }}</p>
+          -->
         </div>
       </div>
     </div>
@@ -55,49 +62,6 @@ useDynamicPS().updatePowerSyncParams({ selected_round: rid })
 const sKey = 'real-fixture'
 const roundTournaments = computed(() => (season.value?.tournaments?.filter((t) => t.snapshotConfig?.some((c) => c.name === sKey)) || []).sort((a, b) => getOrder(a, sKey) - getOrder(b, sKey)))
 
-const fixtureData = computed(() => {
-  if (!round.value?.userFixtures || !round.value?.userCursors) return []
-
-  // Map fixtures to include their cursor data
-  return round.value.userFixtures.map((fixture) => {
-    const cursor = round.value?.userCursors[fixture.id]
-
-    // Process snapshots for this fixture with user/oppo structure
-    const formattedSnapshots = round.value?.snapshots?.map((s) => {
-      const cursorSnapshot = cursor?.betsAddedSnapshots?.find((bas) => bas._snapshot === s.id)
-
-      // Process bets to include user and opponent information
-      const formattedBets =
-        cursorSnapshot?._bets?.map((bet) => {
-          const isUserBet = bet._user === fixture.userRow?._user?.id
-          const isOppoBet = bet._user === fixture.oppoRow?._user?.id
-
-          return {
-            ...bet,
-            isUserBet,
-            isOppoBet,
-          }
-        }) || []
-
-      return {
-        ...s,
-        $bets: formattedBets,
-        // Include these for backward compatibility
-        $userBet: formattedBets.find((b) => b.isUserBet)?.betFixtureSlot,
-        $oppoBet: formattedBets.find((b) => b.isOppoBet)?.betFixtureSlot,
-      }
-    })
-
-    return {
-      id: fixture.id,
-      fixture,
-      userRow: fixture.userRow,
-      oppoRow: fixture.oppoRow,
-      betsAddedSnapshots: formattedSnapshots,
-    }
-  })
-})
-
 interface FixturesByTournament {
   [tournamentId: string]: any[]
 }
@@ -116,12 +80,10 @@ const tournamentFixtures = computed<FixturesByTournament>(() => {
 })
 
 const headers = computed(() => [
-  // { name: 'Result' },
   { name: 'You' },
   ...roundTournaments.value?.map((t) => {
     const fixture = tournamentFixtures.value[t.id]?.[0]
-    const fixtureDetails = fixture ? fixtureData.value.find((fd) => fd.id === fixture.id) : null
-
+    const fixtureDetails = fixture ? round.value?.fixtureData?.find((fd: any) => fd.id === fixture.id) : null
     return {
       id: t.id,
       name: t.name,
@@ -130,6 +92,15 @@ const headers = computed(() => [
     }
   }),
 ])
+
+const roundStatusColor = computed(() => {
+  if (round.value?.status === 'current-published') return 'orange'
+  if (round.value?.status === 'current-points-getting-calculated') return 'yellow'
+  if (round.value?.status === 'current-points-calculated') return 'teal'
+  if (round.value?.status === 'current-live') return 'green'
+  if (round.value?.status === 'completed') return 'blue'
+  else return 'gray'
+})
 
 provide(roundKey, { round, tournamentCols: headers })
 

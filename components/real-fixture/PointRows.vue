@@ -29,7 +29,7 @@ const props = defineProps<{
 }>()
 
 const { round, tournamentCols } = inject(roundKey)!
-const user = useState<User>('user')
+const user = useState('user')
 
 // Helper function to get user bet from cursor data
 function getUserBetFromCursor(realFixtureIndex: number) {
