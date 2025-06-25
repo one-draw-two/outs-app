@@ -88,7 +88,7 @@ export interface _P_Bet extends Omit<_Bet, 'betFixtureSlots'> {
 
 // Add a type for the enhanced challenges with user bets
 export interface EnhancedChallenge extends _Challenge {
-  $userBet?: BetFixtureSlot
+  // $userBet?: BetFixtureSlot // Removed after cursors
   $points?: number[] | null
   [key: string]: any
 }

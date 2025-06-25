@@ -29,7 +29,7 @@ const props = defineProps<{
 }>()
 
 const { round, tournamentCols } = inject(roundKey)!
-const user = useState('user')
+const user = useState<User>('user')
 
 // Helper function to get user bet from cursor data
 function getUserBetFromCursor(realFixtureIndex: number) {
@@ -51,9 +51,9 @@ function getUserBetFromCursor(realFixtureIndex: number) {
   if (!cursorSnapshot) return null
 
   // Find user's bet in this snapshot
-  return cursorSnapshot._bets?.find((b) => b._user === user.value?.id)?.betFixtureSlot
+  return cursorSnapshot._bets?.find((b) => b._user === user.value?.id)
 }
 
 const getOppoBetForFixture = (fixtureDetails, realFixtureIndex: number) =>
-  fixtureDetails.betsAddedSnapshots?.find((s) => s._realFixture?.$index === realFixtureIndex)?.$bets?.find((bet) => bet._user === fixtureDetails.oppoRow?._user?.id)?.betFixtureSlot || null
+  fixtureDetails.betsAddedSnapshots?.find((s) => s._realFixture?.$index === realFixtureIndex)?.$bets?.find((bet) => bet._user === fixtureDetails.oppoRow?._user?.id) || null
 </script>

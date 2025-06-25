@@ -65,11 +65,10 @@ const betsAddedSnapshots = computed(() =>
     // Use either the freshly fetched cursor or the one from round data
     const cursorData = cursor.value.value || existingCursor.value
     const cursorSnapshot = cursorData?.betsAddedSnapshots?.find((bas: any) => bas._snapshot === s.id)
-
     return {
       ...s,
-      $homeBet: cursorSnapshot?._bets?.find((b: any) => b._user === rows.value.home?._user.id)?.betFixtureSlot,
-      $awayBet: cursorSnapshot?._bets?.find((b: any) => b._user === rows.value.away?._user.id)?.betFixtureSlot,
+      $homeBet: cursorSnapshot?._bets?.find((b: any) => b._user === rows.value.home?._user.id),
+      $awayBet: cursorSnapshot?._bets?.find((b: any) => b._user === rows.value.away?._user.id),
     }
   })
 )

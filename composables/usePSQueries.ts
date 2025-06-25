@@ -123,8 +123,8 @@ export const usePopulatedRound = async (roundId: string, userId?: string) => {
         return {
           ...s,
           $bets: formattedBets,
-          $userBet: formattedBets.find((b) => b.isUserBet)?.betFixtureSlot,
-          $oppoBet: formattedBets.find((b) => b.isOppoBet)?.betFixtureSlot,
+          $userBet: formattedBets.find((b) => b.isUserBet),
+          $oppoBet: formattedBets.find((b) => b.isOppoBet),
         }
       })
 
