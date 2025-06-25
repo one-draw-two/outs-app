@@ -3,8 +3,11 @@
     <div :class="`bg-${stage?.color}-500/50`">
       <div class="h-12 main-container flex gap-8 items-center">
         <div class="flex gap-4">
-          <NuxtLink :to="useSL(`stage/${round?._stage}`)">Stage {{ stage?.name }}</NuxtLink>
-          <NuxtLink :to="useSL(`round/${round?.id}`)">Round {{ round?.name }}</NuxtLink>
+          <!-- 
+          <NuxtLink :to="useSL(`stage/${round?._stage}`)" class="hover:underline">Stage {{ stage?.name }}</NuxtLink>
+          -->
+
+          <NuxtLink :to="useSL(`round/${round?.id}`)" class="hover:underline">Round {{ round?.name }}</NuxtLink>
         </div>
 
         <div class="flex-1 flex justify-end gap-8">
@@ -15,6 +18,7 @@
       </div>
     </div>
 
+    <!--
     <div class="main-container flex gap-8">
       <div class="flex-1 space-y-8">
         <div class="flex gap-8">
@@ -22,7 +26,8 @@
           <NuxtLink :to="useSL(`round/${round?.id}/matches`)"><h2>Matches</h2></NuxtLink>
         </div>
       </div>
-    </div>
+    </div>    
+    -->
 
     <div class="main-container">
       <slot />

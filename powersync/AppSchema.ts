@@ -210,6 +210,7 @@ const timeline_snapshots = new Table(
     pointer: column.text,
     order: column.integer,
     _ref: column.text,
+    correctBet: column.text,
   },
   { indexes: {} }
 )

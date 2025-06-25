@@ -23,3 +23,8 @@ body::-webkit-scrollbar {
   @apply box-content;
   clip-path: url(#flag);
 }
+
+.octagon {
+  @apply box-content;
+  clip-path: url(#octagon);
+}

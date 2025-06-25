@@ -76,6 +76,26 @@ export const usePopulatedRound = async (roundId: string, userId?: string) => {
   // const enhancedFixtures = enhanceFixturesWithUserData(processedGroups, userId)
   const enhancedFixtures = computed(() => enhanceFixturesWithUserData(processedGroups.value, userId))
 
+  const { data: cursors } = await usePopulatedGroupCursor(enhancedFixtures.value.map((ef: any) => ef.id))
+
+  console.log('enhancedFixtures', enhancedFixtures.value)
+  console.log('cursors', cursors.value)
+
+  /*
+  const betsAddedSnapshots = computed(() =>
+    round.value?.snapshots?.map((s: any) => {
+      const cursorSnapshot = cursor.value?.betsAddedSnapshots?.find((bas: any) => bas._snapshot === s.id)
+      const rfChallenge = s._realFixture.$challenge
+
+      return {
+        ...s,
+        $homeBet: cursorSnapshot?._bets?.find((b: any) => b._user === rows.value.home?._user.id)?.betFixtureSlot,
+        $awayBet: cursorSnapshot?._bets?.find((b: any) => b._user === rows.value.away?._user.id)?.betFixtureSlot,
+      }
+    })
+  )
+  */
+
   return usePSQueryWatcher<_P_Round>([roundQuery, challengesQuery, realFixturesQuery, betsQuery], (round) => {
     const processedSnapshots = snapshotsQuery.data.value
       .map((snapshot) => ({
@@ -83,35 +103,22 @@ export const usePopulatedRound = async (roundId: string, userId?: string) => {
         _challenge: snapshot._challenge || undefined,
         _realFixture: realFixturesQuery.data.value.find((rf) => rf.id === snapshot._realFixture),
       }))
-      // .sort((a, b) => new Date(a._realFixture?.startingAt || 0).getTime() - new Date(b._realFixture?.startingAt || 0).getTime())
       .map((snapshot, index) => {
-        const fixtureId = snapshot._realFixture?.id
-
-        // console.log('snapshot', snapshot)
-
         const challenge = transformedChallenges.find((c) => c.id === snapshot._challenge)
 
-        const fixtureWithChallenges = {
+        return {
           ...snapshot,
           _realFixture: {
             ...snapshot._realFixture,
             $index: index,
-            /*
-            $challenges: transformedChallenges
-              .filter((challenge) => challenge.fixtureSlots?.some((slot: FixtureSlot) => slot._realFixture === fixtureId))
-              .map((challenge) => ({
-                ...challenge,
-                $userBet: transformedBets.find((bet) => bet._challenge === challenge.id)?.betFixtureSlots?.find((slot: BetFixtureSlot) => slot._realFixture === fixtureId),
-              })),
-            */
             $challenge: challenge && {
               ...challenge,
-              $userBet: transformedBets.find((bet) => bet._challenge === challenge.id)?.betFixtureSlots?.find((slot: BetFixtureSlot) => slot._realFixture === fixtureId),
+              $userBet: transformedBets.find((bet) => bet._challenge === challenge.id)?.betFixtureSlots?.find((slot: BetFixtureSlot) => slot._realFixture === snapshot._realFixture?.id),
             },
+            $aboveBetsBasedOnChallengeType: challenge?.type === '1x2' ? 3 : challenge?.type === 'Goals' ? 1 : 0,
+            $correctBet: snapshot?.correctBet,
           },
         }
-
-        return fixtureWithChallenges
       })
 
     round.value = {
@@ -120,6 +127,7 @@ export const usePopulatedRound = async (roundId: string, userId?: string) => {
       snapshots: processedSnapshots,
       userBets: transformedBets,
       userFixtures: enhancedFixtures,
+      userCursors: cursors.value,
       // _stage: stageQuery.data.value[0],
     }
   })
@@ -208,6 +216,7 @@ export const usePopulatedRealFixture = async (rfId: string) => {
   })
 }
 
+/*
 export const usePopulatedGroupCursor = async (fid: string) => {
   const cursorQuery = usePSWatch(`SELECT *, "_group" FROM "group_cursors" WHERE "_group" IN (?)`, [fid])
 
@@ -224,6 +233,37 @@ export const usePopulatedGroupCursor = async (fid: string) => {
       }
     } else {
       cursor.value = null
+    }
+  })
+}
+*/
+
+export const usePopulatedGroupCursor = async (fid: string | string[]) => {
+  // Check if fid is an array or a single string
+  const isArray = Array.isArray(fid)
+  const fidArray = isArray ? fid : [fid]
+
+  // Construct the SQL query with the right number of placeholders
+  const placeholders = fidArray.map(() => '?').join(',')
+  const cursorQuery = usePSWatch(`SELECT *, "_group" FROM "group_cursors" WHERE "_group" IN (${placeholders})`, fidArray)
+
+  await cursorQuery.await()
+
+  return usePSQueryWatcher([cursorQuery], (cursor) => {
+    // Transform all cursors with proper JSON parsing
+    const transformedCursors = cursorQuery.data.value.map((rawCursor) => ({
+      ...rawCursor,
+      _link: JSON.parse(rawCursor._link || '{}'),
+      betsAddedSnapshots: JSON.parse(rawCursor.betsAddedSnapshots || '[]'),
+    }))
+
+    // If input was a single ID, return just the first cursor (or null)
+    if (!isArray) {
+      cursor.value = transformedCursors[0] || null
+    }
+    // If input was an array, return an object with fixture IDs as keys
+    else {
+      cursor.value = Object.fromEntries(transformedCursors.map((c: any) => [c._group, c]))
     }
   })
 }

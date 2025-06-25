@@ -1,7 +1,11 @@
 <template>
   <div class="bg-blue-200 flex items-stretch gap-4">
     <div v-for="(col, index) in tournamentCols" :key="index" class="flex-1 bg-blue-200 flex-center">
-      <template v-if="col.name === 'Result'"> </template>
+      <template v-if="col.name === 'Result'">
+        <div class="font-mono text-sm text-center py-1">
+          {{ props.rf?.$correctBet }}
+        </div>
+      </template>
 
       <template v-else-if="col.name === 'You'">
         <div class="flex flex-col justify-center w-full">
@@ -16,7 +20,9 @@
         </div>
       </template>
 
-      <template v-else> </template>
+      <template v-else>
+        <div>asd</div>
+      </template>
     </div>
   </div>
 </template>
