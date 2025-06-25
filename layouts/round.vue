@@ -55,6 +55,49 @@ useDynamicPS().updatePowerSyncParams({ selected_round: rid })
 const sKey = 'real-fixture'
 const roundTournaments = computed(() => (season.value?.tournaments?.filter((t) => t.snapshotConfig?.some((c) => c.name === sKey)) || []).sort((a, b) => getOrder(a, sKey) - getOrder(b, sKey)))
 
+const fixtureData = computed(() => {
+  if (!round.value?.userFixtures || !round.value?.userCursors) return []
+
+  // Map fixtures to include their cursor data
+  return round.value.userFixtures.map((fixture) => {
+    const cursor = round.value?.userCursors[fixture.id]
+
+    // Process snapshots for this fixture with user/oppo structure
+    const formattedSnapshots = round.value?.snapshots?.map((s) => {
+      const cursorSnapshot = cursor?.betsAddedSnapshots?.find((bas) => bas._snapshot === s.id)
+
+      // Process bets to include user and opponent information
+      const formattedBets =
+        cursorSnapshot?._bets?.map((bet) => {
+          const isUserBet = bet._user === fixture.userRow?._user?.id
+          const isOppoBet = bet._user === fixture.oppoRow?._user?.id
+
+          return {
+            ...bet,
+            isUserBet,
+            isOppoBet,
+          }
+        }) || []
+
+      return {
+        ...s,
+        $bets: formattedBets,
+        // Include these for backward compatibility
+        $userBet: formattedBets.find((b) => b.isUserBet)?.betFixtureSlot,
+        $oppoBet: formattedBets.find((b) => b.isOppoBet)?.betFixtureSlot,
+      }
+    })
+
+    return {
+      id: fixture.id,
+      fixture,
+      userRow: fixture.userRow,
+      oppoRow: fixture.oppoRow,
+      betsAddedSnapshots: formattedSnapshots,
+    }
+  })
+})
+
 interface FixturesByTournament {
   [tournamentId: string]: any[]
 }
@@ -73,13 +116,19 @@ const tournamentFixtures = computed<FixturesByTournament>(() => {
 })
 
 const headers = computed(() => [
-  { name: 'Result' },
+  // { name: 'Result' },
   { name: 'You' },
-  ...roundTournaments.value?.map((t) => ({
-    id: t.id,
-    name: t.name,
-    fixture: tournamentFixtures.value[t.id]?.[0], // Should only be one fixture per tournament
-  })),
+  ...roundTournaments.value?.map((t) => {
+    const fixture = tournamentFixtures.value[t.id]?.[0]
+    const fixtureDetails = fixture ? fixtureData.value.find((fd) => fd.id === fixture.id) : null
+
+    return {
+      id: t.id,
+      name: t.name,
+      fixture,
+      fixtureDetails,
+    }
+  }),
 ])
 
 provide(roundKey, { round, tournamentCols: headers })

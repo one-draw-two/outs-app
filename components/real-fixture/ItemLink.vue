@@ -1,6 +1,6 @@
 <template>
   <NuxtLink :to="useSL(`round/${useRoute().params.rid}/match/${rf?.id}`)" class="block">
-    <div class="grid grid-cols-[2rem_4rem_3rem_3rem_1fr_3rem] gap-4 items-center">
+    <div class="grid grid-cols-[2rem_4rem_3rem_3rem_1fr_1rem_3rem] gap-4 items-center">
       <div class="font-mono">{{ (rf.$index + 1).toString().padStart(2, '0') }}</div>
       <div class="font-mono">{{ $day(rf?.startingAt).format('HH:mm') }}</div>
       <div v-highlight="rf" class="tabular-nums">{{ minuteDisplay }}</div>
@@ -9,7 +9,8 @@
         <img :src="challengePath" class="flag w-full h-full object-cover bg-white" />
       </PrevTripleCrop>
       <div class="min-w-0 truncate">{{ displayName }}</div>
-      <div v-highlight="rf">{{ rf?.result }}</div>
+      <div class="italic text-gray-500">{{ rf?.$correctBet }}</div>
+      <div v-highlight="rf">{{ displayResult }}</div>
     </div>
   </NuxtLink>
 </template>
@@ -22,6 +23,7 @@ const props = defineProps<{
 }>()
 
 const displayName = computed(() => (props.rf?.$challenge?.type === 'RoundGoalCount' ? 'RoundGoalCount' : props.rf?.name))
+const displayResult = computed(() => (props.rf?.$challenge?.type === 'RoundGoalCount' ? props.rf?.$correctBet : props.rf?.result))
 
 const minuteDisplay = computed(() => {
   if (props.rf?.status === 'halftime') return 'HT'

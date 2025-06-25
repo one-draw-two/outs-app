@@ -1,10 +1,10 @@
 <template>
   <main class="space-y-4 relative">
     <RealFixturePointColumns>
-      <div class="h-96 bg-green-500"></div>
+      <div class="h-24 bg-green-500"></div>
     </RealFixturePointColumns>
     <div>
-      <NuxtLink :to="`${useSL(`round/${round?.id}/matches`)}#rfi-${round?._h_lastFinishedMatchIndex}`"><h2>See all matches</h2></NuxtLink>
+      <NuxtLink :to="`${useSL(`round/${round?.id}/matches`)}`"><h2>See all matches</h2></NuxtLink>
       <div v-for="(rf, rfi) in realFixtures" :key="rf?.id" class="lg:flex items-stretch py-4 hover:bg-gray-100">
         <RealFixtureItemLink :rf="rf" class="flex-1" />
         <RealFixturePointRows :rf="rf" class="flex-2" />
@@ -13,6 +13,9 @@
   </main>
 </template>
 <script setup lang="ts">
+// Dont delete the comment below, it is whoing how to link to the matches page with a specific match index
+// <NuxtLink :to="`${useSL(`round/${round?.id}/matches`)}#rfi-${round?._h_lastFinishedMatchIndex}`"><h2>See all matches</h2></NuxtLink>
+
 import type { _RealFixture } from '~/types'
 
 definePageMeta({ layout: 'round' })

@@ -1,6 +1,6 @@
 <template>
   <main class="space-y-4 relative">
-    <RealFixturePointColumns class="sticky top-0 h-24" />
+    <RealFixturePointColumns class="sticky top-0 h-24 z-10" />
     <div v-for="(dateGroup, di) in groupedRealFixtures" :key="di" class="space-y-4">
       <h3 class="font-mono font-bold bg-gray-50">{{ dateGroup.dateLabel }}</h3>
       <div>

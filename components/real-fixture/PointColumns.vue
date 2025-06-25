@@ -4,7 +4,7 @@
       <slot />
     </div>
     <div class="flex-2 bg-blue-200 flex items-stretch gap-4">
-      <div v-for="h in tournamentCols" class="flex-1 bg-blue-200 flex-center flex-col gap-2">
+      <div v-for="h in tournamentCols" class="flex-1 bg-blue-200 flex-col gap-2">
         <NuxtLink :to="useSL(`round/${useRoute().params.rid}/fixtures/${h.id}`)" class="block">
           {{ h.name }}
         </NuxtLink>

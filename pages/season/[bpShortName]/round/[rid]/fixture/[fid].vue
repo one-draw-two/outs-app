@@ -13,11 +13,8 @@
       </div>
 
       <template v-for="side in ['home', 'away']" :key="side">
-        <div class="flex-1 flex gap-2 items-center">
-          <PrevTripleCrop v-if="bas[`$${side}Bet`]?.slotIndex <= bas._realFixture.$aboveBetsBasedOnChallengeType" :clip="'octagon'">
-            <div class="size-5 flex-center text-sm font-bold" :class="getSlotIndexColor(bas[`$${side}Bet`]?.slotIndex)">{{ bas[`$${side}Bet`]?.bet }}</div>
-          </PrevTripleCrop>
-          <div class="px-2 bg-gray-200 rounded-md" :class="bas[`$${side}Bet`]?.bet === bas.correctBet ? '' : 'line-through'">{{ bas[`$${side}Bet`]?.potentialPoints?.join(' / ') }}</div>
+        <div class="flex-1">
+          <RealFixtureBetAndPointsDisplay :bet="bas[`$${side}Bet`]" :correct-bet="bas.correctBet" :above-bets-based-on-challenge-type="bas._realFixture.$aboveBetsBasedOnChallengeType" />
         </div>
       </template>
     </div>
@@ -47,12 +44,28 @@ wecl(enhancedFixtures)
 
 // wecl(processedGroups)
 
-useDynamicPS().updatePowerSyncParams({ selected_fixture: fid })
-const { data: cursor }: { data: any } = await usePopulatedGroupCursor(fid as string)
+// Check if cursor already exists in round data
+const existingCursor = computed(() => round.value?.userCursors?.[fid as string])
+const cursor = ref<any>(null)
+
+// Only fetch cursor if it doesn't already exist in round data
+if (!existingCursor.value) {
+  useDynamicPS().updatePowerSyncParams({ selected_fixture: fid })
+  const { data: fetchedCursor } = await usePopulatedGroupCursor(fid as string)
+  cursor.value = fetchedCursor
+} else {
+  cursor.value = existingCursor
+}
+
+// useDynamicPS().updatePowerSyncParams({ selected_fixture: fid })
+// const { data: cursor }: { data: any } = await usePopulatedGroupCursor(fid as string)
 
 const betsAddedSnapshots = computed(() =>
   round.value?.snapshots?.map((s: any) => {
-    const cursorSnapshot = cursor.value?.betsAddedSnapshots?.find((bas: any) => bas._snapshot === s.id)
+    // Use either the freshly fetched cursor or the one from round data
+    const cursorData = cursor.value.value || existingCursor.value
+    const cursorSnapshot = cursorData?.betsAddedSnapshots?.find((bas: any) => bas._snapshot === s.id)
+
     return {
       ...s,
       $homeBet: cursorSnapshot?._bets?.find((b: any) => b._user === rows.value.home?._user.id)?.betFixtureSlot,
@@ -62,25 +75,6 @@ const betsAddedSnapshots = computed(() =>
 )
 
 wecl(betsAddedSnapshots, 'Bets added snapshots')
-
-/*
-const seasonCountryCode = computed(() => {
-  if (props.realFixture?.afSeasonId === '39') return 'ENG'
-  if (props.realFixture?.afSeasonId === '61') return 'FRA'
-  if (props.realFixture?.afSeasonId === '78') return 'GER'
-  if (props.realFixture?.afSeasonId === '135') return 'ITA'
-  if (props.realFixture?.afSeasonId === '140') return 'ESP'
-  if (props.realFixture?.afSeasonId === '203') return 'TUR'
-})
-*/
-
-const getSlotIndexColor = (si: number) => {
-  if (si === 0) return 'bg-blue-200'
-  if (si === 1) return 'bg-green-200'
-  if (si === 2) return 'bg-yellow-200'
-  if (si === 3) return 'bg-orange-200'
-  return 'opacity-50'
-}
 
 const pageTitle = computed(() => `Fixture ${fid}`)
 useHead({ title: pageTitle })
