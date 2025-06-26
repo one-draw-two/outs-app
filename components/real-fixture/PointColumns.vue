@@ -11,7 +11,7 @@
 
         <NuxtLink v-if="h.fixture" :to="useSL(`round/${useRoute().params.rid}/fixture/${h.fixture.id}`)" class="block">
           <div>vs {{ h.fixture.oppoRow?._user.name }}</div>
-          <div>{{ h.fixture.oppoRow?.points ?? 0 }}</div>
+          <div><FixturePointsDisplay :row="h.fixture.oppoRow" /></div>
         </NuxtLink>
       </div>
     </div>

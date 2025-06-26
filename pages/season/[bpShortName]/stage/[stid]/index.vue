@@ -15,8 +15,8 @@
     <div class="flex gap-8">
       <div v-for="group of processedGroups" class="flex-1">
         <h2>{{ group.name }}</h2>
-        <div v-for="row of group.rows" class="flex-1">
-          <p>{{ row._user.name }}</p>
+        <div v-for="(row, ri) of group.rows" class="flex-1">
+          <p>{{ ri + 1 }} {{ row._user.name }}</p>
         </div>
       </div>
     </div>

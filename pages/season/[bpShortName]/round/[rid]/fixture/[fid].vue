@@ -3,7 +3,10 @@
     <div class="flex justify-between sticky top-0 z-10 bg-gray-200 py-4">
       <div class="flex-2"></div>
       <template v-for="side in ['home', 'away']" :key="side">
-        <div class="flex-1">{{ rows[side]?._user.name }} {{ rows[side]?.points }}</div>
+        <div class="flex-1">
+          {{ rows[side]?._user.name }}
+          <FixturePointsDisplay :row="rows[side]" />
+        </div>
       </template>
     </div>
 

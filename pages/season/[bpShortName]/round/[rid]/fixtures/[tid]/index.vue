@@ -6,7 +6,7 @@
       <div class="flex gap-8">
         <div v-for="row of group.rows">
           {{ row._user?.name }}
-          {{ row.points }}
+          <FixturePointsDisplay :row="row" />
         </div>
       </div>
     </NuxtLink>
