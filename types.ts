@@ -13,6 +13,7 @@ import type {
   RealPlayerRecord,
   RealEventRecord,
   StandingRecord,
+  FixtureRecord,
   SnapshotRecord,
 } from '~/powersync/AppSchema'
 
@@ -43,11 +44,14 @@ export type _Round = RoundRecord & WithPSChange
 export type _Challenge = ChallengeRecord & WithPSChange
 
 export type _Standing = StandingRecord & WithPSChange
+export type _Fixture = FixtureRecord & WithPSChange
 
 export type _RealFixture = RealFixtureRecord & WithPSChange
 export type _RealTeam = RealTeamRecord & WithPSChange
 export type _RealPlayer = RealPlayerRecord & WithPSChange
 export type _RealEvent = RealEventRecord & WithPSChange
+
+export type _Snapshot = SnapshotRecord & WithPSChange
 
 export interface _P_RealFixture extends Omit<_RealFixture, '_homeTeam' | '_awayTeam'> {
   _homeTeam: _RealTeam | undefined
@@ -61,14 +65,9 @@ export interface EnhancedRealFixture extends Partial<_RealFixture> {
   $fixtureSlot?: FixtureSlot
   $aboveBetsBasedOnChallengeType?: number
   $correctBet?: any
-  // _homeTeam?: string | _RealTeam | null | undefined
-  // _awayTeam?: string | _RealTeam | null | undefined
   [key: string]: any
 }
 
-export type _Snapshot = SnapshotRecord & WithPSChange
-
-// Add these type definitions for fixture slots
 export interface FixtureSlot {
   _realFixture: string
   slotIndex: number
@@ -105,11 +104,36 @@ export interface _P_Round extends _Round {
     $realFixture?: EnhancedRealFixture | null
     [key: string]: any
   }[]
-  groups?: _P_Standing[]
+  groups?: _P_Group[]
   userBets?: _P_Bet[]
 }
 
-export interface _P_Standing extends Omit<_Standing, 'rows'> {
+export interface EnhancedRound extends _Round {
+  challenges?: _P_Challenge[]
+  snapshots?: Array<
+    _Snapshot & {
+      $realFixture?: EnhancedRealFixture | null
+      [key: string]: any
+    }
+  >
+  userBets?: _P_Bet[]
+  userFixtures?: _P_Group[]
+  userCursors?: Record<
+    string,
+    {
+      _group: string
+      _link: any
+      betsAddedSnapshots?: Array<{
+        _snapshot: string
+        _bets?: _Bet[]
+        [key: string]: any
+      }>
+      [key: string]: any
+    }
+  >
+}
+
+export interface _P_Group extends Omit<_Standing, 'rows'> {
   _link: any
   rows: Array<{
     _user: any
@@ -137,7 +161,7 @@ export interface _P_Season extends Omit<_Season, ''> {
 
 export interface _P_Stage extends Omit<_Stage, 'rounds' | 'groups'> {
   rounds: _Round[]
-  groups: _P_Standing[]
+  groups: _P_Group[]
 }
 
 // UTIL

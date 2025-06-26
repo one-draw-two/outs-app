@@ -3,6 +3,7 @@ import type {
   _Stage,
   _P_Round,
   _Round,
+  EnhancedRound,
   _Standing,
   _Challenge,
   _Bet,
@@ -68,16 +69,10 @@ export const usePopulatedRound = async (roundId: string, userId?: string) => {
 
   const snapshotsQuery = usePSWatch<_Snapshot>('SELECT * FROM "timeline_snapshots" WHERE "_round" = ? ORDER BY "order" ASC', [roundId], { detectChanges: true })
 
-  // const stageQuery = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE id = ?', [roundQuery.data.value[0]?._stage], { detectChanges: true })
-  // const { processedGroups } = await useGroupsWithUsers({ _refId: roundId })
-
   const { processedGroups } = await useGroupsWithUsers({ _refId: roundId }, true, userId)
-  // const enhancedFixtures = enhanceFixturesWithUserData(processedGroups, userId)
-  const enhancedFixtures = computed(() => enhanceFixturesWithUserData(processedGroups.value, userId))
+  const { data: cursors }: { data: any } = await usePopulatedGroupCursor(processedGroups.value.map((ef: any) => ef.id))
 
-  const { data: cursors }: { data: any } = await usePopulatedGroupCursor(enhancedFixtures.value.map((ef: any) => ef.id))
-
-  return usePSQueryWatcher<_P_Round>([roundQuery, challengesQuery, realFixturesQuery, betsQuery], (round) => {
+  return usePSQueryWatcher<EnhancedRound>([roundQuery, challengesQuery, realFixturesQuery, betsQuery], (round) => {
     const processedSnapshots = snapshotsQuery.data.value.map((snapshot, index) => {
       const challenge = transformedChallenges.find((c) => c.id === snapshot._challenge)!
       return {
@@ -93,52 +88,13 @@ export const usePopulatedRound = async (roundId: string, userId?: string) => {
       }
     })
 
-    const processedFixtureData = enhancedFixtures.value.map((fixture) => {
-      const cursor = cursors.value[fixture.id]
-
-      // Process snapshots for this fixture with user/oppo structure
-      const formattedSnapshots = processedSnapshots.map((s) => {
-        const cursorSnapshot = cursor?.betsAddedSnapshots?.find((bas) => bas._snapshot === s.id)
-
-        // Process bets to include user and opponent information
-        const formattedBets =
-          cursorSnapshot?._bets?.map((bet) => {
-            const isUserBet = bet._user === fixture.userRow?._user?.id
-            const isOppoBet = bet._user === fixture.oppoRow?._user?.id
-
-            return {
-              ...bet,
-              isUserBet,
-              isOppoBet,
-            }
-          }) || []
-
-        return {
-          ...s,
-          $bets: formattedBets,
-          $userBet: formattedBets.find((b) => b.isUserBet),
-          $oppoBet: formattedBets.find((b) => b.isOppoBet),
-        }
-      })
-
-      return {
-        id: fixture.id,
-        fixture,
-        userRow: fixture.userRow,
-        oppoRow: fixture.oppoRow,
-        betsAddedSnapshots: formattedSnapshots,
-      }
-    })
-
     round.value = {
       ...roundQuery.data.value[0],
       challenges: transformedChallenges,
       snapshots: processedSnapshots,
       userBets: transformedBets,
-      userFixtures: enhancedFixtures,
+      userFixtures: processedGroups.value,
       userCursors: cursors.value,
-      fixtureData: processedFixtureData,
-      // _stage: stageQuery.data.value[0],
     }
   })
 }

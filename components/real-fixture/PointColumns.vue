@@ -10,8 +10,8 @@
         </NuxtLink>
 
         <NuxtLink v-if="h.fixture" :to="useSL(`round/${useRoute().params.rid}/fixture/${h.fixture.id}`)" class="block">
-          <div>vs {{ h.fixture.oppoRow?._user.name }}</div>
-          <div><FixturePointsDisplay :row="h.fixture.oppoRow" /></div>
+          <div>vs {{ getOpponentName(h.fixture) }}</div>
+          <div><FixturePointsDisplay :row="getOpponentRow(h.fixture)" /></div>
         </NuxtLink>
       </div>
     </div>
@@ -20,4 +20,5 @@
 
 <script setup lang="ts">
 const { tournamentCols } = inject(roundKey)!
+const { getOpponentRow, getOpponentName } = useUserHelpers()
 </script>

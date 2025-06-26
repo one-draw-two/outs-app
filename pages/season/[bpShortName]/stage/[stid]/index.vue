@@ -13,9 +13,9 @@
     </div>
     <h1>Groups</h1>
     <div class="flex gap-8 flex-wrap">
-      <div v-for="group of processedGroups" class="flex-1 min-w-0 basis-1/4 bg-gray-100">
+      <div v-for="group of processedGroups" class="flex-1 min-w-0 basis-1/4" :class="isUserInGroup(group) ? 'bg-green-100' : 'bg-gray-100'">
         <h2>{{ group.name }}</h2>
-        <div v-for="(row, ri) of group.rows" class="flex gap-4">
+        <div v-for="(row, ri) of group.rows" class="flex gap-4" :class="isCurrentUserRow(row) ? 'bg-green-200' : ''">
           <span class="flex-1">{{ ri + 1 }} {{ row._user?.name }}</span>
           <FixturePointsDisplay :row="row" />
         </div>
@@ -36,6 +36,8 @@ const { processedGroups } = await useGroupsWithUsers({ _refId: useRoute().params
 
 const pageTitle = computed(() => stage.value?.name)
 useHead({ title: pageTitle })
+
+const { isUserInGroup, isCurrentUserRow } = useUserHelpers()
 
 // useDynamicPS().updatePowerSyncParams({ selected_stid: stage.value?.id })
 </script>

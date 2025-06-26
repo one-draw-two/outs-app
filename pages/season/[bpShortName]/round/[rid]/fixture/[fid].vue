@@ -37,12 +37,6 @@ const rows = computed<any>(() => ({ home: thisFixture?.value?.rows?.[0], away: t
 
 const { round } = inject(roundKey)!
 
-/*
-const user = useState<User>('user')
-const enhancedFixtures = computed(() => enhanceFixturesWithUserData(processedGroups.value, user.value?.id))
-wecl(enhancedFixtures)
-*/
-
 // wecl(processedGroups)
 
 // Check if cursor already exists in round data

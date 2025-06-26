@@ -43,16 +43,16 @@
 </template>
 
 <script setup lang="ts">
-import type { User, _P_Season } from '~/types'
-import { useRoute as useNativeRoute } from 'vue-router' // Necessary in layouts (Nuxt router limitation)
+import type { User, _P_Season, ParsedBPTournament } from '~/types'
+import { useRoute as useNativeRoute } from 'vue-router'
 
 const rid = useNativeRoute().params.rid as string
-
 const user = useState<User>('user')
 const season = useState<_P_Season>('season')
 const stage = useState<any>('stage')
 
 const { data: round } = await usePopulatedRound(rid, user.value?.id)
+const { getUserRow } = useUserHelpers()
 
 useState<any>('pickerSeasonId').value = round.value?._season
 useState<any>('pickerStageId').value = round.value?._stage
@@ -60,37 +60,13 @@ useState<any>('pickerStageId').value = round.value?._stage
 useDynamicPS().updatePowerSyncParams({ selected_round: rid })
 
 const sKey = 'real-fixture'
+const getOrder = (t: ParsedBPTournament, key: string) => t.snapshotConfig?.find((c) => c.name === key)?.order || 0
+
 const roundTournaments = computed(() => (season.value?.tournaments?.filter((t) => t.snapshotConfig?.some((c) => c.name === sKey)) || []).sort((a, b) => getOrder(a, sKey) - getOrder(b, sKey)))
-
-interface FixturesByTournament {
-  [tournamentId: string]: any[]
-}
-
-const tournamentFixtures = computed<FixturesByTournament>(() => {
-  if (!round.value?.userFixtures) return {} as FixturesByTournament
-
-  const fixturesByTournament: FixturesByTournament = {}
-  roundTournaments.value?.forEach((tournament) => {
-    if (tournament.id) {
-      fixturesByTournament[tournament.id] = round.value?.userFixtures.filter((fixture: any) => fixture._tournament === tournament.id) || []
-    }
-  })
-
-  return fixturesByTournament
-})
 
 const headers = computed(() => [
   { name: 'You' },
-  ...roundTournaments.value?.map((t) => {
-    const fixture = tournamentFixtures.value[t.id]?.[0]
-    const fixtureDetails = fixture ? round.value?.fixtureData?.find((fd: any) => fd.id === fixture.id) : null
-    return {
-      id: t.id,
-      name: t.name,
-      fixture,
-      fixtureDetails,
-    }
-  }),
+  ...roundTournaments.value?.map((t) => ({ id: t.id, name: t.name, fixture: round.value?.userFixtures?.find((fixture) => fixture._tournament === t.id && getUserRow(fixture)) })),
 ])
 
 const roundStatusColor = computed(() => {
@@ -103,9 +79,6 @@ const roundStatusColor = computed(() => {
 })
 
 provide(roundKey, { round, tournamentCols: headers })
-
-// const { data: userFixtures } = usePSWatch<any>('SELECT * FROM "group_fixtures"', [''])
-// wecl(userFixtures, 'userFixturesWhy')
 
 wecl(round, 'round')
 </script>
