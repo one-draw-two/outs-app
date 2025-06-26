@@ -10,14 +10,14 @@
       </template>
     </div>
 
-    <div v-for="(bas, rfi) in betsAddedSnapshots" :key="bas._realFixture?.$index" :id="`rfi-${bas._realFixture?.$index}`" class="flex justify-between items-stretch py-4 hover:bg-gray-100">
+    <div v-for="(bas, rfi) in betsAddedSnapshots" :key="bas.$realFixture?.$index" :id="`rfi-${bas.$realFixture?.$index}`" class="flex justify-between items-stretch py-4 hover:bg-gray-100">
       <div class="flex-2 lg:flex">
-        <RealFixtureItemLink :rf="bas._realFixture" />
+        <RealFixtureItemLink :rf="bas.$realFixture" />
       </div>
 
       <template v-for="side in ['home', 'away']" :key="side">
         <div class="flex-1">
-          <RealFixtureBetAndPointsDisplay :bet="bas[`$${side}Bet`]" :correct-bet="bas.correctBet" :above-bets-based-on-challenge-type="bas._realFixture.$aboveBetsBasedOnChallengeType" />
+          <RealFixtureBetAndPointsDisplay :bet="bas[`$${side}Bet`]" :correct-bet="bas.correctBet" :above-bets-based-on-challenge-type="bas.$realFixture.$aboveBetsBasedOnChallengeType" />
         </div>
       </template>
     </div>
@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import type { User, _P_RealFixture } from '~/types'
+import type { _P_RealFixture } from '~/types'
 
 definePageMeta({ layout: 'round' })
 
@@ -36,8 +36,6 @@ const thisFixture = computed(() => processedGroups?.value[0])
 const rows = computed<any>(() => ({ home: thisFixture?.value?.rows?.[0], away: thisFixture?.value?.rows?.[1] }))
 
 const { round } = inject(roundKey)!
-// const snaphots = computed(() => round.value?.snapshots)
-// const realFixtures = computed(() => round.value?.snapshots?.map((s: any) => s._realFixture).filter(Boolean))
 
 /*
 const user = useState<User>('user')

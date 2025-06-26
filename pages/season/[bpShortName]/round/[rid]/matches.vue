@@ -21,7 +21,7 @@ useHead({ title: `${round.value?.name} | Matches` })
 
 const $day = useNuxtApp().vueApp.config.globalProperties.$day
 
-const realFixtures = computed(() => round.value?.snapshots?.map((s: any) => s._realFixture).filter(Boolean))
+const realFixtures = computed(() => round.value?.snapshots?.map((s: any) => s.$realFixture).filter(Boolean))
 
 const groupedRealFixtures = computed(() => {
   if (!realFixtures.value?.length) return []

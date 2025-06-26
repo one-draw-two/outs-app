@@ -43,7 +43,7 @@ function getUserBetFromCursor(realFixtureIndex: number) {
   if (!cursor) return null
 
   // Find snapshot for this real fixture
-  const snapshot = round.value?.snapshots?.find((s) => s._realFixture?.$index === realFixtureIndex)
+  const snapshot = round.value?.snapshots?.find((s) => s.$realFixture?.$index === realFixtureIndex)
   if (!snapshot) return null
 
   // Find corresponding cursor snapshot
@@ -55,5 +55,5 @@ function getUserBetFromCursor(realFixtureIndex: number) {
 }
 
 const getOppoBetForFixture = (fixtureDetails, realFixtureIndex: number) =>
-  fixtureDetails.betsAddedSnapshots?.find((s) => s._realFixture?.$index === realFixtureIndex)?.$bets?.find((bet) => bet._user === fixtureDetails.oppoRow?._user?.id) || null
+  fixtureDetails.betsAddedSnapshots?.find((s) => s.$realFixture?.$index === realFixtureIndex)?.$bets?.find((bet) => bet._user === fixtureDetails.oppoRow?._user?.id) || null
 </script>

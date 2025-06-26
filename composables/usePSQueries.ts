@@ -13,9 +13,8 @@ import type {
   _P_Challenge,
   _P_RealFixture,
   _RealEvent,
-  FixtureSlot,
-  BetFixtureSlot,
   _Snapshot,
+  FixtureSlot,
 } from '~/types'
 
 export const usePopulatedSeason = async (seasonId: string) => {
@@ -79,26 +78,20 @@ export const usePopulatedRound = async (roundId: string, userId?: string) => {
   const { data: cursors }: { data: any } = await usePopulatedGroupCursor(enhancedFixtures.value.map((ef: any) => ef.id))
 
   return usePSQueryWatcher<_P_Round>([roundQuery, challengesQuery, realFixturesQuery, betsQuery], (round) => {
-    const processedSnapshots = snapshotsQuery.data.value
-      .map((snapshot) => ({
+    const processedSnapshots = snapshotsQuery.data.value.map((snapshot, index) => {
+      const challenge = transformedChallenges.find((c) => c.id === snapshot._challenge)!
+      return {
         ...snapshot,
-        _challenge: snapshot._challenge || undefined,
-        _realFixture: realFixturesQuery.data.value.find((rf) => rf.id === snapshot._realFixture),
-      }))
-      .map((snapshot, index) => {
-        const challenge = transformedChallenges.find((c) => c.id === snapshot._challenge)
-
-        return {
-          ...snapshot,
-          _realFixture: {
-            ...snapshot._realFixture,
-            $index: index,
-            $challenge: challenge,
-            $aboveBetsBasedOnChallengeType: challenge?.type === '1x2' ? 3 : challenge?.type === 'Goals' ? 1 : 0,
-            $correctBet: snapshot?.correctBet,
-          },
-        }
-      })
+        $realFixture: {
+          ...realFixturesQuery.data.value.find((rf) => rf.id === snapshot._realFixture),
+          $index: index,
+          $challenge: challenge,
+          $fixtureSlot: challenge?.fixtureSlots.find((fs: FixtureSlot) => fs._realFixture === snapshot._realFixture),
+          $aboveBetsBasedOnChallengeType: challenge?.type === '1x2' ? 3 : challenge?.type === 'Goals' ? 1 : 0,
+          $correctBet: snapshot?.correctBet,
+        },
+      }
+    })
 
     const processedFixtureData = enhancedFixtures.value.map((fixture) => {
       const cursor = cursors.value[fixture.id]

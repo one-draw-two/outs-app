@@ -55,6 +55,17 @@ export interface _P_RealFixture extends Omit<_RealFixture, '_homeTeam' | '_awayT
   _events?: _RealEvent[]
 }
 
+export interface EnhancedRealFixture extends Partial<_RealFixture> {
+  $index?: number
+  $challenge: _P_Challenge
+  $fixtureSlot?: FixtureSlot
+  $aboveBetsBasedOnChallengeType?: number
+  $correctBet?: any
+  // _homeTeam?: string | _RealTeam | null | undefined
+  // _awayTeam?: string | _RealTeam | null | undefined
+  [key: string]: any
+}
+
 export type _Snapshot = SnapshotRecord & WithPSChange
 
 // Add these type definitions for fixture slots
@@ -86,20 +97,12 @@ export interface _P_Bet extends Omit<_Bet, 'betFixtureSlots'> {
   betFixtureSlots: BetFixtureSlot[]
 }
 
-// Add a type for the enhanced challenges with user bets
-export interface EnhancedChallenge extends _Challenge {
-  // $userBet?: BetFixtureSlot // Removed after cursors
-  $points?: number[] | null
-  [key: string]: any
-}
-
 // export interface _P_Round extends Omit<_Round, '_stage'> {
 export interface _P_Round extends _Round {
   // _stage: _Stage | null
   challenges?: _P_Challenge[]
   snapshots?: {
-    _realFixture?: EnhancedRealFixture | null
-    _challenge?: string // Has to be there
+    $realFixture?: EnhancedRealFixture | null
     [key: string]: any
   }[]
   groups?: _P_Standing[]
@@ -137,13 +140,6 @@ export interface _P_Stage extends Omit<_Stage, 'rounds' | 'groups'> {
   groups: _P_Standing[]
 }
 
-// Also ensure your EnhancedRealFixture allows for nullability
-export interface EnhancedRealFixture extends Partial<_RealFixture> {
-  $index?: number
-  // $challenges?: EnhancedChallenge[]
-  $challenge?: EnhancedChallenge
-  [key: string]: any
-}
 // UTIL
 
 export type AuthResponseError = {

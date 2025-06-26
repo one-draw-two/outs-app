@@ -25,7 +25,7 @@ useHead({ title: `${round.value?.name}` })
 const route = useRoute()
 const $day = useNuxtApp().vueApp.config.globalProperties.$day
 
-const allRealFixtures = computed(() => round.value?.snapshots?.map((s: any) => s._realFixture).filter(Boolean))
+const allRealFixtures = computed(() => round.value?.snapshots?.map((s: any) => s.$realFixture).filter(Boolean))
 
 // Get 5 fixtures around the lastFinishedMatchIndex
 const realFixtures = computed(() => {

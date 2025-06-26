@@ -79,3 +79,4 @@ nativeRoute.params.stid // Then use like this
 - Pre: Refactoring the fixtures into the match point columns: 505.31kb, first round of refactoring: 506.12kb
 - Feat: Initial, not functioning round horizontal progress component: 507.15kb
 - Wip: Simple fixture points display component: 507.49kb
+- Wip: Dummy points matrix (to be changed), and some types refactoring: 509.75kb
