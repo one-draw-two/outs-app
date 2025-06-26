@@ -12,11 +12,12 @@
       </NuxtLink>
     </div>
     <h1>Groups</h1>
-    <div class="flex gap-8">
-      <div v-for="group of processedGroups" class="flex-1">
+    <div class="flex gap-8 flex-wrap">
+      <div v-for="group of processedGroups" class="flex-1 min-w-0 basis-1/4 bg-gray-100">
         <h2>{{ group.name }}</h2>
-        <div v-for="(row, ri) of group.rows" class="flex-1">
-          <p>{{ ri + 1 }} {{ row._user.name }}</p>
+        <div v-for="(row, ri) of group.rows" class="flex gap-4">
+          <span class="flex-1">{{ ri + 1 }} {{ row._user?.name }}</span>
+          <FixturePointsDisplay :row="row" />
         </div>
       </div>
     </div>
