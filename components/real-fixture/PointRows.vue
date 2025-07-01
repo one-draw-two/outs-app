@@ -10,29 +10,13 @@
       </template>
 
       <template v-else-if="col.name === 'Curves'">
-        <div class="flex flex-col gap-1 items-center">
-          <!-- User contribution -->
-          <div class="flex gap-2 items-center">
-            <template v-if="curvesStatsContribs.userContrib">
-              <PrevTripleCrop :clip="'octagon'">
-                <div class="size-5 flex-center text-sm font-bold bg-purple-200">
-                  {{ curvesStatsContribs.userContrib.option }}
-                </div>
-              </PrevTripleCrop>
-              <div class="px-2 rounded-md bg-purple-100">
-                {{ curvesStatsContribs.userContrib.pp }}
-              </div>
-            </template>
-            <template v-else>
-              <div class="px-2 rounded-md bg-gray-200 text-gray-500">-</div>
-            </template>
-          </div>
-
-          <!-- Stats display -->
-          <div v-if="curvesStatsContribs.stats.length > 0" class="stats-display flex flex-wrap gap-1 text-xs">
-            <div v-for="stat in curvesStatsContribs.stats" :key="stat.option" class="stat-item">
-              <span class="text-gray-700">{{ stat.option || '?' }}:</span>
-              <span class="text-blue-500">{{ stat.average }}</span>
+        <div class="flex gap-2 flex-wrap">
+          <div v-for="stat in curvesStatsContribs.stats" class="flex flex-col items-center gap-2" :key="stat.option">
+            <PrevTripleCrop :clip="'octagon'" :is-no-fit="true">
+              <div class="size-5 flex-center text-sm font-bold bg-purple-200">{{ stat.option }}</div>
+            </PrevTripleCrop>
+            <div class="px-2 rounded-md bg-gray-200" :class="[stat.option === props.rf?.$correctBet ? '' : 'line-through']">
+              {{ stat.average.toFixed(2) }}
             </div>
           </div>
         </div>
@@ -98,6 +82,4 @@ const curvesStatsContribs = computed(() => {
 
   return { userContrib: userContrib?.[0], stats }
 })
-
-wecl(curvesStatsContribs)
 </script>
