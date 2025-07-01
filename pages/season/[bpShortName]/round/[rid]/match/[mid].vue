@@ -35,6 +35,6 @@ const { data: realFixture } = await usePopulatedRealFixture(route.params.mid as 
 
 const timeSortedEvents = computed(() => realFixture.value?._events?.sort((a: any, b: any) => a.time - b.time))
 
-wecl(realFixture, 'DB Populated RealFixture')
-wecl(snapshotRealFixture, 'Snapshot Enhanced RealFixture')
+// wecl(realFixture, 'DB Populated RealFixture')
+// wecl(snapshotRealFixture, 'Snapshot Enhanced RealFixture')
 </script>

@@ -1,13 +1,13 @@
 <template>
   <div class="flex gap-2 items-center">
-    <template v-if="bet">
-      <PrevTripleCrop v-if="bet.bfsSI <= aboveBetsBasedOnChallengeType" :clip="'octagon'">
-        <div class="size-5 flex-center text-sm font-bold" :class="getSlotIndexColor(bet.bfsSI)">
-          {{ bet.bfsBet }}
+    <template v-if="bet?.cursorBetIndex <= aboveBetsBasedOnChallengeType">
+      <PrevTripleCrop :clip="'octagon'">
+        <div class="size-5 flex-center text-sm font-bold" :class="getSlotIndexColor(bet.cursorBetIndex)">
+          {{ bet.cursorBetValue }}
         </div>
       </PrevTripleCrop>
-      <div class="px-2 rounded-md" :class="[bet.bfsBet === correctBet ? '' : 'line-through', bet.isCorrect ? 'bg-green-200' : 'bg-gray-200']">
-        {{ bet.bfsPotentialPoints?.join(' / ') }}
+      <div class="px-2 rounded-md" :class="[bet.cursorBetValue === correctBet ? '' : 'line-through', bet.isCorrect ? 'bg-green-200' : 'bg-gray-200']">
+        {{ bet.cursorPotentialPoints?.join(' / ') }}
       </div>
     </template>
   </div>

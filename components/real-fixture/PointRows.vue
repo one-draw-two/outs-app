@@ -16,7 +16,7 @@
               <div class="size-5 flex-center text-sm font-bold bg-purple-200">{{ stat.option }}</div>
             </PrevTripleCrop>
             <div class="px-2 rounded-md bg-gray-200" :class="[stat.option === props.rf?.$correctBet ? '' : 'line-through']">
-              {{ stat.average.toFixed(2) }}
+              {{ stat.average?.toFixed(2) || '0.00' }}
             </div>
           </div>
         </div>
@@ -77,9 +77,14 @@ const curvesStatsContribs = computed(() => {
 
   const userRow = getUserRow(curvesStanding)
   const userId = userRow?._user?.id
-  const userContrib = cursorSnapshot._bets?.find((b) => b._user === userId)?.contrib || null
-  const stats = cursorSnapshot._bets?.find((b) => b._user === 'stats')?.contrib || []
 
-  return { userContrib: userContrib?.[0], stats }
+  // Updated to use cursorBetValue instead of contrib
+  const userContrib = cursorSnapshot._bets?.find((b) => b._user === userId)?.cursorBetValue || null
+  const stats = cursorSnapshot._bets?.find((b) => b._user === 'stats')?.cursorBetValue || []
+
+  return {
+    userContrib: userContrib?.[0], // First contribution entry for the user
+    stats,
+  }
 })
 </script>
