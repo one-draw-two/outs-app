@@ -73,7 +73,6 @@ export interface FixtureSlot {
   slotIndex: number
   totalPoints?: number
   pointsMatrix?: any[]
-  isBetPointsDistributedOnce?: number
   [key: string]: any
 }
 
@@ -118,6 +117,7 @@ export interface EnhancedRound extends _Round {
   >
   userBets?: _P_Bet[]
   userFixtures?: _P_Group[]
+  userStandings?: _P_Group[]
   userCursors?: Record<
     string,
     {

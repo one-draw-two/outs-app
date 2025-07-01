@@ -69,8 +69,12 @@ export const usePopulatedRound = async (roundId: string, userId?: string) => {
 
   const snapshotsQuery = usePSWatch<_Snapshot>('SELECT * FROM "timeline_snapshots" WHERE "_round" = ? ORDER BY "order" ASC', [roundId], { detectChanges: true })
 
-  const { processedGroups } = await useGroupsWithUsers({ _refId: roundId }, true, userId)
-  const { data: cursors }: { data: any } = await usePopulatedGroupCursor(processedGroups.value.map((ef: any) => ef.id))
+  const { processedGroups: fixtures } = await useGroupsWithUsers({ _refId: roundId }, true, userId)
+  const { processedGroups: standings } = await useGroupsWithUsers({ _refId: roundId }, false, userId)
+
+  const allGroupIds = [...fixtures.value.map((f: any) => f.id), ...standings.value.map((s: any) => s.id)]
+
+  const { data: cursors }: { data: any } = await usePopulatedGroupCursor(allGroupIds)
 
   return usePSQueryWatcher<EnhancedRound>([roundQuery, challengesQuery, realFixturesQuery, betsQuery], (round) => {
     const processedSnapshots = snapshotsQuery.data.value.map((snapshot, index) => {
@@ -93,7 +97,8 @@ export const usePopulatedRound = async (roundId: string, userId?: string) => {
       challenges: transformedChallenges,
       snapshots: processedSnapshots,
       userBets: transformedBets,
-      userFixtures: processedGroups.value,
+      userFixtures: fixtures.value,
+      userStandings: standings.value, // Not being used atm and not sure if needed
       userCursors: cursors.value,
     }
   })

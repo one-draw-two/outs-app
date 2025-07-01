@@ -81,3 +81,4 @@ nativeRoute.params.stid // Then use like this
 - Wip: Simple fixture points display component: 507.49kb
 - Wip: Dummy points matrix (to be changed), and some types refactoring: 509.75kb
 - Refactoring: Types and some enhancedFixture logic removed and simplified: 509.58kb
+- Wip: Curves points are getting added: 510.09kb
