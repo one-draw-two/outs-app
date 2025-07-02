@@ -53,3 +53,22 @@
 .flip-leave-from {
   transform: rotateX(0deg);
 }
+
+/* Standings */
+
+.standing-row-move,
+.standing-row-enter-active,
+.standing-row-leave-active {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+.standing-row-enter-from,
+.standing-row-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.standing-row-leave-active {
+  position: absolute;
+  width: 100%;
+}

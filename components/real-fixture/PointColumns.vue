@@ -9,6 +9,8 @@
           {{ h.name }}
         </NuxtLink>
 
+        <NuxtLink v-if="h.name === 'Curves'" :to="useSL(`round/${useRoute().params.rid}/standing/${getStandingIdForTournament(h.id)?.id}`)" class="block"> Curve view </NuxtLink>
+
         <NuxtLink v-if="h.fixture" :to="useSL(`round/${useRoute().params.rid}/fixture/${h.fixture.id}`)" class="block">
           <div>vs {{ getOpponentName(h.fixture) }}</div>
           <div><FixturePointsDisplay :row="getOpponentRow(h.fixture)" /></div>
@@ -19,6 +21,7 @@
 </template>
 
 <script setup lang="ts">
-const { tournamentCols } = inject(roundKey)!
+const { round, tournamentCols } = inject(roundKey)!
 const { getOpponentRow, getOpponentName } = useUserHelpers()
+const getStandingIdForTournament = (tournamentId: string) => round?.value?.userStandings?.find((s: any) => s._tournament === tournamentId) // You can generaise as group to include standings or fixtures
 </script>
