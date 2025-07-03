@@ -368,6 +368,7 @@ export const useGroupsWithUsers = async (filters: Record<string, any> = {}, isFi
         ...group,
         _link: JSON.parse(group._link as string),
         meta: JSON.parse(group.meta as string),
+        stats_numbers: group.stats_numbers ? JSON.parse(group.stats_numbers as string) : undefined,
         rows: parsedRows.map((row: any) => ({
           ...row,
           _user: userMap.value[row._user] || row._user,

@@ -9,13 +9,13 @@
     </div>
     <main class="main-container py-8">
       <div class="space-y-4">
-        <SeasonPointColumns :tournamentCols="headers" />
+        <SeasonPointColumns :tournamentCols="processedGroups" />
         <div v-for="(row, ri) of processedSeasonRows" class="flex justify-between">
           <div class="flex-1 space-x-4">
             <span class="tabular-nums">{{ (ri + 1).toString().padStart(2, '0') }}</span>
             {{ row._user.name }}
           </div>
-          <SeasonPointRows :tournamentCols="headers" :row="row" class="flex-2" />
+          <SeasonPointRows :tournamentCols="processedGroups" :row="row" class="flex-2" />
         </div>
       </div>
     </main>
@@ -33,7 +33,6 @@ watch(toRef(sid), async (to) => !to || season.value?.id === to || (useState<any>
 const { processedGroups } = await useGroupsWithUsers({ _refId: sid })
 
 const mainTournamentGroup = computed(() => processedGroups.value.find((group) => group._tournament === 'BTCAMP'))
-const headers = computed(() => [{ name: 'BTCURV' }, { name: 'BTCAMP' }])
 
 const processedSeasonRows = computed(() => {
   return mainTournamentGroup.value?.rows.map((row: any) => ({

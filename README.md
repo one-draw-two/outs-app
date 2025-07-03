@@ -83,3 +83,4 @@ nativeRoute.params.stid // Then use like this
 - Refactoring: Types and some enhancedFixture logic removed and simplified: 509.58kb
 - Wip: Curves points are getting added: 510.09kb
 - Wip: Standings page (for curves initially) with vue transition rows: 511.81kb, with the nuxt update (3.17.6): 510.65kb
+- Wip: Navigation is getting restructured, group relationships are getting added: 512.07kb

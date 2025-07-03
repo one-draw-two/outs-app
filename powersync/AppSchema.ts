@@ -115,18 +115,19 @@ const groupColumns = {
   _link: column.text,
   _season: column.text,
   _tournament: column.text,
+  _parentGroup: column.text,
   order: column.integer,
   scope: column.text,
   name: column.text,
   status: column.text,
   meta: column.text,
   rows: column.text,
-  _parentGroup: column.text,
 }
 
 const group_standings = new Table(
   {
     ...groupColumns,
+    stats_numbers: column.text,
   },
   { indexes: {} }
 )

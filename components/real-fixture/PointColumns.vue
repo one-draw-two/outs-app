@@ -9,7 +9,7 @@
           {{ h.name }}
         </NuxtLink>
 
-        <NuxtLink v-if="h.name === 'Curves'" :to="useSL(`round/${useRoute().params.rid}/standing/${getStandingIdForTournament(h.id)?.id}`)" class="block"> Curve view </NuxtLink>
+        <NuxtLink v-if="h.name === 'Curves'" :to="useSL(`standings/${getStandingIdForTournament(h.id)?.id}`)" class="block"> Curve view </NuxtLink>
 
         <NuxtLink v-if="h.fixture" :to="useSL(`round/${useRoute().params.rid}/fixture/${h.fixture.id}`)" class="block">
           <div>vs {{ getOpponentName(h.fixture) }}</div>

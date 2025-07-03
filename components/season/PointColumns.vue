@@ -5,7 +5,9 @@
     </div>
     <div class="flex-2 bg-blue-200 flex items-stretch gap-4">
       <div v-for="h in tournamentCols" class="flex-1 bg-blue-200 flex-center">
-        {{ h.name }}
+        <NuxtLink :to="useSL(`standings/${h.id}`)" class="block">
+          {{ h.name }}
+        </NuxtLink>
       </div>
     </div>
   </div>
