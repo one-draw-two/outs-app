@@ -4,8 +4,15 @@
     <div v-for="(dateGroup, di) in groupedRealFixtures" :key="di" class="space-y-4">
       <h3 class="font-mono font-bold bg-gray-50">{{ dateGroup.dateLabel }}</h3>
       <div>
-        <div v-for="rf in dateGroup.realFixtures" :key="rf.$index" :id="`rfi-${rf.$index}`" class="lg:flex items-stretch py-4 hover:bg-gray-100">
-          <RealFixtureItemLink :rf="rf" class="flex-1" />
+        <div
+          v-for="rf in dateGroup.realFixtures"
+          :key="rf.$index"
+          :id="`rfi-${rf.$index}`"
+          class="lg:flex items-stretch py-4 hover:bg-gray-100"
+          @mouseenter="setHoveredItem(rf.$index)"
+          @mouseleave="clearHoveredItem"
+        >
+          <RealFixtureItemLink :rf="rf" :isHovered="hoveredItemIndex === rf.$index" class="flex-1" />
           <RealFixturePointRows :rf="rf" class="flex-2" />
         </div>
       </div>
@@ -39,4 +46,9 @@ const groupedRealFixtures = computed(() => {
     realFixtures: fixtures as _RealFixture[],
   }))
 })
+
+// Hover state management
+const hoveredItemIndex = ref<number | null>(null)
+const setHoveredItem = (index: number) => (hoveredItemIndex.value = index)
+const clearHoveredItem = () => (hoveredItemIndex.value = null)
 </script>

@@ -11,9 +11,13 @@
         <img :src="challengePath" class="flag w-full h-full object-cover bg-white" />
       </PrevTripleCrop>
 
-      <div class="min-w-0 flex flex-col">
-        <div class="truncate">{{ homeTeamName }}</div>
-        <div class="truncate">{{ awayTeamName }}</div>
+      <div class="min-w-0 flex flex-col overflow-hidden">
+        <div ref="homeTeamRef" :class="['team-name', { 'team-name-marquee': isHovered && isHomeTeamTruncated, truncate: !isHovered || !isHomeTeamTruncated }]">
+          {{ homeTeamName }}
+        </div>
+        <div ref="awayTeamRef" :class="['team-name', { 'team-name-marquee': isHovered && isAwayTeamTruncated, truncate: !isHovered || !isAwayTeamTruncated }]">
+          {{ awayTeamName }}
+        </div>
       </div>
 
       <div class="italic text-gray-500">{{ rf?.$correctBet }}</div>
@@ -31,7 +35,15 @@ import type { _RealFixture } from '~/types'
 
 const props = defineProps<{
   rf: _RealFixture
+  isHovered?: boolean
 }>()
+
+const homeTeamRef = ref<HTMLElement>()
+const awayTeamRef = ref<HTMLElement>()
+const homeTeamScrollDistance = ref(0)
+const awayTeamScrollDistance = ref(0)
+const isHomeTeamTruncated = ref(false)
+const isAwayTeamTruncated = ref(false)
 
 const teamNames = computed(() => {
   if (props.rf?.$challenge?.type === 'RoundGoalCount') return ['Round', 'Goal Count']
@@ -74,6 +86,56 @@ const challengePath = computed(() => {
   if (props.rf?.$challenge?.type === 'RoundGoalCount') return '/png/goals.png'
 })
 
-// <PrevFlag :challenge-code="props.rf.$challenge.type!" />
-// const challengeDisplayText = computed(() => `${props.rf.$challenge.type}${props.rf.$challenge.name !== 'X' ? props.rf.$challenge.name : ''}`.trim())
+// Function to check if text is truncated and calculate scroll distance
+const checkTruncation = () => {
+  nextTick(() => {
+    if (homeTeamRef.value) {
+      const element = homeTeamRef.value
+      const isOverflowing = element.scrollWidth > element.clientWidth
+      isHomeTeamTruncated.value = isOverflowing
+      if (isOverflowing) {
+        homeTeamScrollDistance.value = element.scrollWidth - element.clientWidth + 20 // Add some padding
+      }
+    }
+
+    if (awayTeamRef.value) {
+      const element = awayTeamRef.value
+      const isOverflowing = element.scrollWidth > element.clientWidth
+      isAwayTeamTruncated.value = isOverflowing
+      if (isOverflowing) {
+        awayTeamScrollDistance.value = element.scrollWidth - element.clientWidth + 20 // Add some padding
+      }
+    }
+  })
+}
+
+// Watch for changes in team names and check truncation
+watch([homeTeamName, awayTeamName], checkTruncation, { flush: 'post' })
+
+onMounted(() => checkTruncation())
 </script>
+
+<style scoped>
+.team-name {
+  @apply transition-transform duration-1000 ease-linear;
+}
+
+.team-name-marquee {
+  @apply whitespace-nowrap;
+  transform: translateX(v-bind('homeTeamScrollDistance + "px"'));
+  animation: marquee 3s linear infinite;
+}
+
+.team-name-marquee:nth-child(2) {
+  transform: translateX(v-bind('awayTeamScrollDistance + "px"'));
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+</style>
