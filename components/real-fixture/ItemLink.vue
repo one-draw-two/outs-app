@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink :to="useSL(`round/${useRoute().params.rid}/match/${rf?.id}`)" class="block">
+  <NuxtLink :to="useSL(`round/${useRoute().params.rid}/match/${rf?.id}`)" class="block flex items-center">
     <div class="grid grid-cols-[2rem_4rem_3rem_3rem_1fr_1rem_3rem] gap-4 items-center">
       <div class="font-mono">{{ (rf.$index + 1).toString().padStart(2, '0') }}</div>
       <div class="font-mono">{{ $day(rf?.startingAt).format('HH:mm') }}</div>

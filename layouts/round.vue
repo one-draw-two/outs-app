@@ -66,7 +66,12 @@ const roundTournaments = computed(() => (season.value?.tournaments?.filter((t) =
 
 const headers = computed(() => [
   { name: 'You' },
-  ...roundTournaments.value?.map((t) => ({ id: t.id, name: t.name, fixture: round.value?.userFixtures?.find((fixture) => fixture._tournament === t.id && getUserRow(fixture)) })),
+  ...roundTournaments.value?.map((t) => ({
+    id: t.id,
+    name: t.name,
+    fixture: round.value?.userFixtures?.find((fixture) => fixture._tournament === t.id && getUserRow(fixture)),
+    standings: round?.value?.userStandings?.find((s: any) => s._tournament === t.id),
+  })),
 ])
 
 const roundStatusColor = computed(() => {

@@ -70,7 +70,12 @@ export const usePopulatedRound = async (roundId: string, userId?: string) => {
   const snapshotsQuery = usePSWatch<_Snapshot>('SELECT * FROM "timeline_snapshots" WHERE "_round" = ? ORDER BY "order" ASC', [roundId], { detectChanges: true })
 
   const { processedGroups: fixtures } = await useGroupsWithUsers({ _refId: roundId }, true, userId)
-  const { processedGroups: standings } = await useGroupsWithUsers({ _refId: roundId }, false, userId)
+  const fixtureParentGroupIds = fixtures.value.map((fixture: any) => fixture._parentGroup).filter(Boolean)
+
+  const { processedGroups: directStandings } = await useGroupsWithUsers({ _refId: roundId }, false, userId)
+  const { processedGroups: fixtureStandings } = await useGroupsWithUsers({ id: fixtureParentGroupIds }, false, userId)
+  const standingsMap = new Map([...directStandings.value, ...fixtureStandings.value].map((standing) => [standing.id, standing]))
+  const standings = ref(Array.from(standingsMap.values()))
 
   const allGroupIds = [...fixtures.value.map((f: any) => f.id), ...standings.value.map((s: any) => s.id)]
 
@@ -98,7 +103,7 @@ export const usePopulatedRound = async (roundId: string, userId?: string) => {
       snapshots: processedSnapshots,
       userBets: transformedBets,
       userFixtures: fixtures.value,
-      userStandings: standings.value, // Not being used atm and not sure if needed
+      userStandings: standings.value,
       userCursors: cursors.value,
     }
   })
@@ -187,58 +192,6 @@ export const usePopulatedRealFixture = async (rfId: string) => {
   })
 }
 
-/*
-export const usePopulatedGroupCursor = async (fid: string) => {
-  const cursorQuery = usePSWatch(`SELECT *, "_group" FROM "group_cursors" WHERE "_group" IN (?)`, [fid])
-
-  await cursorQuery.await()
-
-  return usePSQueryWatcher([cursorQuery], (cursor) => {
-    const rawCursor = cursorQuery.data.value[0]
-
-    if (rawCursor) {
-      cursor.value = {
-        ...rawCursor,
-        _link: JSON.parse(rawCursor._link || '{}'),
-        betsAddedSnapshots: JSON.parse(rawCursor.betsAddedSnapshots || '[]'),
-      }
-    } else {
-      cursor.value = null
-    }
-  })
-}
-*/
-
-export const usePopulatedGroupCursor = async (fid: string | string[]) => {
-  // Check if fid is an array or a single string
-  const isArray = Array.isArray(fid)
-  const fidArray = isArray ? fid : [fid]
-
-  // Construct the SQL query with the right number of placeholders
-  const placeholders = fidArray.map(() => '?').join(',')
-  const cursorQuery = usePSWatch(`SELECT *, "_group" FROM "group_cursors" WHERE "_group" IN (${placeholders})`, fidArray)
-
-  await cursorQuery.await()
-
-  return usePSQueryWatcher([cursorQuery], (cursor) => {
-    // Transform all cursors with proper JSON parsing
-    const transformedCursors = cursorQuery.data.value.map((rawCursor) => ({
-      ...rawCursor,
-      _link: JSON.parse(rawCursor._link || '{}'),
-      betsAddedSnapshots: JSON.parse(rawCursor.betsAddedSnapshots || '[]'),
-    }))
-
-    // If input was a single ID, return just the first cursor (or null)
-    if (!isArray) {
-      cursor.value = transformedCursors[0] || null
-    }
-    // If input was an array, return an object with fixture IDs as keys
-    else {
-      cursor.value = Object.fromEntries(transformedCursors.map((c: any) => [c._group, c]))
-    }
-  })
-}
-
 export const usePopulatedBet = async (options: { challengeId?: string; roundId?: string }) => {
   const { challengeId, roundId } = options
 
@@ -264,13 +217,21 @@ export const useGroupsWithUsers = async (filters: Record<string, any> = {}, isFi
   let query = `SELECT * FROM "${tableName}" WHERE 1=1`
   const params: any[] = []
 
-  Object.entries(filters).forEach(([k, v]) =>
-    k === '_refId'
-      ? ((query += ` AND _link LIKE ?`), params.push(`%"_refId":"${v}"%`))
-      : k.includes('.')
-      ? ((query += ` AND json_extract(${k.split('.')[0]}, '$.${k.split('.')[1]}') = ?`), params.push(v))
-      : ((query += ` AND ${k} = ?`), params.push(v))
-  )
+  Object.entries(filters).forEach(([k, v]) => {
+    if (k === '_refId') {
+      query += ` AND _link LIKE ?`
+      params.push(`%"_refId":"${v}"%`)
+    } else if (k === 'id' && Array.isArray(v)) {
+      query += ` AND ${k} IN (${v.map(() => '?').join(',')})`
+      params.push(...v)
+    } else if (k.includes('.')) {
+      query += ` AND json_extract(${k.split('.')[0]}, '$.${k.split('.')[1]}') = ?`
+      params.push(v)
+    } else {
+      query += ` AND ${k} = ?`
+      params.push(v)
+    }
+  })
 
   if (isFixture && userInPsKeys) {
     query += ` AND (psKeys LIKE ? OR psKeys IS NULL)`
@@ -323,8 +284,35 @@ export const useGroupsWithUsers = async (filters: Record<string, any> = {}, isFi
     })
   )
 
-  // Return the same format but with reactive data
-  return {
-    processedGroups,
-  }
+  return { processedGroups }
+}
+
+export const usePopulatedGroupCursor = async (fid: string | string[]) => {
+  // Check if fid is an array or a single string
+  const isArray = Array.isArray(fid)
+  const fidArray = isArray ? fid : [fid]
+
+  // Construct the SQL query with the right number of placeholders
+  const placeholders = fidArray.map(() => '?').join(',')
+  const cursorQuery = usePSWatch(`SELECT *, "_group" FROM "group_cursors" WHERE "_group" IN (${placeholders})`, fidArray)
+
+  await cursorQuery.await()
+
+  return usePSQueryWatcher([cursorQuery], (cursor) => {
+    // Transform all cursors with proper JSON parsing
+    const transformedCursors = cursorQuery.data.value.map((rawCursor) => ({
+      ...rawCursor,
+      _link: JSON.parse(rawCursor._link || '{}'),
+      betsAddedSnapshots: JSON.parse(rawCursor.betsAddedSnapshots || '[]'),
+    }))
+
+    // If input was a single ID, return just the first cursor (or null)
+    if (!isArray) {
+      cursor.value = transformedCursors[0] || null
+    }
+    // If input was an array, return an object with fixture IDs as keys
+    else {
+      cursor.value = Object.fromEntries(transformedCursors.map((c: any) => [c._group, c]))
+    }
+  })
 }

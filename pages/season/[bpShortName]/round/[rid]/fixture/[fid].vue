@@ -11,14 +11,10 @@
     </div>
 
     <div v-for="(bas, rfi) in betsAddedSnapshots" :key="bas.$realFixture?.$index" :id="`rfi-${bas.$realFixture?.$index}`" class="flex justify-between items-stretch py-4 hover:bg-gray-100">
-      <div class="flex-2 lg:flex">
-        <RealFixtureItemLink :rf="bas.$realFixture" />
-      </div>
+      <RealFixtureItemLink :rf="bas.$realFixture" class="flex-2 lg:flex" />
 
       <template v-for="side in ['home', 'away']" :key="side">
-        <div class="flex-1">
-          <RealFixtureBetAndPointsDisplay :bet="bas[`$${side}Bet`]" :correct-bet="bas.correctBet" :above-bets-based-on-challenge-type="bas.$realFixture.$aboveBetsBasedOnChallengeType" />
-        </div>
+        <RealFixtureBetAndPointsDisplay :bet="bas[`$${side}Bet`]" :correct-bet="bas.correctBet" :above-bets-based-on-challenge-type="bas.$realFixture.$aboveBetsBasedOnChallengeType" class="flex-1" />
       </template>
     </div>
   </main>
