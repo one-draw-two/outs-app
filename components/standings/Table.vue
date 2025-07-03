@@ -83,8 +83,6 @@ const sortedRows = computed<any>(() => {
   const curveRows: StandingRow[] = []
   const curves = props.standings?.stats_numbers?.curves
 
-  console.log('Curves:', curves)
-
   if (curves?.length >= 3) {
     curveRows.push(
       { _user: { id: 'hi-curve', name: 'HI' }, points: [curves[0]], isCurve: true },

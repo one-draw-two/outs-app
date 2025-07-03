@@ -1,7 +1,7 @@
 <template>
   <main class="space-y-4 relative">
     <RealFixturePointColumns>
-      <div class="h-24 bg-green-500"></div>
+      <div class="h-32 bg-green-500"></div>
     </RealFixturePointColumns>
     <div>
       <NuxtLink :to="`${useSL(`round/${round?.id}/matches`)}`"><h2>See all matches</h2></NuxtLink>
