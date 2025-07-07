@@ -22,15 +22,15 @@
   },
   "dependencies": {
     "@capacitor-community/fcm": "^7.1.1",
-    "@capacitor/android": "^7.4.0",
+    "@capacitor/android": "^7.4.1",
     "@capacitor/app": "^7.0.1",
-    "@capacitor/core": "^7.4.0",
-    "@capacitor/ios": "^7.4.0",
+    "@capacitor/core": "^7.4.1",
+    "@capacitor/ios": "^7.4.1",
     "@capacitor/network": "^7.0.1",
     "@capacitor/preferences": "^7.0.1",
     "@capacitor/push-notifications": "^7.0.1",
     "@outs1x2/capacitor-liveactivities": "^0.2.6",
-    "@powersync/web": "^1.23.0",
+    "@powersync/web": "^1.23.1",
     "@tailwindcss/vite": "^4.1.11",
     "capacitor-plugin-safe-area": "^4.0.0",
     "dayjs": "^1.11.13",
@@ -41,7 +41,7 @@
     "vue-router": "latest"
   },
   "devDependencies": {
-    "@capacitor/cli": "^7.4.0",
+    "@capacitor/cli": "^7.4.1",
     "concurrently": "^9.2.0",
     "localtunnel": "^2.0.2",
     "typescript": "^5.8.3",

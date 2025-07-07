@@ -88,15 +88,15 @@
 
     "@capacitor-community/fcm": ["@capacitor-community/fcm@7.1.1", "", { "peerDependencies": { "@capacitor/core": ">=7.0.0" } }, "sha512-sNAHgzaBv7cfafq4uLrS2yOyF8n7OtFayK0nDVaOl5CnssxIq5AQXOaTGZ2fff7FInM9sAlB9ZGGbxsyoMzV2w=="],
 
-    "@capacitor/android": ["@capacitor/android@7.4.0", "", { "peerDependencies": { "@capacitor/core": "^7.4.0" } }, "sha512-HVCQsnUobviGt/MR5qCfXsfkSyZ5gjJVW6Jbn0CI5NHhsvUkBtazGjaMjdt5JueIz1pfKXpiuZc/njfRHwjx6Q=="],
+    "@capacitor/android": ["@capacitor/android@7.4.1", "", { "peerDependencies": { "@capacitor/core": "^7.4.0" } }, "sha512-/LxreKsXt6oZnS7gOpHz2WvRuZzwaLpGOKqomvBTliISTQaKEwqLkX1k665fqZquuJjP8RKnkz8thO6UZJTfbg=="],
 
     "@capacitor/app": ["@capacitor/app@7.0.1", "", { "peerDependencies": { "@capacitor/core": ">=7.0.0" } }, "sha512-ArlVZAAla4MwQoKh26x2AaTDOBh5Vhp1VhMKR3RwqZSsZnazKTFGNrPbr9Ez5r1knnEDfApyjwp1uZnXK1WTYQ=="],
 
-    "@capacitor/cli": ["@capacitor/cli@7.4.0", "", { "dependencies": { "@ionic/cli-framework-output": "^2.2.8", "@ionic/utils-subprocess": "^3.0.1", "@ionic/utils-terminal": "^2.3.5", "commander": "^12.1.0", "debug": "^4.4.0", "env-paths": "^2.2.0", "fs-extra": "^11.2.0", "kleur": "^4.1.5", "native-run": "^2.0.1", "open": "^8.4.0", "plist": "^3.1.0", "prompts": "^2.4.2", "rimraf": "^6.0.1", "semver": "^7.6.3", "tar": "^6.1.11", "tslib": "^2.8.1", "xml2js": "^0.6.2" }, "bin": { "cap": "bin/capacitor", "capacitor": "bin/capacitor" } }, "sha512-RXmsW067r9sz7K1qtXGNB12w2aJtt86J3Jc4vOvmvpA+GyVYkVY1UhAMRnuVrXHjGZEVlwBORHunwrmv30HoZg=="],
+    "@capacitor/cli": ["@capacitor/cli@7.4.1", "", { "dependencies": { "@ionic/cli-framework-output": "^2.2.8", "@ionic/utils-subprocess": "^3.0.1", "@ionic/utils-terminal": "^2.3.5", "commander": "^12.1.0", "debug": "^4.4.0", "env-paths": "^2.2.0", "fs-extra": "^11.2.0", "kleur": "^4.1.5", "native-run": "^2.0.1", "open": "^8.4.0", "plist": "^3.1.0", "prompts": "^2.4.2", "rimraf": "^6.0.1", "semver": "^7.6.3", "tar": "^6.1.11", "tslib": "^2.8.1", "xml2js": "^0.6.2" }, "bin": { "cap": "bin/capacitor", "capacitor": "bin/capacitor" } }, "sha512-pN5SCj5SAA54yHj8XKJNhRXjjHNKrSfUuSS7a8GKQl/+OeaG0aA2hNJmM5RQJMBQ5MtU0sQqSLWpTkSW9nd7YA=="],
 
-    "@capacitor/core": ["@capacitor/core@7.4.0", "", { "dependencies": { "tslib": "^2.1.0" } }, "sha512-P6NnjoHyobZgTjynlZSn27d0SUj6j38inlNxFnKZr9qwU7/r6+0Sg2nWkGkIH/pMmXHsvGD8zVe6KUq1UncIjA=="],
+    "@capacitor/core": ["@capacitor/core@7.4.1", "", { "dependencies": { "tslib": "^2.1.0" } }, "sha512-0ap4FzPJItaeg3QiiS1WguPNHY2aD67fQ9wr7DojCRzTFuNXQPvFB6lBkqlrVeQyJ9jCw0KV/LXv25oXjDcsyA=="],
 
-    "@capacitor/ios": ["@capacitor/ios@7.4.0", "", { "peerDependencies": { "@capacitor/core": "^7.4.0" } }, "sha512-xajNljo39eu0+Bw3eVnnMc73VRzWkp0m55S3dqJJOaT2GjqoWl1x0PrnnhYcDMp0X8aDPDBL8oz+XFpMjQiM1Q=="],
+    "@capacitor/ios": ["@capacitor/ios@7.4.1", "", { "peerDependencies": { "@capacitor/core": "^7.4.0" } }, "sha512-KIvpCi2Hi5nWHGjGBLOCMrF46jDafu8s79dkZCPdK+4myy/pnzLpdj8xSic6umTHYOKThJMBYX42ZCBT2Cjt2w=="],
 
     "@capacitor/network": ["@capacitor/network@7.0.1", "", { "peerDependencies": { "@capacitor/core": ">=7.0.0" } }, "sha512-jKyhTUqegKHjHKkK8e3t0TgwAYpKb3ocYpZkJrB3uXL5figkG06UEhQE4Cp25Dfb4LIjDxTSDLLsDEteKarmyg=="],
 
@@ -328,9 +328,9 @@
 
     "@poppinss/exception": ["@poppinss/exception@1.2.1", "", {}, "sha512-aQypoot0HPSJa6gDPEPTntc1GT6QINrSbgRlRhadGW2WaYqUK3tK4Bw9SBMZXhmxd3GeAlZjVcODHgiu+THY7A=="],
 
-    "@powersync/common": ["@powersync/common@1.33.0", "", { "dependencies": { "js-logger": "^1.6.1" } }, "sha512-FPJ3A8ic2zt/ZsgXDxIk36W9MOTuGRw+n5vUO178DBoSdUFfheJhlPprEM369e8B7Zq12EYNM7x+2/7UKEGjVw=="],
+    "@powersync/common": ["@powersync/common@1.33.1", "", { "dependencies": { "js-logger": "^1.6.1" } }, "sha512-/x1//N1GXsYqWDKtZRfVYupdJli4LXWi6rM3gbX2gN0XLGI87NOngxpKn4XbyDHgwmsKTYSPZgyIfCW+I8xoeQ=="],
 
-    "@powersync/web": ["@powersync/web@1.23.0", "", { "dependencies": { "@powersync/common": "1.33.0", "async-mutex": "^0.4.0", "bson": "^6.6.0", "comlink": "^4.4.2", "commander": "^12.1.0" }, "peerDependencies": { "@journeyapps/wa-sqlite": "^1.2.5" }, "bin": { "powersync-web": "bin/powersync.js" } }, "sha512-KbKuov6uX+i8dro1d/MiSfRj7ZEs02F6VNisDeCaryx9HcN6laROARn+PC/xcSQ/UtSA/i2qhjLiGf7+zA2oMA=="],
+    "@powersync/web": ["@powersync/web@1.23.1", "", { "dependencies": { "@powersync/common": "1.33.1", "async-mutex": "^0.4.0", "bson": "^6.6.0", "comlink": "^4.4.2", "commander": "^12.1.0" }, "peerDependencies": { "@journeyapps/wa-sqlite": "^1.2.5" }, "bin": { "powersync-web": "bin/powersync.js" } }, "sha512-XbGULWnaxMh9O7txYkTvKq/SnQcNlHiq7KbKNGoKt6n4XgT2bvJnGM0p9n8I5AlF8N+Qh/C6ZCIRxwX4t5wpYA=="],
 
     "@rolldown/pluginutils": ["@rolldown/pluginutils@1.0.0-beta.9", "", {}, "sha512-e9MeMtVWo186sgvFFJOPGy7/d2j2mZhLJIdVW0C/xDluuOvymEATqz6zKsP0ZmXGzQtqlyjz5sC1sYQUoJG98w=="],
 
