@@ -8,7 +8,7 @@
     </template>
     <template #page>
       <main class="pb-48">
-        <StandingsTable :standings="standings" :allowShuffle="true" @shuffle-complete="onShuffleComplete" rowClass="hover:bg-gray-50" />
+        <StandingsTable :standings="standings" :fixtures="childrenFixtures" @shuffle-complete="onShuffleComplete" rowClass="hover:bg-gray-50" />
       </main>
     </template>
   </AppDynamicLayout>

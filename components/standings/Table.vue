@@ -1,12 +1,13 @@
 <template>
   <div>
-    <div class="flex items-center justify-between" v-if="showHeader">
+    <div class="flex items-center justify-between">
       <div class="flex gap-4">
         <h1>{{ standingsName }}</h1>
         <NuxtLink v-if="standings?._parentGroup" :to="useSL(`standings/${standings?._parentGroup}`)" class="block"> Parent </NuxtLink>
+        <NuxtLink v-if="fixtures && fixtures.length > 0" :to="useSL(`standings/${standings?.id}/fixtures`)" class="block"> Fixtures </NuxtLink>
       </div>
 
-      <button v-if="allowShuffle" @click="shufflePoints" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md">Shuffle Points</button>
+      <button @click="shufflePoints" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md">Shuffle Points</button>
     </div>
 
     <div class="flex py-4">
@@ -28,7 +29,7 @@
           <div class="tabular-nums w-12">{{ row.isCurve ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isCurve).length }}</div>
           <div>{{ row._user.name }}</div>
         </div>
-        <div class="tabular-nums text-right w-16">{{ row.points?.[0] }}</div>
+        <div class="tabular-nums text-right">{{ row.points?.join(' / ') }}</div>
       </div>
     </TransitionGroup>
   </div>
@@ -42,13 +43,9 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  showHeader: {
-    type: Boolean,
-    default: true,
-  },
-  allowShuffle: {
-    type: Boolean,
-    default: false,
+  fixtures: {
+    type: Array,
+    required: false,
   },
   rowClass: {
     type: String,
