@@ -72,8 +72,9 @@ export const usePopulatedRound = async (roundId: string, userId?: string) => {
   const { processedGroups: fixtures } = await useGroupsWithUsers({ _refId: roundId }, true, userId)
   const fixtureParentGroupIds = fixtures.value.map((fixture: any) => fixture._parentGroup).filter(Boolean)
 
-  const { processedGroups: directStandings } = await useGroupsWithUsers({ _refId: roundId }, false, userId)
+  const { processedGroups: directStandings } = await useGroupsWithUsers({ _refId: roundId, name: 'Curves' }, false, userId)
   const { processedGroups: fixtureStandings } = await useGroupsWithUsers({ id: fixtureParentGroupIds }, false, userId)
+
   const standingsMap = new Map([...directStandings.value, ...fixtureStandings.value].map((standing) => [standing.id, standing]))
   const standings = ref(Array.from(standingsMap.values()))
 
