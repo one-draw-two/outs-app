@@ -4,18 +4,64 @@
       <div class="flex gap-4">
         <h1>{{ standingsName }}</h1>
         <NuxtLink v-if="standings?._parentGroup" :to="useSL(`standings/${standings?._parentGroup}`)" class="block"> Parent </NuxtLink>
-        <NuxtLink v-if="fixtures && fixtures.length > 0" :to="useSL(`standings/${standings?.id}/fixtures`)" class="block"> Fixtures </NuxtLink>
+        <NuxtLink v-if="childrenFixtures?.length > 0" :to="useSL(`standings/${standings?.id}/fixtures`)" class="block"> Fixtures </NuxtLink>
       </div>
 
-      <button @click="shufflePoints" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md">Shuffle Points</button>
+      <div class="flex gap-4 items-center">
+        <FormsToggleSwitch />
+        <button @click="shufflePoints" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md">Shuffle Points</button>
+      </div>
     </div>
 
+    <!-- Top header row with spanned titles -->
+    <div class="flex py-2 border-b border-gray-500/10">
+      <div class="flex-1 flex gap-2"></div>
+      <div class="flex gap-4">
+        <div v-if="childrenStandings?.length > 0" class="flex gap-4">
+          <div :style="{ width: `${childrenStandings.length * 3 + (childrenStandings.length - 1) * 1}rem` }">
+            <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
+              <span class="text-xs font-medium">Rounds</span>
+            </UtilLineBar>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <div :style="{ width: `${maxPointsLength * 4 + (maxPointsLength - 1) * 1}rem` }">
+            <UtilLineBar color="green-500" background-color="white" text-color="gray-700" variant="subtle">
+              <span class="text-xs font-medium">Points</span>
+            </UtilLineBar>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Original header row -->
     <div class="flex py-4">
       <div class="flex-1 flex gap-2">
         <div class="tabular-nums w-12">#</div>
         <div>User</div>
       </div>
-      <div>Points</div>
+      <div class="flex gap-4 items-center">
+        <div class="flex gap-4 items-center">
+          <div v-for="(cs, csi) of childrenStandings" class="w-12">
+            <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
+              <NuxtLink :to="useSL(`standings/${cs.id}`)" class="text-xs"> R{{ csi + 1 }} </NuxtLink>
+            </UtilLineBar>
+          </div>
+        </div>
+        <div class="flex gap-4 items-center">
+          <div
+            v-for="(_, pointIndex) in maxPointsLength"
+            :key="pointIndex"
+            class="tabular-nums text-right w-16 cursor-pointer hover:bg-gray-100"
+            :class="{ 'text-blue-100': sortBy.index === pointIndex }"
+            @click="sortByPointIndex(pointIndex)"
+          >
+            <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
+              <span class="text-xs">P{{ pointIndex + 1 }}</span>
+            </UtilLineBar>
+          </div>
+        </div>
+      </div>
     </div>
 
     <TransitionGroup tag="div" name="standing-row" class="relative standings-list">
@@ -29,43 +75,52 @@
           <div class="tabular-nums w-12">{{ row.isCurve ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isCurve).length }}</div>
           <div>{{ row._user.name }}</div>
         </div>
-        <div class="tabular-nums text-right">{{ row.points?.join(' / ') }}</div>
+        <div class="flex gap-4">
+          <div class="flex gap-4">
+            <div v-for="cs of childrenStandings" class="bg-gray-100 w-12 rounded-md"></div>
+          </div>
+          <div class="flex gap-4">
+            <div v-for="(_, pointIndex) in maxPointsLength" :key="pointIndex" class="tabular-nums text-right w-16 px-2">
+              {{ row.points?.[pointIndex] }}
+            </div>
+          </div>
+        </div>
       </div>
     </TransitionGroup>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watchEffect } from 'vue'
+import type { _Standing } from '~/types'
 
 const props = defineProps({
-  standings: {
-    type: Object,
-    required: true,
-  },
-  fixtures: {
-    type: Array,
-    required: false,
-  },
-  rowClass: {
-    type: String,
-    default: '',
-  },
+  standings: { type: Object, required: true },
+  childrenStandings: { type: Array<_Standing>, required: true },
+  childrenFixtures: { type: Array, required: true },
+  rowClass: { type: String, default: '' },
 })
-
-const emit = defineEmits(['shuffle-complete'])
 
 const standingsName = computed(() => props.standings?.name || 'Standings')
 const localRows = ref<any>([])
+const sortBy = ref({ index: 0 })
 
-watchEffect(() => {
-  if (props.standings?.rows) {
-    localRows.value = JSON.parse(JSON.stringify(props.standings.rows))
-  }
+watchEffect(() => (localRows.value = props.standings?.rows ? JSON.parse(JSON.stringify(props.standings.rows)) : []))
+
+// Calculate the maximum points array length for consistent column display
+const maxPointsLength = computed(() => {
+  if (!localRows.value?.length) return 1
+
+  const maxLength = Math.max(...localRows.value.map((row: any) => (Array.isArray(row.points) ? row.points.length : 1)))
+
+  return Math.max(maxLength, 1)
 })
 
+// Function to sort by specific point index
+const sortByPointIndex = (index: number) => {
+  sortBy.value.index = index
+}
+
 // Sort rows by points descending
-// Update the sortedRows computed property to include curve indicators
 const sortedRows = computed<any>(() => {
   if (!localRows.value?.length) return []
 
@@ -91,9 +146,10 @@ const sortedRows = computed<any>(() => {
   const combined: StandingRow[] = [...localRows.value, ...curveRows]
 
   return combined.sort((a: StandingRow, b: StandingRow) => {
-    const pointsA = Array.isArray(a.points) ? a.points[0] : a.points
-    const pointsB = Array.isArray(b.points) ? b.points[0] : b.points
-    return pointsB - pointsA
+    const pointsA = Array.isArray(a.points) ? a.points[sortBy.value.index] ?? 0 : sortBy.value.index === 0 ? a.points : 0
+    const pointsB = Array.isArray(b.points) ? b.points[sortBy.value.index] ?? 0 : sortBy.value.index === 0 ? b.points : 0
+
+    return pointsB - pointsA // Always descending
   })
 })
 
@@ -104,12 +160,10 @@ const shufflePoints = () => {
     if (Array.isArray(row.points)) return { ...row, points: [randomPoints, ...row.points.slice(1)] }
     return { ...row, points: randomPoints }
   })
-  emit('shuffle-complete', localRows.value)
 }
 
 defineExpose({
   sortedRows,
   localRows,
-  shufflePoints,
 })
 </script>

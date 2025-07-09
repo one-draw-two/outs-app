@@ -8,7 +8,7 @@
     </template>
     <template #page>
       <main class="pb-48">
-        <StandingsTable :standings="standings" :fixtures="childrenFixtures" @shuffle-complete="onShuffleComplete" rowClass="hover:bg-gray-50" />
+        <StandingsTable :standings="standings" :children-standings="childrenStandings" :children-fixtures="childrenFixtures" @shuffle-complete="onShuffleComplete" rowClass="hover:bg-gray-50" />
       </main>
     </template>
   </AppDynamicLayout>
@@ -34,11 +34,10 @@ if (linkColl.value?._refColl === 'round') {
 
 const onShuffleComplete = (rows: any[]) => console.log('Shuffle completed', rows)
 
-wecl(standings)
-
 const { processedGroups: childrenFixtures } = await useGroupsWithUsers({ _parentGroup: stanid }, true)
 const { processedGroups: childrenStandings } = await useGroupsWithUsers({ _parentGroup: stanid }, false)
 
+wecl(standings)
 wecl(childrenFixtures, 'fixto')
 wecl(childrenStandings, 'standings')
 

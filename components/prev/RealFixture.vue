@@ -1,6 +1,6 @@
 <template>
   <div class="w-full py-2 text-white" :class="options?.bg ? `bg-${options.bg}` : ''">
-    <PrevLineBar :is-no-padding="true" :color="line" class="h-1 mt-2 mb-1 !before:bg-white/20">
+    <UtilLineBar :color="line" background-color="transparent" text-color="white" alignment="left" variant="subtle" class="h-1 mt-2 mb-1">
       <div v-if="slot" class="absolute text-micro space-x-2 right-0">
         <p>
           <span class="pl-4 font-mono" :class="[bgComputed, `text-${slot.color}`]">{{ slot.name }}</span>
@@ -10,17 +10,17 @@
         v-if="['live', 'halftime'].includes(realFixture?.resultStatus)"
         class="absolute w-2 h-2 bg-green-500 rounded-full -right-0 top-[0.35rem] ring-2"
         :class="options?.bg ? `ring-${options.bg}` : 'ring-gray-900'"
-      ></div>
+      />
       <div class="text-micro uppercase top-1.5 flex justify-between space-x-2">
         <p class="space-x-4">
-          <span v-if="options?.isDateShown" class="font-mono pr-2" :class="bgComputed">{{ $day(realFixture?.startingAt).format('ddd DD/MM') }}</span>
+          <span v-if="options?.isDateShown" class="font-mono px-2" :class="bgComputed">{{ $day(realFixture?.startingAt).format('ddd DD/MM') }}</span>
           <span class="font-mono pr-2" :class="[bgComputed, options?.isDateShown ? 'pl-2' : '']">{{ $day(realFixture?.startingAt).format('HH:mm') }}</span>
         </p>
         <p v-if="realFixture?.resultStatus !== 'not-started' && !slot" class="pl-4" :class="[['live', 'halftime'].includes(realFixture?.resultStatus) ? 'text-green-500' : '', bgComputed]">
           {{ hourOrResultStatus }}
         </p>
       </div>
-    </PrevLineBar>
+    </UtilLineBar>
     <div class="flex items-center space-x-4 rf-inner flex-wrap" :class="options?.bg ? `bg-${options.bg}` : ''">
       <slot name="left" />
       <div class="flex-1 min-w-[0] flex flex-col mt-4 space-y-2">
@@ -53,8 +53,6 @@ const props = defineProps<{
     bg?: string
   }
 }>()
-
-// console.log(props.realFixture)
 
 const bgComputed = computed(() => (props.options?.bg ? `bg-${props.options.bg}` : 'bg-gray-900'))
 
