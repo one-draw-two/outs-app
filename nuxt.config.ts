@@ -57,7 +57,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       dev: process.env.DEV ? true : false,
-      cBPSsn: process.env.CURRENT_BP_SEASON_SHORT,
+      cBPSsn: process.env.CURRENT_BP_SEASON_SHORT, // Need to do something about this (to be able to change seasons)
       platform: process.env.NUXT_PUBLIC_PLATFORM || 'web',
       authUrl: process.env.DEV ? process.env.DEV_AUTH_URL : process.env.AUTH_URL,
       baseUrl: process.env.DEV ? process.env.DEV_BASE_URL : process.env.BASE_URL,
