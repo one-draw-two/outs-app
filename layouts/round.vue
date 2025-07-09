@@ -59,7 +59,7 @@ useState<any>('pickerStageId').value = round.value?._stage
 
 useDynamicPS().updatePowerSyncParams({ selected_round: rid })
 
-const sKey = 'real-fixture'
+const sKey = 'realFixture'
 const getOrder = (t: ParsedBPTournament, key: string) => t.snapshotConfig?.find((c) => c.name === key)?.order || 0
 
 const roundTournaments = computed(() => (season.value?.tournaments?.filter((t) => t.snapshotConfig?.some((c) => c.name === sKey)) || []).sort((a, b) => getOrder(a, sKey) - getOrder(b, sKey)))

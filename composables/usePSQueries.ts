@@ -16,6 +16,7 @@ import type {
   _RealEvent,
   _Snapshot,
   FixtureSlot,
+  _BPTournamentRecord,
 } from '~/types'
 
 export const usePopulatedSeason = async (seasonId: string) => {
@@ -39,6 +40,7 @@ export const usePopulatedSeason = async (seasonId: string) => {
     ...tournament,
     scopeConfig: JSON.parse(tournament.scopeConfig || '[]'),
     snapshotConfig: JSON.parse(tournament.snapshotConfig || '[]'),
+    pointsDef: JSON.parse(tournament.pointsDef || '[]'),
   }))
 
   const queries = [seasonQuery, stagesQuery, roundsQuery, domainQuery, tournamentsQuery]
@@ -318,4 +320,15 @@ export const usePopulatedGroupCursor = async (fid: string | string[]) => {
       cursor.value = Object.fromEntries(transformedCursors.map((c: any) => [c._group, c]))
     }
   })
+}
+
+// Parsers
+export const parseTournament = (tournament?: _BPTournamentRecord) => {
+  if (!tournament) return null
+  return {
+    ...tournament,
+    scopeConfig: JSON.parse((tournament.scopeConfig as string) || '[]'),
+    snapshotConfig: JSON.parse((tournament.snapshotConfig as string) || '[]'),
+    pointsDef: JSON.parse((tournament.pointsDef as string) || '{}'),
+  }
 }

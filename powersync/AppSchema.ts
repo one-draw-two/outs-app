@@ -43,6 +43,7 @@ const blueprint_tournaments = new Table(
     color: column.text,
     scopeConfig: column.text,
     snapshotConfig: column.text,
+    pointsDef: column.text,
   },
   { indexes: {} }
 )

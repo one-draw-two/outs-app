@@ -25,7 +25,7 @@
           </div>
         </div>
         <div class="flex gap-4">
-          <div :style="{ width: `${maxPointsLength * 4 + (maxPointsLength - 1) * 1}rem` }">
+          <div :style="{ width: `${scopedTournamnetPointsDef.length * 10 + (scopedTournamnetPointsDef.length - 1) * 1}rem` }">
             <UtilLineBar color="green-500" background-color="white" text-color="gray-700" variant="subtle">
               <span class="text-xs font-medium">Points</span>
             </UtilLineBar>
@@ -50,14 +50,14 @@
         </div>
         <div class="flex gap-4 items-center">
           <div
-            v-for="(_, pointIndex) in maxPointsLength"
+            v-for="(pointDef, pointIndex) in scopedTournamnetPointsDef"
             :key="pointIndex"
-            class="tabular-nums text-right w-16 cursor-pointer hover:bg-gray-100"
+            class="tabular-nums text-right w-48 cursor-pointer hover:bg-gray-100"
             :class="{ 'text-blue-100': sortBy.index === pointIndex }"
             @click="sortByPointIndex(pointIndex)"
           >
             <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
-              <span class="text-xs">P{{ pointIndex + 1 }}</span>
+              <span class="text-xs">{{ pointDef.label }}</span>
             </UtilLineBar>
           </div>
         </div>
@@ -80,7 +80,7 @@
             <div v-for="cs of childrenStandings" class="bg-gray-100 w-12 rounded-md"></div>
           </div>
           <div class="flex gap-4">
-            <div v-for="(_, pointIndex) in maxPointsLength" :key="pointIndex" class="tabular-nums text-right w-16 px-2">
+            <div v-for="(pointDef, pointIndex) in scopedTournamnetPointsDef" :key="pointIndex" class="tabular-nums text-right w-16 px-2">
               {{ row.points?.[pointIndex] }}
             </div>
           </div>
@@ -91,15 +91,19 @@
 </template>
 
 <script setup lang="ts">
-import type { _Standing } from '~/types'
+import type { _Standing, ParsedBPTournament } from '~/types'
 
-const props = defineProps({
-  standings: { type: Object, required: true },
-  childrenStandings: { type: Array<_Standing>, required: true },
-  childrenFixtures: { type: Array, required: true },
-  rowClass: { type: String, default: '' },
-})
+interface Props {
+  standings: any
+  childrenStandings: _Standing[]
+  childrenFixtures: any[]
+  tournament: ParsedBPTournament
+  rowClass?: string
+}
 
+const props = withDefaults(defineProps<Props>(), { rowClass: '' })
+
+const scopedTournamnetPointsDef = computed(() => props.tournament?.pointsDef?.[props.standings._link._refColl?.toLowerCase() as keyof ParsedBPTournament['pointsDef']] || [])
 const standingsName = computed(() => props.standings?.name || 'Standings')
 const localRows = ref<any>([])
 const sortBy = ref({ index: 0 })

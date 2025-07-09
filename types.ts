@@ -144,14 +144,25 @@ export interface _P_Group extends Omit<_Standing, 'rows'> {
 }
 
 export interface BPTournamentConfig {
-  name: 'season' | 'stage' | 'round' | 'real-fixture'
+  name: 'season' | 'stage' | 'round' | 'realFixture'
   order?: number
   options?: Record<string, any>
+}
+
+export interface BPTournamentPointDef {
+  isDisplayed: boolean
+  label: string
 }
 
 export interface ParsedBPTournament extends Omit<_BPTournamentRecord, 'scopeConfig' | 'snapshotConfig'> {
   scopeConfig: BPTournamentConfig[]
   snapshotConfig: BPTournamentConfig[]
+  pointsDef: {
+    realFixture?: Array<BPTournamentPointDef>
+    round?: Array<BPTournamentPointDef>
+    stage?: Array<BPTournamentPointDef>
+    season?: Array<BPTournamentPointDef>
+  }
 }
 
 // Update _P_Season to use the parsed tournament type

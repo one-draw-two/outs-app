@@ -8,17 +8,22 @@
     </template>
     <template #page>
       <main class="pb-48">
-        <StandingsTable :standings="standings" :children-standings="childrenStandings" :children-fixtures="childrenFixtures" @shuffle-complete="onShuffleComplete" rowClass="hover:bg-gray-50" />
+        <StandingsTable :standings="standings" :children-standings="childrenStandings" :children-fixtures="childrenFixtures" :tournament="tournament!" rowClass="hover:bg-gray-50" />
       </main>
     </template>
   </AppDynamicLayout>
 </template>
 
 <script setup lang="ts">
+import type { _BPTournamentRecord } from '~/types'
+
 const stanid = useRoute().params.stanid
 
 const { processedGroups } = await useGroupsWithUsers({ id: stanid }, false)
 const standings = computed(() => processedGroups?.value?.[0])
+
+const { data: rawTournament } = await usePSWatchSingle<_BPTournamentRecord>('SELECT * FROM "blueprint_tournaments" WHERE id = ?', [standings.value?._tournament])
+const tournament = computed(() => parseTournament(rawTournament.value!))
 
 const link = computed(() => standings.value?._link)
 const linkColl = computed(() => (link.value?._refColl === 'Season' ? 'Campaign' : link.value?._refColl))
@@ -31,8 +36,6 @@ if (linkColl.value?._refColl === 'round') {
   useDynamicPS().updatePowerSyncParams({ selected_round: linkColl.value?._refId })
 }
 */
-
-const onShuffleComplete = (rows: any[]) => console.log('Shuffle completed', rows)
 
 const { processedGroups: childrenFixtures } = await useGroupsWithUsers({ _parentGroup: stanid }, true)
 const { processedGroups: childrenStandings } = await useGroupsWithUsers({ _parentGroup: stanid }, false)

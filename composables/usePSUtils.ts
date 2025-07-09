@@ -17,17 +17,14 @@ export interface WithPSChange extends Record<string, any> {
   }
 }
 
-export function usePSWatch<T extends WithPSChange>(
-  sql: string,
-  parameters: any[] = [],
-  options?: {
-    detectChanges?: boolean
-    abortController?: AbortController
-    highlightDuration?: number
-    watchSource?: Ref<any> | ComputedRef<any>
-  }
-) {
-  // if ((Array.isArray(parameters) && parameters.length === 0) || (sql.includes(' IN (') && parameters.length === 0))
+export interface PSWatchOptions {
+  detectChanges?: boolean
+  abortController?: AbortController
+  highlightDuration?: number
+  watchSource?: Ref<any> | ComputedRef<any>
+}
+
+export function usePSWatch<T extends WithPSChange>(sql: string, parameters: any[] = [], options?: PSWatchOptions) {
   if (sql.includes(' IN (') && parameters.length === 0) {
     console.warn('Avoiding SQL error: IN clause with empty parameters array detected')
     return {
@@ -170,6 +167,18 @@ export function usePSWatch<T extends WithPSChange>(
     error,
     changeInfo: detectChanges ? changeInfo : undefined,
     await: () => firstPopulationPromise,
+  }
+}
+
+export function usePSWatchSingle<T extends WithPSChange>(sql: string, parameters: any[] = [], options?: PSWatchOptions) {
+  const arrayResult = usePSWatch<T>(sql, parameters, options)
+
+  return {
+    data: computed(() => arrayResult.data.value?.[0] || null),
+    isLoading: arrayResult.isLoading,
+    error: arrayResult.error,
+    changeInfo: arrayResult.changeInfo,
+    await: arrayResult.await,
   }
 }
 
