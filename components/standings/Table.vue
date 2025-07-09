@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="flex items-center justify-between">
+  <div class="relative">
+    <div class="pb-8 flex items-center justify-between">
       <div class="flex gap-4">
         <h1>{{ standingsName }}</h1>
         <NuxtLink v-if="standings?._parentGroup" :to="useSL(`standings/${standings?._parentGroup}`)" class="block"> Parent </NuxtLink>
@@ -13,54 +13,25 @@
       </div>
     </div>
 
-    <!-- Top header row with spanned titles -->
-    <div class="flex py-2 border-b border-gray-500/10">
-      <div class="flex-1 flex gap-2"></div>
-      <div class="flex gap-4">
-        <div v-if="childrenStandings?.length > 0" class="flex gap-4">
-          <div :style="{ width: `${childrenStandings.length * 3 + (childrenStandings.length - 1) * 1}rem` }">
-            <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
-              <span class="text-xs font-medium">Rounds</span>
-            </UtilLineBar>
-          </div>
-        </div>
-        <div class="flex gap-4">
-          <div :style="{ width: `${scopedTournamnetPointsDef.length * 10 + (scopedTournamnetPointsDef.length - 1) * 1}rem` }">
-            <UtilLineBar color="green-500" background-color="white" text-color="gray-700" variant="subtle">
-              <span class="text-xs font-medium">Points</span>
-            </UtilLineBar>
-          </div>
-        </div>
+    <div class="bg-white z-3 sticky top-0">
+      <!-- Top header row with spanned titles -->
+      <div class="z-1 relative flex py-2 border-y border-gray-500/10">
+        <div class="flex-1 flex gap-2" />
+        <StandingsColumns :children-standings="childrenStandings" :scoped-tournamnet-points-def="scopedTournamnetPointsDef" header-type="spanned" />
       </div>
-    </div>
-
-    <!-- Original header row -->
-    <div class="flex py-4">
-      <div class="flex-1 flex gap-2">
-        <div class="tabular-nums w-12">#</div>
-        <div>User</div>
-      </div>
-      <div class="flex gap-4 items-center">
-        <div class="flex gap-4 items-center">
-          <div v-for="(cs, csi) of childrenStandings" class="w-12">
-            <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
-              <NuxtLink :to="useSL(`standings/${cs.id}`)" class="text-xs"> R{{ csi + 1 }} </NuxtLink>
-            </UtilLineBar>
-          </div>
+      <!-- Original header row -->
+      <div class="z-1 relative flex py-4 border-b border-gray-500/10">
+        <div class="flex-1 flex gap-2">
+          <div class="tabular-nums w-8">#</div>
+          <div>User</div>
         </div>
-        <div class="flex gap-4 items-center">
-          <div
-            v-for="(pointDef, pointIndex) in scopedTournamnetPointsDef"
-            :key="pointIndex"
-            class="tabular-nums text-right w-48 cursor-pointer hover:bg-gray-100"
-            :class="{ 'text-blue-100': sortBy.index === pointIndex }"
-            @click="sortByPointIndex(pointIndex)"
-          >
-            <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
-              <span class="text-xs">{{ pointDef.label }}</span>
-            </UtilLineBar>
-          </div>
-        </div>
+        <StandingsColumns
+          :children-standings="childrenStandings"
+          :scoped-tournamnet-points-def="scopedTournamnetPointsDef"
+          :sort-by="sortBy"
+          header-type="simple"
+          @sort-by-point-index="sortByPointIndex"
+        />
       </div>
     </div>
 
@@ -68,23 +39,14 @@
       <div
         v-for="(row, ri) of sortedRows"
         :key="row._user.id || ri"
-        class="flex py-2 border-b border-gray-100 standing-row"
+        class="flex py-2 border-b border-gray-100 gap-8"
         :class="[row.isCurve ? 'bg-yellow-50 text-yellow-800 font-medium' : 'bg-white', rowClass]"
       >
-        <div class="flex-1 flex gap-2">
-          <div class="tabular-nums w-12">{{ row.isCurve ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isCurve).length }}</div>
-          <div>{{ row._user.name }}</div>
+        <div class="flex-1 flex gap-2 truncate">
+          <div class="tabular-nums w-8 shrink-0">{{ row.isCurve ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isCurve).length }}</div>
+          <div class="flex-1 truncate">{{ row._user.name }}</div>
         </div>
-        <div class="flex gap-4">
-          <div class="flex gap-4">
-            <div v-for="cs of childrenStandings" class="bg-gray-100 w-12 rounded-md"></div>
-          </div>
-          <div class="flex gap-4">
-            <div v-for="(pointDef, pointIndex) in scopedTournamnetPointsDef" :key="pointIndex" class="tabular-nums text-right w-16 px-2">
-              {{ row.points?.[pointIndex] }}
-            </div>
-          </div>
-        </div>
+        <StandingsColumns :children-standings="childrenStandings" :scoped-tournamnet-points-def="scopedTournamnetPointsDef" :row="row" header-type="data" />
       </div>
     </TransitionGroup>
   </div>
@@ -97,7 +59,7 @@ interface Props {
   standings: any
   childrenStandings: _Standing[]
   childrenFixtures: any[]
-  tournament: ParsedBPTournament
+  tournament?: ParsedBPTournament
   rowClass?: string
 }
 
@@ -109,15 +71,6 @@ const localRows = ref<any>([])
 const sortBy = ref({ index: 0 })
 
 watchEffect(() => (localRows.value = props.standings?.rows ? JSON.parse(JSON.stringify(props.standings.rows)) : []))
-
-// Calculate the maximum points array length for consistent column display
-const maxPointsLength = computed(() => {
-  if (!localRows.value?.length) return 1
-
-  const maxLength = Math.max(...localRows.value.map((row: any) => (Array.isArray(row.points) ? row.points.length : 1)))
-
-  return Math.max(maxLength, 1)
-})
 
 // Function to sort by specific point index
 const sortByPointIndex = (index: number) => {

@@ -86,3 +86,4 @@ nativeRoute.params.stid // Then use like this
 - Wip: Navigation is getting restructured, group relationships are getting added: 512.07kb
 - Wip: Fixtures page moved under standings: 513.28kb.
 - Wip: Standings table styling and navigation improvements (initial work): 514.83kb
+- Wip: Season main table is now a table but table needs many more features: 514.86kb

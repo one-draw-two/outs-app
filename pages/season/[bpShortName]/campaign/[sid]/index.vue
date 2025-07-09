@@ -8,41 +8,35 @@
       </div>
     </div>
     <main class="main-container py-8">
-      <div class="space-y-4">
-        <SeasonPointColumns :tournamentCols="processedGroups" />
-        <div v-for="(row, ri) of processedSeasonRows" class="flex justify-between">
-          <div class="flex-1 space-x-4">
-            <span class="tabular-nums">{{ (ri + 1).toString().padStart(2, '0') }}</span>
-            {{ row._user.name }}
-          </div>
-          <SeasonPointRows :tournamentCols="processedGroups" :row="row" class="flex-2" />
-        </div>
-      </div>
+      <StandingsTable :standings="mainTournamentGroup" :children-standings="childrenStandings" :children-fixtures="[]" :tournament="tournament" rowClass="hover:bg-gray-50" />
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { _Season, _Stage, _Round } from '~/types'
+import type { _Season, _Stage, _Round, _BPTournamentRecord } from '~/types'
 
 const sid = useRoute().params.sid as string
 
 const season = useState<any>('season')
 watch(toRef(sid), async (to) => !to || season.value?.id === to || (useState<any>('season').value = (await usePopulatedSeason(to)).data.value), { immediate: true })
 
-const { processedGroups } = await useGroupsWithUsers({ _refId: sid })
+const { processedGroups } = await useGroupsWithUsers({ _refId: sid }, false)
 
 const mainTournamentGroup = computed(() => processedGroups.value.find((group) => group._tournament === 'BTCAMP'))
 
-const processedSeasonRows = computed(() => {
-  return mainTournamentGroup.value?.rows.map((row: any) => ({
-    ...row,
-    $BTCURV: processedGroups.value.find((group) => group._tournament === 'BTCURV')?.rows.find((r: any) => r._user.id === row._user.id)?.rowMeta,
-  }))
-})
+const { data: rawTournament } = await usePSWatchSingle<_BPTournamentRecord>('SELECT * FROM "blueprint_tournaments" WHERE id = ?', [mainTournamentGroup.value?._tournament])
+const tournament = computed(() => (rawTournament.value ? parseTournament(rawTournament.value) : null))
 
-wecl(processedGroups)
-wecl(processedSeasonRows)
+const link = computed(() => mainTournamentGroup.value?._link)
+const linkColl = computed(() => (link.value?._refColl === 'Season' ? 'Campaign' : link.value?._refColl))
+const pageName = computed(() => `${mainTournamentGroup.value?.name}`)
+
+const { processedGroups: childrenStandings } = await useGroupsWithUsers({ _parentGroup: mainTournamentGroup.value?.id }, false)
+
+wecl(mainTournamentGroup)
+wecl(tournament)
+wecl(childrenStandings)
 
 const pageTitle = computed(() => `Season ${season.value?.name}`)
 useHead({ title: pageTitle })

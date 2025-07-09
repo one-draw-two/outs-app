@@ -22,6 +22,8 @@ const stanid = useRoute().params.stanid
 const { processedGroups } = await useGroupsWithUsers({ id: stanid }, false)
 const standings = computed(() => processedGroups?.value?.[0])
 
+useState<any>('pickerSeasonId').value = standings.value?._season
+
 const { data: rawTournament } = await usePSWatchSingle<_BPTournamentRecord>('SELECT * FROM "blueprint_tournaments" WHERE id = ?', [standings.value?._tournament])
 const tournament = computed(() => parseTournament(rawTournament.value!))
 

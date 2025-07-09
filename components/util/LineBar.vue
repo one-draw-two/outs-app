@@ -1,6 +1,6 @@
 <template>
   <div class="relative flex items-center" :class="[containerClass]">
-    <div class="absolute h-px w-full top-1/2 left-0 translate-y-pxX" :class="lineClass"></div>
+    <div class="z-1 absolute h-px w-full top-1/2 left-0" :class="lineClass"></div>
     <div class="relative z-10 mx-auto -top-px" :class="contentClass">
       <div class="" :class="[backgroundClass, textClass, paddingClass]">
         <slot />
