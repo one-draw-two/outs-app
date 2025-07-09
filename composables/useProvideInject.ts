@@ -1,4 +1,4 @@
-import type { _P_Season, _P_Stage, _P_Round, _P_Challenge } from '~/types'
+import type { _P_Season, _P_Stage, _P_Round, _P_Challenge, _P_Group, ParsedBPTournament } from '~/types'
 
 /*
 export const seasonKey = Symbol('season') as InjectionKey<{
@@ -15,6 +15,12 @@ export const stageKey = Symbol('stage') as InjectionKey<{
 export const roundKey = Symbol('round') as InjectionKey<{
   round: Ref<_P_Round | null>
   tournamentCols: Ref<any[]>
+  isLoading?: Ref<boolean>
+}>
+
+export const groupKey = Symbol('group') as InjectionKey<{
+  standings: Ref<_P_Group | null>
+  tournament: Ref<any>
   isLoading?: Ref<boolean>
 }>
 

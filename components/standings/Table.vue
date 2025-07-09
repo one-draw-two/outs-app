@@ -64,8 +64,8 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), { rowClass: '' })
-
 const scopedTournamnetPointsDef = computed(() => props.tournament?.pointsDef?.[props.standings._link._refColl?.toLowerCase() as keyof ParsedBPTournament['pointsDef']] || [])
+
 const standingsName = computed(() => props.standings?.name || 'Standings')
 const localRows = ref<any>([])
 const sortBy = ref({ index: 0 })
