@@ -84,4 +84,4 @@ nativeRoute.params.stid // Then use like this
 - Wip: Curves points are getting added: 510.09kb
 - Wip: Standings page (for curves initially) with vue transition rows: 511.81kb, with the nuxt update (3.17.6): 510.65kb
 - Wip: Navigation is getting restructured, group relationships are getting added: 512.07kb
-- Wip: Fixtures page moved under standings: 513.28kb
+- Wip: Fixtures page moved under standings: 513.28kb.
