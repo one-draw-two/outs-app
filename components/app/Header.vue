@@ -11,8 +11,8 @@
       <img src="/Season26Label.png" class="h-12" alt="Logo" />
     </div>    
     -->
-    <NuxtLink :to="useSL('')" class="block"><img src="/outstanding.svg" class="h-6" alt="Logo" /></NuxtLink>
-    <AppSeasonPicker></AppSeasonPicker>
+    <NuxtLink :to="useSL('')" class="block"><img src="/Test2.png" class="h-18" alt="Logo" /></NuxtLink>
+    <AppSeasonPicker v-if="false"></AppSeasonPicker>
 
     <AppUserButton />
   </div>
