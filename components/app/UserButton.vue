@@ -1,5 +1,5 @@
 <template>
-  <button class="absolute z-60 right-4 size-12 rounded-full bg-gray-200/50 flex-center stroke-text cursor-pointer" @click="isUserOverlayOpen = !isUserOverlayOpen">
+  <button class="absolute z-60 right-4 size-12 rounded-full bg-white border border-black/50 flex-center stroke-text cursor-pointer" @click="isUserOverlayOpen = !isUserOverlayOpen">
     <Transition name="flip" mode="out-in">
       <span v-if="!isUserOverlayOpen" key="initials" class="text-lg !not-italic">{{ userInitials }}</span>
       <span v-else key="close" class="text-lg !not-italic">X</span>

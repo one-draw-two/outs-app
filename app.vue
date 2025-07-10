@@ -1,14 +1,9 @@
 <template>
-  <div class="safe-area-padding-top">
-    <div class="space-y-8">
-      <AppHeader v-if="user" :user="user" />
-      <NuxtPage />
-    </div>
-
-    <AppUserOverlay v-if="user" />
-    <AppNetworkTray />
-    <AppDecorations />
-  </div>
+  <AppHeader v-if="user" :user="user" />
+  <NuxtPage />
+  <AppUserOverlay v-if="user" />
+  <AppNetworkTray />
+  <AppDecorations />
 </template>
 
 <script setup lang="ts">
