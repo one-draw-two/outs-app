@@ -1,14 +1,19 @@
 <template>
   <div
-    class="px-4 w-48 h-12 rounded-xl flex items-center gap-2"
+    class="relative px-4 w-48 h-12 rounded-xl flex flex-col justify-center shadow"
     :class="season?.id ? 'bg-repeat-x bg-[length:256px_auto]' : 'bg-gray-300'"
     :style="season?.bgUrl ? { backgroundImage: `url(${getSanityUrl(season.bgUrl)})` } : {}"
   >
-    <select v-model="selectedSeasonId" @change="change" class="stroke-text !not-italic w-full min-w-0 truncate">
-      <option class="truncate" value="">Select a season</option>
-      <option class="truncate" v-for="s of seasons" :value="s.id" :disabled="false && !activeUserSubscriptionSeasons?.includes(s.id)">Season {{ s.name }}</option>
-    </select>
-    <button v-if="selectedSeasonId" @click="goToDetails" class="stroke-text flex-shrink-0 w-6 text-center">→</button>
+    <div class="rounded-xl absolute inset-0 bg-gradient-to-t from-white/30 to-white/30 pointer-events-none"></div>
+    <div class="relative z-1">
+      <slot />
+      <h1 class="h-5 stroke-text">Season {{ season?.name }}</h1>
+      <select v-model="selectedSeasonId" @change="change" class="stroke-text !not-italic w-full min-w-0 truncate absolute opacity-0">
+        <option class="truncate" value="">Select a season</option>
+        <option class="truncate" v-for="s of seasons" :value="s.id" :disabled="false && !activeUserSubscriptionSeasons?.includes(s.id)">Season {{ s.name }}</option>
+      </select>
+      <button v-if="selectedSeasonId && false" @click="goToDetails" class="stroke-text flex-shrink-0 w-6 text-center">→</button>
+    </div>
   </div>
 </template>
 
