@@ -87,3 +87,4 @@ nativeRoute.params.stid // Then use like this
 - Wip: Fixtures page moved under standings: 513.28kb.
 - Wip: Standings table styling and navigation improvements (initial work): 514.83kb
 - Wip: Season main table is now a table but table needs many more features: 514.86kb
+- Pre: Removing stage selector, with initial Layo components to remove layouts: 514.56kb

@@ -40,7 +40,7 @@
         v-for="(row, ri) of sortedRows"
         :key="row._user.id || ri"
         class="flex py-2 border-b border-gray-100 gap-8"
-        :class="[row.isCurve ? 'bg-yellow-50 text-yellow-800 font-medium' : 'bg-white', rowClass]"
+        :class="[row.isCurve ? 'bg-yellow-50 text-yellow-800 font-medium' : isCurrentUserRow(row) ? 'bg-green-50 text-green-900 font-medium' : 'bg-white', rowClass]"
       >
         <div class="flex-1 flex gap-2 truncate">
           <div class="tabular-nums w-8 shrink-0">{{ row.isCurve ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isCurve).length }}</div>
@@ -62,6 +62,8 @@ interface Props {
   tournament?: ParsedBPTournament
   rowClass?: string
 }
+
+const { isCurrentUserRow } = useUserHelpers()
 
 const props = withDefaults(defineProps<Props>(), { rowClass: '' })
 const scopedTournamnetPointsDef = computed(() => props.tournament?.pointsDef?.[props.standings._link._refColl?.toLowerCase() as keyof ParsedBPTournament['pointsDef']] || [])
