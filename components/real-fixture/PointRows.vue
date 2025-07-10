@@ -41,7 +41,9 @@ const props = defineProps<{
   rf: _RealFixture
 }>()
 
-const { round, tournamentCols } = inject(roundKey)! as { round: Ref<EnhancedRound>; tournamentCols: any }
+// Use useState instead of inject
+const round = useState('round') as Ref<EnhancedRound>
+const tournamentCols = useState('tournamentCols')
 const { getUserRow, getOpponentRow } = useUserHelpers()
 
 const getUserBetFromCursor = (realFixtureIndex: number): _Bet | null => {

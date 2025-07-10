@@ -6,7 +6,9 @@
     <div class="flex-2 bg-blue-200 flex items-stretch gap-4">
       <div v-for="h in tournamentCols" class="flex-1 bg-blue-200 flex flex-col justify-stretch gap-2">
         <p v-if="!h.standings && !h.fixture">{{ h.name }}</p>
-        <NuxtLink v-if="h.standings" :to="useSL(`standings/${h.standings.id}`)" class="bg-gray-100/25 flex-1 flex items-center gap-2"> {{ h.standings.name }} </NuxtLink>
+        <NuxtLink v-if="h.standings" :to="useSL(`standings/${h.standings.id}`)" class="bg-gray-100/25 flex-1 flex items-center gap-2">
+          {{ h.standings.name }}
+        </NuxtLink>
         <NuxtLink v-if="h.fixture" :to="useSL(`round/${useRoute().params.rid}/fixture/${h.fixture.id}`)" class="bg-gray-100/25 flex-1 flex items-center gap-2">
           <div>vs {{ getOpponentName(h.fixture) }}</div>
           <div><FixturePointsDisplay :row="getOpponentRow(h.fixture)" /></div>
@@ -17,6 +19,8 @@
 </template>
 
 <script setup lang="ts">
-const { round, tournamentCols } = inject(roundKey)!
+// Use useState instead of inject
+const round = useState('round')
+const tournamentCols = useState('tournamentCols')
 const { getOpponentRow, getOpponentName } = useUserHelpers()
 </script>

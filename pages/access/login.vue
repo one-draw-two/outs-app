@@ -18,7 +18,7 @@
   </main>
 </template>
 <script setup lang="ts">
-definePageMeta({ layout: 'access', isPublic: true })
+definePageMeta({ isPublic: true })
 useHead({ title: 'Login' })
 
 const formRef = ref<HTMLFormElement | null>(null)

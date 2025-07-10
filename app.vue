@@ -2,7 +2,7 @@
   <div class="safe-area-padding-top">
     <div class="space-y-8">
       <AppHeader v-if="user" :user="user" />
-      <NuxtLayout> <NuxtPage /> </NuxtLayout>
+      <NuxtPage />
     </div>
 
     <AppUserOverlay v-if="user" />

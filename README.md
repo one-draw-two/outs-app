@@ -89,3 +89,4 @@ nativeRoute.params.stid // Then use like this
 - Wip: Season main table is now a table but table needs many more features: 514.86kb
 - Pre: Removing stage selector, with initial Layo components to remove layouts: 514.56kb
 - Refactor: Removed stagepciker, will remove the layouts completely because they dont update with route change (retarded Nuxt): 513.98kb
+- Refactor: All layouts removed, round provide/inject functionality has been added to a middleware now: 513.07kb

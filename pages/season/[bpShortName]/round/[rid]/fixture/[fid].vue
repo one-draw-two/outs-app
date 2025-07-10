@@ -1,37 +1,43 @@
 <template>
-  <main class="relative">
-    <div class="flex justify-between sticky top-0 z-10 bg-gray-200 py-4">
-      <div class="flex-2"></div>
-      <template v-for="side in ['home', 'away']" :key="side">
-        <div class="flex-1">
-          {{ rows[side]?._user.name }}
-          <FixturePointsDisplay :row="rows[side]" />
-        </div>
-      </template>
-    </div>
+  <LayoRound>
+    <main class="relative">
+      <div class="flex justify-between sticky top-0 z-10 bg-gray-200 py-4">
+        <div class="flex-2"></div>
+        <template v-for="side in ['home', 'away']" :key="side">
+          <div class="flex-1">
+            {{ rows[side]?._user.name }}
+            <FixturePointsDisplay :row="rows[side]" />
+          </div>
+        </template>
+      </div>
 
-    <div v-for="(bas, rfi) in betsAddedSnapshots" :key="bas.$realFixture?.$index" :id="`rfi-${bas.$realFixture?.$index}`" class="flex justify-between items-stretch py-4 hover:bg-gray-100">
-      <RealFixtureItemLink :rf="bas.$realFixture" class="flex-2 lg:flex" />
+      <div v-for="(bas, rfi) in betsAddedSnapshots" :key="bas.$realFixture?.$index" :id="`rfi-${bas.$realFixture?.$index}`" class="flex justify-between items-stretch py-4 hover:bg-gray-100">
+        <RealFixtureItemLink :rf="bas.$realFixture" class="flex-2 lg:flex" />
 
-      <template v-for="side in ['home', 'away']" :key="side">
-        <RealFixtureBetAndPointsDisplay :bet="bas[`$${side}Bet`]" :correct-bet="bas.correctBet" :above-bets-based-on-challenge-type="bas.$realFixture.$aboveBetsBasedOnChallengeType" class="flex-1" />
-      </template>
-    </div>
-  </main>
+        <template v-for="side in ['home', 'away']" :key="side">
+          <RealFixtureBetAndPointsDisplay
+            :bet="bas[`$${side}Bet`]"
+            :correct-bet="bas.correctBet"
+            :above-bets-based-on-challenge-type="bas.$realFixture.$aboveBetsBasedOnChallengeType"
+            class="flex-1"
+          />
+        </template>
+      </div>
+    </main>
+  </LayoRound>
 </template>
 
 <script setup lang="ts">
 import type { _P_RealFixture } from '~/types'
 
-definePageMeta({ layout: 'round' })
+definePageMeta({ middleware: 'round' })
+const round = useState('round')
 
 const fid = useRoute().params.fid
 const { processedGroups } = await useGroupsWithUsers({ id: fid }, true)
 
 const thisFixture = computed(() => processedGroups?.value[0])
 const rows = computed<any>(() => ({ home: thisFixture?.value?.rows?.[0], away: thisFixture?.value?.rows?.[1] }))
-
-const { round } = inject(roundKey)!
 
 // wecl(processedGroups)
 

@@ -12,6 +12,7 @@ export const stageKey = Symbol('stage') as InjectionKey<{
 }>
 */
 
+/*
 export const roundKey = Symbol('round') as InjectionKey<{
   round: Ref<_P_Round | null>
   tournamentCols: Ref<any[]>
@@ -23,6 +24,7 @@ export const groupKey = Symbol('group') as InjectionKey<{
   tournament: Ref<any>
   isLoading?: Ref<boolean>
 }>
+*/
 
 export const challengeKey = Symbol('challenge') as InjectionKey<{
   challenge: Ref<_P_Challenge | null>

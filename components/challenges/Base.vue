@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import type { _P_Challenge, _P_Bet } from '~/types'
 
-const { round, isLoading } = inject(roundKey)!
+const round = useState('round')
 
 const { challenge, isLoading: challengeIsLoading } = inject(challengeKey)!
 
