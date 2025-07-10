@@ -33,11 +33,11 @@
 </template>
 
 <script setup lang="ts">
-const round = useState('round')
-const tournamentCols = useState('tournamentCols')
-const season = useState('season')
-const route = useRoute()
+import type { _P_Season, _P_Round } from '~/types'
+
+const season = useState<_P_Season>('season')
 const stage = computed(() => season.value?.stages?.find((s: any) => s.id === round.value?._stage))
+const round = useState<_P_Round>('round')
 
 const roundStatusColor = computed(() => {
   if (round.value?.status === 'current-published') return 'orange'
@@ -48,12 +48,6 @@ const roundStatusColor = computed(() => {
   else return 'gray'
 })
 
-// Helper to keep subpage (matches/challenges) when switching rounds
-function getRoundLink(newRid: string) {
-  const subpage = route.path.split('/').pop()
-  if (subpage === 'matches' || subpage === 'challenges') {
-    return useSL(`round/${newRid}/${subpage}`)
-  }
-  return useSL(`round/${newRid}`)
-}
+const getRoundLink = (newRid: string) =>
+  ['matches', 'challenges'].includes(useRoute().path.split('/').pop() ?? '') ? useSL(`round/${newRid}/${useRoute().path.split('/').pop()}`) : useSL(`round/${newRid}`)
 </script>

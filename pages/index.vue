@@ -18,6 +18,7 @@ definePageMeta({
         const toBeRoutedSeason = seasonQuery?.rows?._array?.[0]
 
         const destination = toBeRoutedSeason?._currentRound ? useSL(`round/${toBeRoutedSeason?._currentRound}`) : useSL(`campaign/${mostRecentSubscription?._season}`)
+        // const destination = useSL(`campaign/SE2514E0B013`)
 
         return navigateTo(destination, { replace: true })
       }

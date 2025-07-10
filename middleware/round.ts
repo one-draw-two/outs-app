@@ -1,4 +1,4 @@
-import type { User, _P_Season, ParsedBPTournament } from '~/types'
+import type { User, _P_Season, _P_Round, ParsedBPTournament } from '~/types'
 
 const ISDEBUG = false
 
@@ -17,9 +17,17 @@ export default defineNuxtRouteMiddleware(async (to) => {
   ISDEBUG && console.log('Fetching fresh round data for', rid)
 
   const user = useState<User>('user')
-  const season = useState<_P_Season>('season')
   const { data: round } = await usePopulatedRound(rid, user.value?.id)
   const { getUserRow } = useUserHelpers()
+
+  const season = useState<_P_Season>('season')
+  if (!season.value || season.value.id !== round.value?._season) {
+    const seasonId = round.value?._season
+    if (typeof seasonId === 'string' && seasonId) {
+      const { data: populatedSeason } = await usePopulatedSeason(seasonId)
+      season.value = populatedSeason.value
+    }
+  }
 
   ISDEBUG && console.log('Fresh round data:', round.value)
 
@@ -30,6 +38,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const sKey = 'realFixture'
   const getOrder = (t: ParsedBPTournament, key: string) => t.snapshotConfig?.find((c) => c.name === sKey)?.order || 0
   const roundTournaments = computed(() => (season.value?.tournaments?.filter((t) => t.snapshotConfig?.some((c) => c.name === sKey)) || []).sort((a, b) => getOrder(a, sKey) - getOrder(b, sKey)))
+
   const headers = computed(() => [
     { name: 'You' },
     ...roundTournaments.value?.map((t) => ({
@@ -42,6 +51,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   useState('round').value = round.value
   useState('tournamentCols').value = headers.value
+
   currentRoundId.value = rid
 
   ISDEBUG && console.log('Round data updated in state for', rid, useState('round').value)
