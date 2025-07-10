@@ -16,11 +16,30 @@
 import type { _Season, _Stage } from '~/types'
 
 const season = useState<any>('season')
+const stage = useState<any>('stage')
 const selectedSeasonId = useState<any>('pickerSeasonId')
+const selectedStageId = useState<any>('pickerStageId')
 
 if (!selectedSeasonId.value) selectedSeasonId.value = useRoute().params.sid
+if (!selectedStageId.value) selectedStageId.value = useRoute().params.stid
 
 watch(selectedSeasonId, async (to) => !to || season.value?.id === to || (useState<any>('season').value = (await usePopulatedSeason(to)).data.value), { immediate: true })
+
+watch(
+  selectedStageId,
+  async (to) => {
+    if (!to || stage.value?.id === to) return
+    const { data: stages } = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE id = ?', [to])
+    watch(stages, (to) => {
+      if (!to || to.length === 0) return
+      const value = to[0]
+      useState<any>('stage').value = value
+      useState<any>('pickerStageId').value = value.id
+      useState<any>('pickerSeasonId').value = value._season
+    })
+  },
+  { immediate: true }
+)
 
 const { data: seasons } = usePSWatch<any>('SELECT * FROM "calendar_seasons" ORDER BY name ASC', [], { abortController: new AbortController() })
 const { data: subscriptions } = usePSWatch<any>('SELECT * FROM "account_subscriptions"', [], { abortController: new AbortController() })

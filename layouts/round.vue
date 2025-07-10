@@ -3,8 +3,10 @@
     <div :class="`bg-${roundStatusColor}-500/20`">
       <div class="h-12 main-container flex gap-8 items-center">
         <div class="flex items-center gap-4">
-          <!-- 
           <NuxtLink :to="useSL(`stage/${round?._stage}`)" class="hover:underline">Stage {{ stage?.name }}</NuxtLink>
+
+          <!-- 
+                    <NuxtLink v-for="r of popStage?.rounds" :to="useSL(`round/${r?.id}`)" class="hover:underline">Round {{ r?.name }}</NuxtLink>
           -->
 
           <NuxtLink :to="useSL(`round/${round?.id}`)" class="hover:underline">Round {{ round?.name }}</NuxtLink>
@@ -85,5 +87,10 @@ const roundStatusColor = computed(() => {
 
 provide(roundKey, { round, tournamentCols: headers })
 
+wecl(season, 'season')
+wecl(stage, 'stage')
 wecl(round, 'round')
+
+const popStage = computed(() => season.value?.stages?.find((s: any) => s.id === round.value?._stage))
+wecl(popStage)
 </script>
