@@ -31,14 +31,6 @@ const link = computed(() => standings.value?._link)
 const linkColl = computed(() => (link.value?._refColl === 'Season' ? 'Campaign' : link.value?._refColl))
 const pageName = computed(() => `${standings.value?.name}`)
 
-/*
-console.log('Link:', link.value)
-if (linkColl.value?._refColl === 'round') {
-  console.log('Updating PowerSync params for round:', linkColl.value?._refId)
-  useDynamicPS().updatePowerSyncParams({ selected_round: linkColl.value?._refId })
-}
-*/
-
 const { processedGroups: childrenFixtures } = await useGroupsWithUsers({ _parentGroup: stanid }, true)
 const { processedGroups: childrenStandings } = await useGroupsWithUsers({ _parentGroup: stanid }, false)
 
