@@ -18,5 +18,4 @@
 <script setup lang="ts">
 import type { _Season } from '~/types'
 const season = useState<_Season>('season')
-wecl(season)
 </script>

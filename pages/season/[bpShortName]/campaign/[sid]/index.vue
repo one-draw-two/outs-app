@@ -25,9 +25,11 @@ const pageName = computed(() => `${mainTournamentGroup.value?.name}`)
 
 const { processedGroups: childrenStandings } = await useGroupsWithUsers({ _parentGroup: mainTournamentGroup.value?.id }, false)
 
-wecl(mainTournamentGroup)
-wecl(tournament)
+/*
+wecl(mainTournamentGroup, 'main gorup')
+wecl(tournament, 'ta')
 wecl(childrenStandings)
+*/
 
 const pageTitle = computed(() => `Season ${season.value?.name}`)
 useHead({ title: pageTitle })

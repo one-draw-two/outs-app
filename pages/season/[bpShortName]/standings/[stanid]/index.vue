@@ -19,6 +19,8 @@ import type { _BPTournamentRecord } from '~/types'
 
 const stanid = useRoute().params.stanid
 
+useDynamicPS().updatePowerSyncParams({ selected_parent_gid: stanid })
+
 const { processedGroups } = await useGroupsWithUsers({ id: stanid }, false)
 const standings = computed(() => processedGroups?.value?.[0])
 

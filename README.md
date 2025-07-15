@@ -91,3 +91,4 @@ nativeRoute.params.stid // Then use like this
 - Refactor: Removed stagepciker, will remove the layouts completely because they dont update with route change (retarded Nuxt): 513.98kb
 - Refactor: All layouts removed, round provide/inject functionality has been added to a middleware now: 513.07kb
 - Wip: Header styling and logo: 511.68kb (disabled components): 511.66kb after package updates
+- Wip: Table improvements: 511.85kb
