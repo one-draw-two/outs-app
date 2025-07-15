@@ -1,7 +1,7 @@
 <template>
   <LayoRound>
     <main>
-      <ChallengesBase />
+      <ChallengesEntryBase />
     </main>
   </LayoRound>
 </template>

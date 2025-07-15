@@ -14,9 +14,9 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_Challenge, _P_Bet } from '~/types'
+import type { _P_Round, _P_Challenge, _P_Bet } from '~/types'
 
-const round = useState('round')
+const round = useState<_P_Round>('round')
 
 const { challenge, isLoading: challengeIsLoading } = inject(challengeKey)!
 
@@ -27,8 +27,8 @@ const returnComponent = (challengeType: string) => {
   if (challengeType === 'RoundGoalCount') return Challenge_Type_RoundGoalCount
 }
 
-const Challenge_Type_FixtureSlots = markRaw(defineAsyncComponent(() => import('~/components/challenges/FixtureSlots.vue')))
-const Challenge_Type_RoundGoalCount = markRaw(defineAsyncComponent(() => import('~/components/challenges/RoundGoalCount.vue')))
+const Challenge_Type_FixtureSlots = markRaw(defineAsyncComponent(() => import('~/components/challenges/entry/FixtureSlots.vue')))
+const Challenge_Type_RoundGoalCount = markRaw(defineAsyncComponent(() => import('~/components/challenges/entry/RoundGoalCount.vue')))
 
 const comp = ref()
 const clear = () => comp.value?.clearSlots()

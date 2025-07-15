@@ -92,3 +92,4 @@ nativeRoute.params.stid // Then use like this
 - Refactor: All layouts removed, round provide/inject functionality has been added to a middleware now: 513.07kb
 - Wip: Header styling and logo: 511.68kb (disabled components): 511.66kb after package updates
 - Wip: Table improvements: 511.85kb
+- Feat: Instead of match routes, now there are challenge type based (initial, dummy) routes and components: 512.93kb

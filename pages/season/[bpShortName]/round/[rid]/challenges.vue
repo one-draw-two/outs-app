@@ -15,8 +15,10 @@
 </template>
 
 <script setup lang="ts">
+import type { _P_Round } from '~/types'
+
 definePageMeta({ middleware: 'round' })
-const round = useState('round')
+const round = useState<_P_Round>('round')
 useHead({ title: `${round.value?.name} | Challenges` })
 
 const challenges = computed(() => round.value?.challenges)

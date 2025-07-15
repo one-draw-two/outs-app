@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink :to="useSL(`round/${useRoute().params.rid}/match/${rf?.id}`)" class="block flex items-center">
+  <NuxtLink :to="useSL(`round/${useRoute().params.rid}/snapshot/${rf?.$snapshotId}`)" class="block flex items-center">
     <div class="w-full grid grid-cols-[2rem_4rem_3rem_3rem_1fr_1rem_3rem] gap-4 items-center">
       <div class="font-mono">{{ (rf.$index + 1).toString().padStart(2, '0') }}</div>
 

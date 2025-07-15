@@ -61,6 +61,7 @@ export interface _P_RealFixture extends Omit<_RealFixture, '_homeTeam' | '_awayT
 
 export interface EnhancedRealFixture extends Partial<_RealFixture> {
   $index?: number
+  $snapshotId: string
   $challenge: _P_Challenge
   $fixtureSlot?: FixtureSlot
   $aboveBetsBasedOnChallengeType?: number
@@ -100,7 +101,7 @@ export interface _P_Round extends _Round {
   // _stage: _Stage | null
   challenges?: _P_Challenge[]
   snapshots?: {
-    $realFixture?: EnhancedRealFixture | null
+    $realFixture?: EnhancedRealFixture | _P_RealFixture | null
     [key: string]: any
   }[]
   groups?: _P_Group[]
@@ -111,7 +112,7 @@ export interface EnhancedRound extends _Round {
   challenges?: _P_Challenge[]
   snapshots?: Array<
     _Snapshot & {
-      $realFixture?: EnhancedRealFixture | null
+      $realFixture?: EnhancedRealFixture | _P_RealFixture | null
       [key: string]: any
     }
   >

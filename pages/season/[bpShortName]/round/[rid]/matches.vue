@@ -23,15 +23,17 @@
 </template>
 
 <script setup lang="ts">
-import type { _RealFixture } from '~/types'
+import type { _P_Round, _RealFixture } from '~/types'
 
 definePageMeta({ middleware: 'round' })
-const round = useState('round')
+const round = useState<_P_Round>('round')
 useHead({ title: `${round.value?.name} | Matches` })
 
 const $day = useNuxtApp().vueApp.config.globalProperties.$day
 
 const realFixtures = computed(() => round.value?.snapshots?.map((s: any) => s.$realFixture).filter(Boolean))
+
+wecl(realFixtures)
 
 const groupedRealFixtures = computed(() => {
   if (!realFixtures.value?.length) return []

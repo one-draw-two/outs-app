@@ -32,22 +32,23 @@
 </template>
 
 <script setup lang="ts">
-import type { EnhancedRealFixture } from '~/types'
+import type { EnhancedRealFixture, _P_RealFixture } from '~/types'
 const props = defineProps<{
-  rf: EnhancedRealFixture
+  rf: EnhancedRealFixture | _P_RealFixture
   // fixture?: Fixture
+  fixtureSlot?: any
 }>()
 
 // const userStore = useUserStore()
 // const gameStore = useGameStore()
 
-const totalPoints = computed(() => props.rf.$fixtureSlot?.totalPoints)
-const pointsMatrix = computed(() => props.rf.$fixtureSlot?.pointsMatrix)
+const totalPoints = computed(() => props.fixtureSlot?.totalPoints)
+const pointsMatrix = computed(() => props.fixtureSlot?.pointsMatrix)
 
-const challgengeType = computed(() => props.rf.$challenge?.type)
+const challengeType = computed(() => props.rf.$challenge?.type)
 
-const isTwoOption = computed(() => challgengeType.value === 'Goals')
-const isBonusMatch = computed(() => challgengeType.value === 'Bonus')
+const isTwoOption = computed(() => challengeType.value === 'Goals')
+const isBonusMatch = computed(() => challengeType.value === 'Bonus')
 
 const colHeaders = isTwoOption.value ? ['+', '-'] : ['1', 'X', '2']
 const rowHeaders = isBonusMatch.value ? ['Y'] : isTwoOption.value ? ['G', 'S'] : ['P', 'G', 'S', 'B']

@@ -92,6 +92,7 @@ export const usePopulatedRound = async (roundId: string, userId?: string) => {
         $realFixture: {
           ...realFixturesQuery.data.value.find((rf) => rf.id === snapshot._realFixture),
           $index: index,
+          $snapshotId: snapshot.id,
           $challenge: challenge,
           $fixtureSlot: challenge?.fixtureSlots.find((fs: FixtureSlot) => fs._realFixture === snapshot._realFixture),
           $aboveBetsBasedOnChallengeType: challenge?.type === '1x2' ? 3 : challenge?.type === 'Goals' ? 1 : 0,

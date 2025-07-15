@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _RealFixture } from '~/types'
+import type { _P_Season, _P_Round, _RealFixture } from '~/types'
 
 definePageMeta({
   middleware: 'round',
@@ -27,7 +27,7 @@ const route = useRoute()
 const rid = route.params.rid as string
 
 // Get round data from useState (populated by middleware)
-const round = useState('round')
+const round = useState<_P_Round>('round')
 const tournamentCols = useState('tournamentCols')
 const season = useState<_P_Season>('season')
 const stage = useState<any>('stage')
