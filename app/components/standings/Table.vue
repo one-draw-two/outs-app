@@ -90,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _Season, _Standing, ParsedBPTournament } from '~/types'
+import type { _Season, _Standing, ParsedBPTournament } from '~/../types'
 
 const season = useState<_Season>('season')
 

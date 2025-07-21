@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import type { User } from '~/types'
+import type { User } from '~/../types'
 const user = useState<User | null>('user')
 
 useKeyboard()

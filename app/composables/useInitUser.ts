@@ -1,4 +1,4 @@
-import type { User, AuthResponseSuccess } from '~/types'
+import type { User, AuthResponseSuccess } from '~/../types'
 
 export default function (res: AuthResponseSuccess, navToPath?: string, isToSaveOffline?: boolean) {
   console.log('Initializing user with response...')

@@ -16,6 +16,6 @@
 </template>
 
 <script setup lang="ts">
-import type { _Season } from '~/types'
+import type { _Season } from '~/../types'
 const season = useState<_Season>('season')
 </script>

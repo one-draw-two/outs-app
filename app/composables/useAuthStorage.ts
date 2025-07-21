@@ -1,6 +1,6 @@
 import { Preferences } from '@capacitor/preferences'
 import { jwtDecode } from 'jwt-decode'
-import type { AuthResponseSuccess } from '~/types'
+import type { AuthResponseSuccess } from '~/../types'
 
 const AUTH_KEY = 'outs-auth'
 const REFRESH_KEY = 'outs-refresh'

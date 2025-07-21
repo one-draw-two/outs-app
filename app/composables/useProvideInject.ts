@@ -1,4 +1,4 @@
-import type { _P_Season, _P_Stage, _P_Round, _P_Challenge, _P_Group, ParsedBPTournament } from '~/types'
+import type { _P_Season, _P_Stage, _P_Round, _P_Challenge, _P_Group, ParsedBPTournament } from '~/../types'
 
 /*
 export const seasonKey = Symbol('season') as InjectionKey<{

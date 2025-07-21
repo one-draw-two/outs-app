@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_Round, _P_Challenge, _P_Bet } from '~/types'
+import type { _P_Round, _P_Challenge, _P_Bet } from '~/../types'
 
 const round = useState<_P_Round>('round')
 

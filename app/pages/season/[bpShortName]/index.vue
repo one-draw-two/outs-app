@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _BPSeasonRecord, _Season } from '~/types'
+import type { _BPSeasonRecord, _Season } from '~/../types'
 
 const loading = ref(true)
 const bpShortName = useRoute().params.bpShortName

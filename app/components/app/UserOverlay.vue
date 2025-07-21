@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import type { User } from '~/types'
+import type { User } from '~/../types'
 
 const { clearAuth, clearRefresh } = useAuthStorage()
 const { $capacitor } = useNuxtApp()

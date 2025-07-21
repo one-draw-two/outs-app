@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _Season, _Stage, _Round, _BPTournamentRecord } from '~/types'
+import type { _Season, _Stage, _Round, _BPTournamentRecord } from '~/../types'
 
 const sid = useRoute().params.sid as string
 

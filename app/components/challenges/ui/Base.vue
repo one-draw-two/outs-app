@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_Challenge } from '~/types'
+import type { _P_Challenge } from '~/../types'
 
 const props = defineProps<{
   challenge: _P_Challenge

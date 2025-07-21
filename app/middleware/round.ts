@@ -1,4 +1,4 @@
-import type { User, _P_Season, _P_Round, ParsedBPTournament } from '~/types'
+import type { User, _P_Season, _P_Round, ParsedBPTournament } from '~/../types'
 
 const ISDEBUG = false
 

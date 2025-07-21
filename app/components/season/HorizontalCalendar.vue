@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_Season } from '~/types'
+import type { _P_Season } from '~/../types'
 const season = useState<_P_Season>('season')
 const route = useRoute()
 

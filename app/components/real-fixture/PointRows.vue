@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _RealFixture, _Bet, EnhancedRound, _P_Group } from '~/types'
+import type { _RealFixture, _Bet, EnhancedRound, _P_Group } from '~/../types'
 
 const props = defineProps<{
   rf: _RealFixture

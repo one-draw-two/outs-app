@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_RealFixture } from '~/types'
+import type { _P_RealFixture } from '~/../types'
 
 definePageMeta({ middleware: 'round' })
 const round = useState('round')

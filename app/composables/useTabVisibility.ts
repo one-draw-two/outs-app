@@ -1,5 +1,5 @@
 /*
-import type { User } from '~/types'
+import type { User } from '~/../types'
 
 export default function () {
   const visibilityFunc = () => {
@@ -20,7 +20,7 @@ export default function () {
 }
 */
 
-import type { User } from '~/types'
+import type { User } from '~/../types'
 
 const INACTIVE_TIME_LIMIT = 1 * 60 * 1000 // 50 minutes in milliseconds
 

@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import type { EnhancedRealFixture, _P_RealFixture } from '~/types'
+import type { EnhancedRealFixture, _P_RealFixture } from '~/../types'
 const props = defineProps<{
   rf: EnhancedRealFixture | _P_RealFixture
   // fixture?: Fixture

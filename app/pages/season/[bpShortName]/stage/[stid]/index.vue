@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _Stage, _Round, _BPTournamentRecord } from '~/types'
+import type { _Stage, _Round, _BPTournamentRecord } from '~/../types'
 
 const stid = useRoute().params.stid
 const { data: stages } = usePSWatch<_Stage>('SELECT * FROM "calendar_stages" WHERE id = ?', [stid], { detectChanges: true })

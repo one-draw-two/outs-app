@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _Challenge } from '~/types'
+import type { _Challenge } from '~/../types'
 
 definePageMeta({ middleware: 'round' })
 const route = useRoute()

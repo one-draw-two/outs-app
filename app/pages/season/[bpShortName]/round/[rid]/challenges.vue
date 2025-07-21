@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_Round } from '~/types'
+import type { _P_Round } from '~/../types'
 
 definePageMeta({ middleware: 'round' })
 const round = useState<_P_Round>('round')

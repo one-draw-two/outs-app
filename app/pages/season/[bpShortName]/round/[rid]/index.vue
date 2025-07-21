@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_Season, _P_Round, _RealFixture } from '~/types'
+import type { _P_Season, _P_Round, _RealFixture } from '~/../types'
 
 definePageMeta({
   middleware: 'round',

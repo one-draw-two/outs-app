@@ -17,7 +17,7 @@ import type {
   _Snapshot,
   FixtureSlot,
   _BPTournamentRecord,
-} from '~/types'
+} from '~/../types'
 
 export const usePopulatedSeason = async (seasonId: string) => {
   const seasonQuery = usePSWatch<_Season>('SELECT * FROM "calendar_seasons" WHERE id = ?', [seasonId])

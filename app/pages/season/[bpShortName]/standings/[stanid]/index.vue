@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _BPTournamentRecord } from '~/types'
+import type { _BPTournamentRecord } from '~/../types'
 
 const stanid = useRoute().params.stanid
 

@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _Standing, ParsedBPTournament } from '~/types'
+import type { _Standing, ParsedBPTournament } from '~/../types'
 
 interface Props {
   childrenStandings: _Standing[]

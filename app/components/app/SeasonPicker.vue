@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _Season, _Stage } from '~/types'
+import type { _Season, _Stage } from '~/../types'
 
 const season = useState<any>('season')
 const stage = useState<any>('stage')

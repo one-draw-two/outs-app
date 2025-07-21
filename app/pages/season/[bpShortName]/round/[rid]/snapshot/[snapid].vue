@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_RealFixture, _P_Round } from '~/types'
+import type { _P_RealFixture, _P_Round } from '~/../types'
 
 const route = useRoute()
 definePageMeta({ middleware: 'round' })

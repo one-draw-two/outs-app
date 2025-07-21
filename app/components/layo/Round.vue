@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_Season, _P_Round } from '~/types'
+import type { _P_Season, _P_Round } from '~/../types'
 
 const season = useState<_P_Season>('season')
 const stage = computed(() => season.value?.stages?.find((s: any) => s.id === round.value?._stage))

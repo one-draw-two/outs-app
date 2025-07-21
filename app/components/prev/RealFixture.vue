@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import type { _RealFixture } from '~/types'
+import type { _RealFixture } from '~/../types'
 const props = defineProps<{
   realFixture?: { [key: string]: any | _RealFixture }
   slot?: any

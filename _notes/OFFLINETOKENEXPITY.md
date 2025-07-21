@@ -28,7 +28,7 @@ Remember that using Preferences API requires privacy manifest in iOS:
 ```
 import { Preferences } from '@capacitor/preferences'
 import jwtDecode from 'jwt-decode'
-import type { AuthResponseSuccess } from '~/types'
+import type { AuthResponseSuccess } from '~/../types'
 
 const AUTH_KEY = 'outs-auth'
 
