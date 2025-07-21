@@ -93,3 +93,4 @@ nativeRoute.params.stid // Then use like this
 - Wip: Header styling and logo: 511.68kb (disabled components): 511.66kb after package updates
 - Wip: Table improvements: 511.85kb
 - Feat: Instead of match routes, now there are challenge type based (initial, dummy) routes and components: 512.93kb
+- Pre: Nuxt 4 update: 513.01kb
