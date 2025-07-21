@@ -11,7 +11,7 @@
         <h2>FIXTURES</h2>
         <NuxtLink
           v-for="group of groups"
-          :to="useSL(`round/${standings._link._refId}/fixture/${group.id}`)"
+          :to="useSL(`round/${standings?._link._refId}/fixture/${group.id}`)"
           class="block"
           :class="useUserHelpers().isUserInGroup(group) ? 'bg-green-100' : 'bg-gray-100'"
           :key="group.id"

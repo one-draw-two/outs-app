@@ -28,10 +28,10 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_RealFixture } from '~/../types'
+import type { _P_Round, _P_RealFixture } from '~/../types'
 
 definePageMeta({ middleware: 'round' })
-const round = useState('round')
+const round = useState<_P_Round>('round')
 
 const fid = useRoute().params.fid
 const { processedGroups } = await useGroupsWithUsers({ id: fid }, true)

@@ -1,5 +1,5 @@
 <template>
-  <LayoSeasonCalendar>
+  <LayoSeasonAndStage>
     <div>
       <h1>Tournaments</h1>
       <div v-for="(tournament, tournamentId) in tournamentGroupsMap" :key="tournamentId" class="space-y-4">
@@ -15,7 +15,7 @@
         </div>
       </div>
     </div>
-  </LayoSeasonCalendar>
+  </LayoSeasonAndStage>
 </template>
 
 <script setup lang="ts">

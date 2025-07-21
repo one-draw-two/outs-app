@@ -1,7 +1,7 @@
 <template>
-  <LayoSeasonCalendar>
+  <LayoSeasonAndStage>
     <StandingsTable :standings="mainTournamentGroup" :children-standings="childrenStandings" :children-fixtures="[]" :tournament="tournament!" rowClass="hover:bg-gray-50" />
-  </LayoSeasonCalendar>
+  </LayoSeasonAndStage>
 </template>
 
 <script setup lang="ts">

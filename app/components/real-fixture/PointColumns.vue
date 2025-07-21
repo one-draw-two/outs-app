@@ -19,8 +19,6 @@
 </template>
 
 <script setup lang="ts">
-// Use useState instead of inject
-const round = useState('round')
-const tournamentCols = useState('tournamentCols')
+const tournamentCols = useState<any>('tournamentCols')
 const { getOpponentRow, getOpponentName } = useUserHelpers()
 </script>
