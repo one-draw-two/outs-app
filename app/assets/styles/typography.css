@@ -14,18 +14,34 @@
   src: url('~/assets/fonts/NotoSansMono_SemiCondensed-Black.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'Posterama';
+  font-weight: 900;
+  font-display: block;
+  font-style: normal;
+  src: url('~/assets/fonts/Posterama_1984_W04_Black.ttf') format('truetype');
+}
+
 @theme {
   --font-noto: 'NotoSansCondensed';
+  --font-posterama: 'Posterama';
 }
 
 * {
-  @apply font-noto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 h1 {
-  @apply font-noto font-[900];
+  @apply font-[900];
+}
+
+.font-noto {
+  font-family: var(--font-noto);
+}
+
+.font-posterama {
+  font-family: var(--font-posterama);
 }
 
 .stroke-text {

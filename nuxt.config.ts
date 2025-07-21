@@ -64,6 +64,9 @@ export default defineNuxtConfig({
       tokenUrl: process.env.DEV ? process.env.DEV_TOKEN_URL : process.env.TOKEN_URL,
     },
   },
+  imports: {
+    dirs: ['app/composables/**'],
+  },
   /*
   router: {
     options: {

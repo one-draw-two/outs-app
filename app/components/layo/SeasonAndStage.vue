@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="py-8 bg-repeat-x bg-[length:512px_auto] relative" :style="{ backgroundImage: season?.bgUrl ? `url(${getSanityUrl(season.bgUrl)})` : 'none' }">
-      <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-black/80 pointer-events-none"></div>
+    <div class="py-12 bg-gray-200 bg-repeat-xXbg-[length:256px_auto] relative" :style="{ backgroundImage: season?.bgUrl ? `url(${getSanityUrl(season.bgUrl)}xx)` : 'none' }">
+      <div class="absoluteXinset-x-0 top-6 bottom-0 bg-gradient-to-t from-black/90 via-black/80 to-transparent pointer-events-none"></div>
       <div class="main-container space-y-8 relative z-10 overflow-x-auto hide-scroll w-full whitespace-nowrap" style="scroll-padding-left: 2rem; scroll-padding-right: 2rem">
-        <NuxtLink :to="useSL(`campaign/${season?.id}`)" class="block">
+        <NuxtLink v-if="false" :to="useSL(`campaign/${season?.id}`)" class="block">
           <h1 class="sticky left-0 text-5xl stroke-text">Season {{ season?.name }}</h1>
         </NuxtLink>
         <SeasonHorizontalCalendar />

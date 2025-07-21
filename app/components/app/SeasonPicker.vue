@@ -1,6 +1,6 @@
 <template>
   <div
-    class="px-4 w-48 h-12 rounded-xl flex items-center gap-2"
+    class="px-4 w-48 h-12 rounded-xl flex items-center gap-2 font-posterama"
     :class="season?.id ? 'bg-repeat-x bg-[length:256px_auto]' : 'bg-gray-300'"
     :style="season?.bgUrl ? { backgroundImage: `url(${getSanityUrl(season.bgUrl)})` } : {}"
   >

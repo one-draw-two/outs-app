@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-8">
-    <div :class="`bg-${roundStatusColor}-500/20`">
+    <div class="py-12" :class="`bg-${roundStatusColor}-500/20`">
       <div class="h-12 main-container flex gap-8 items-center">
         <div class="flex items-center gap-4">
           <NuxtLink :to="useSL(`stage/${round?._stage}`)" class="hover:underline">Stage {{ stage?.name }}</NuxtLink>

@@ -1,5 +1,5 @@
 <template>
-  <div class="h-24 flex relative items-center" style="background: linear-gradient(to bottom, #ffffff 50%, #8ee59d 50%)">
+  <div class="absolute top-0 w-screen h-24 flex items-center z-1" style="background: linear-gradient(to bottom, #ffffff 50%, #8ee59d00 50%)">
     <!-- 
     <AppSeasonPicker>
       <NuxtLink :to="useSL('')" class="block"><img src="/outstanding.svg" class="h-3" alt="Logo" /></NuxtLink>
@@ -17,7 +17,7 @@
       <div class="flex items-center">
         <NuxtLink :to="useSL('')" class="block bg-white rounded-md p-2"><img src="/outstanding.svg" class="h-3" alt="Logo" /></NuxtLink>
 
-        <AppSeasonPicker v-if="false"></AppSeasonPicker>
+        <AppSeasonPicker></AppSeasonPicker>
       </div>
       <AppUserButton />
     </div>

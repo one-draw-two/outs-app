@@ -1,5 +1,5 @@
 <template>
-  <AppDynamicLayout color="gray">
+  <LayoGroupAndFixture color="gray">
     <template #header-left>
       <div class="flex items-center gap-4">
         <NuxtLink :to="useSL(`${linkColl?.toLowerCase()}/${link?._refId}`)">{{ linkColl }}</NuxtLink>
@@ -26,7 +26,7 @@
         </NuxtLink>
       </main>
     </template>
-  </AppDynamicLayout>
+  </LayoGroupAndFixture>
 </template>
 
 <script setup lang="ts">
