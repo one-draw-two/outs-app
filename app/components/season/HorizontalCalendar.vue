@@ -1,6 +1,6 @@
 <template>
   <div class="flex gap-2">
-    <div v-for="stage in season?.stages" :key="stage.id" class="w-120">
+    <div v-for="(stage, si) in season?.stages" :key="stage.id" class="w-120" :class="getContainerPaddingClass(si)">
       <div class="flex flex-col">
         <div class="h-12 flex-shrink-0 rounded-md flex items-center justify-center mb-2 font-bold" :class="getStageBackgroundClass(stage, 50)">
           <NuxtLink :to="useSL(`stage/${stage.id}`)" class="w-full h-full flex items-center justify-center">
@@ -42,5 +42,12 @@ const getRoundColorClass = (status: string) => {
   if (status === 'current') return 'bg-green-500'
   if (status === 'current-published') return 'bg-yellow-500'
   return 'bg-gray-300'
+}
+
+const getContainerPaddingClass = (index: number) => {
+  if (!season.value?.stages?.length) return ''
+  if (index === 0) return 'pl-[var(--container-gap)]'
+  if (index === season.value.stages.length - 1) return 'pr-[var(--container-gap)]'
+  return ''
 }
 </script>

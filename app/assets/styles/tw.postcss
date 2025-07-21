@@ -1,0 +1,52 @@
+@tailwind base;
+
+@layer base {
+  :root {
+    --twContMaxW: 100vw;
+    --twContPadding: 2rem;
+    @media (min-width: 640px) {
+      --twContMaxW: 640px;
+    }
+    @media (min-width: 768px) {
+      --twContMaxW: 768px;
+    }
+    @media (min-width: 1024px) {
+      --twContMaxW: 1024px;
+    }
+    @media (min-width: 1280px) {
+      --twContMaxW: 1280px;
+      --twContPadding: 4rem;
+    }
+    @media (min-width: 1536px) {
+      --twContMaxW: 1536px;
+    }
+    @media (min-width: 1800px) {
+      --twContMaxW: 1800px;
+    }
+
+    --container-gap: calc((100vw - var(--twContMaxW) + (var(--twContPadding) * 2)) / 2);
+
+    --sat: var(--sat-value, env(safe-area-inset-top, 0px));
+    --sar: var(--sar-value, env(safe-area-inset-right, 0px));
+    --sab: var(--sab-value, env(safe-area-inset-bottom, 0px));
+    --sal: var(--sal-value, env(safe-area-inset-left, 0px));
+    --app-padding-t: calc(var(--sat) + 2rem);
+  }
+}
+
+@tailwind components;
+
+@layer components {
+  .main-container {
+    width: 100%;
+    max-width: var(--twContMaxW);
+    padding: var(--twContPadding);
+    margin: 0 auto;
+  }
+
+  .safe-area-padding-top {
+    padding-top: var(--app-padding-t);
+  }
+}
+
+@tailwind utilities;
