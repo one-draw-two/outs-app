@@ -1,3 +1,27 @@
+@import 'tailwindcss';
+
+@layer utilities {
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .animate-gradient-hover {
+    background-size: 200% 200%;
+    animation: none;
+  }
+  .group:hover .animate-gradient-hover {
+    animation: gradient 4s ease infinite;
+  }
+}
+
 .slide-up-enter-active,
 .slide-up-leave-active {
   transition: transform 0.3s ease;
