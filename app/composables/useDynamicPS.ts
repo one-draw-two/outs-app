@@ -1,4 +1,4 @@
-import { Connector } from '~/powersync/Connector'
+import { Connector } from '~/../powersync/Connector'
 
 let watcherInitialized = false
 

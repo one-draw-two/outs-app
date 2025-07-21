@@ -1,4 +1,4 @@
-import type { WithPSChange } from '~/composables/usePSUtils'
+import type { WithPSChange } from './app/composables/usePSUtils'
 import type {
   BPSeasonRecord,
   BPDomainRecord,
@@ -15,7 +15,7 @@ import type {
   StandingRecord,
   FixtureRecord,
   SnapshotRecord,
-} from '~/powersync/AppSchema'
+} from './powersync/AppSchema'
 
 interface Base {
   id: string

@@ -35,7 +35,7 @@
     "capacitor-plugin-safe-area": "^4.0.0",
     "dayjs": "^1.11.13",
     "jwt-decode": "^4.0.0",
-    "nuxt": "^3.17.7",
+    "nuxt": "^4.0.1",
     "tailwindcss": "^4.1.11",
     "vue": "latest",
     "vue-router": "latest"

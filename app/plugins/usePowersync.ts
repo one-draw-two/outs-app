@@ -1,7 +1,7 @@
 import { Capacitor } from '@capacitor/core'
 import { PowerSyncDatabase, WASQLiteOpenFactory, WASQLiteVFS } from '@powersync/web'
-import { AppSchema } from '~/powersync/AppSchema'
-import { opfsNotSupportedMessage, purgeVFS, listVfsEntries } from '~/powersync/utils'
+import { AppSchema } from '~/../powersync/AppSchema'
+import { opfsNotSupportedMessage, purgeVFS, listVfsEntries } from '~/../powersync/utils'
 
 export default defineNuxtPlugin((nuxtApp) => {
   // const isUseIndexDB = useRuntimeConfig().public.platform === 'cap' // Set in package.json (build:s > nuxt generate) script
