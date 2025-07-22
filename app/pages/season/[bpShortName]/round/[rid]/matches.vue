@@ -38,10 +38,13 @@ wecl(realFixtures)
 const groupedRealFixtures = computed(() => {
   if (!realFixtures.value?.length) return []
 
-  const groups = realFixtures.value.reduce((acc: Record<string, _RealFixture[]>, fixture: _RealFixture) => {
-    const date = fixture.startingAt!.split('T')[0].split(' ')[0]
+  const groups = (realFixtures.value ?? []).reduce((acc: Record<string, _RealFixture[]>, fixture: _RealFixture) => {
+    const startingAt = fixture.startingAt
+    if (!startingAt) return acc
+    const date = startingAt.split('T')[0]!
     if (!acc[date]) acc[date] = []
     acc[date].push(fixture)
+
     return acc
   }, {})
 

@@ -242,7 +242,7 @@ export const useGroupsWithUsers = async (filters: Record<string, any> = {}, isFi
     params.push(`%${userInPsKeys}%`)
   }
 
-  query += ` ORDER BY "order" ASC`
+  query += ` ORDER BY "order" ASC, "name" ASC`
 
   // Use detectChanges: true to make the query reactive
   const groupsQuery = usePSWatch<_Standing>(query, params, { detectChanges: true })

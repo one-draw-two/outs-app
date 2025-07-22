@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-8">
-    <div class="py-12" :class="`bg-${color}-500/20`">
+    <div class="h-48 flex items-center" :class="`bg-${color}-500/20`">
       <div class="h-12 main-container flex gap-8 items-center">
         <div>
           <slot name="header-left" />

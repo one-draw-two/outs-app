@@ -21,7 +21,7 @@ const selectedStageId = useState<any>('pickerStageId')
 if (!selectedSeasonId.value) selectedSeasonId.value = useRoute().params.sid
 if (!selectedStageId.value) selectedStageId.value = useRoute().params.stid
 
-const isInRouteContext = computed(() => /(round|stage)/.test(useRoute().path))
+const isInRouteContext = computed(() => /(round|stage|standings)/.test(useRoute().path))
 
 watch(selectedSeasonId, async (to) => !to || season.value?.id === to || (useState<any>('season').value = (await usePopulatedSeason(to)).data.value), { immediate: true })
 

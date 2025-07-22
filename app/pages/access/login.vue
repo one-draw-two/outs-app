@@ -1,6 +1,10 @@
 <template>
   <main class="space-y-8">
-    <h1 class="text-2xl font-bold text-center mb-8">Login</h1>
+    <div class="max-w-md mx-auto flex-center">
+      <NuxtLink to="/" class="block">
+        <h1 class="text-2xl font-bold text-center mb-8"><img src="/outstanding.svg" class="h-3" alt="Logo" /></h1>
+      </NuxtLink>
+    </div>
 
     <form @submit.prevent="handleLogin" class="max-w-md mx-auto space-y-4" ref="formRef" autocomplete="off">
       <div class="space-y-2">

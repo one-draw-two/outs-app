@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-8">
-    <div class="py-12" :class="`bg-${roundStatusColor}-500/20`">
-      <div class="h-12 main-container flex gap-8 items-center">
+    <div class="h-48 flex items-center" :class="`bg-${roundStatusColor}-500/20`">
+      <div class="h-16 main-container flex gap-8 items-center">
         <div class="flex items-center gap-4">
           <NuxtLink :to="useSL(`stage/${round?._stage}`)" class="hover:underline">Stage {{ stage?.name }}</NuxtLink>
           <NuxtLink v-for="r of stage?.rounds" :key="r?.id" :to="getRoundLink(r?.id)" class="hover:underline"> Round {{ r?.name }} </NuxtLink>
@@ -22,10 +22,10 @@
 
     <div class="main-container" :key="round?.id">
       <!-- Navigation tabs -->
-      <div class="flex gap-8 border-b border-gray-200 mb-8">
-        <NuxtLink :to="useSL(`round/${round?.id}`)" class="pb-2 hover:border-b-2 hover:border-gray-400" active-class="border-b-2 border-blue-500"> Overview </NuxtLink>
-        <NuxtLink :to="useSL(`round/${round?.id}/matches`)" class="pb-2 hover:border-b-2 hover:border-gray-400" active-class="border-b-2 border-blue-500"> Matches </NuxtLink>
-        <NuxtLink :to="useSL(`round/${round?.id}/challenges`)" class="pb-2 hover:border-b-2 hover:border-gray-400" active-class="border-b-2 border-blue-500"> Challenges </NuxtLink>
+      <div class="h-12 flex items-center gap-8 border-b border-gray-200 mb-8">
+        <NuxtLink :to="useSL(`round/${round?.id}`)" class="block pb-2 hover:border-b-2 hover:border-gray-400" active-class="border-b-2 border-blue-500"> Overview </NuxtLink>
+        <NuxtLink :to="useSL(`round/${round?.id}/matches`)" class="block pb-2 hover:border-b-2 hover:border-gray-400" active-class="border-b-2 border-blue-500"> Matches </NuxtLink>
+        <NuxtLink :to="useSL(`round/${round?.id}/challenges`)" class="block pb-2 hover:border-b-2 hover:border-gray-400" active-class="border-b-2 border-blue-500"> Challenges </NuxtLink>
       </div>
       <slot />
     </div>

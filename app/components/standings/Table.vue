@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <div class="flex items-center justify-between">
+    <div class="h-12 flex items-center justify-between">
       <div class="flex gap-4">
         <NuxtLink :to="useSL(`standings/${standings?.id}`)" class="block">{{ standingsName }}</NuxtLink>
         <NuxtLink v-if="standings?._parentGroup" :to="useSL(`standings/${standings?._parentGroup}`)" class="block"> Parent </NuxtLink>
@@ -108,6 +108,7 @@ const props = withDefaults(defineProps<Props>(), { rowClass: '' })
 
 const groupingKey = ref('_tournament')
 const toggleGrouping = (val: boolean) => (groupingKey.value = val ? '_link._refId' : '_tournament')
+
 const groupedChildren = computed(() => {
   const key = groupingKey.value
   const tournamentsArr = season.value?.tournaments || []
