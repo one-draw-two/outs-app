@@ -36,12 +36,7 @@ export const usePopulatedSeason = async (seasonId: string) => {
   const tournamentsQuery = usePSWatch<any>(`SELECT * FROM "blueprint_tournaments" WHERE id IN (${tournamentIds.map(() => '?').join(',')})`, tournamentIds)
   await tournamentsQuery.await()
 
-  const transformedTournaments = tournamentsQuery.data.value.map((tournament) => ({
-    ...tournament,
-    scopeConfig: JSON.parse(tournament.scopeConfig || '[]'),
-    snapshotConfig: JSON.parse(tournament.snapshotConfig || '[]'),
-    pointsDef: JSON.parse(tournament.pointsDef || '[]'),
-  }))
+  const transformedTournaments = tournamentsQuery.data.value.map(parseTournament)
 
   const queries = [seasonQuery, stagesQuery, roundsQuery, domainQuery, tournamentsQuery]
 
@@ -102,7 +97,7 @@ export const usePopulatedRound = async (roundId: string, userId?: string) => {
     })
 
     round.value = {
-      ...roundQuery.data.value[0],
+      ...roundQuery.data.value[0]!,
       challenges: transformedChallenges,
       snapshots: processedSnapshots,
       userBets: transformedBets,
@@ -118,7 +113,7 @@ export const usePopulatedChallenge = async (challengeId: string) => {
 
   await challengeQuery.await()
 
-  const transformedChallenge = { ...challengeQuery.data.value[0], fixtureSlots: JSON.parse((challengeQuery.data.value[0].fixtureSlots as string) ?? '[]') }
+  const transformedChallenge = { ...challengeQuery.data.value[0], fixtureSlots: JSON.parse((challengeQuery.data.value[0]?.fixtureSlots as string) ?? '[]') }
 
   const realFixtures = transformedChallenge?.fixtureSlots.map((fs: any) => fs._realFixture)
 
@@ -154,7 +149,7 @@ export const usePopulatedRealFixture = async (rfId: string) => {
 
   const transformedRF = realFixtureQuery.data.value[0]
 
-  const realTeamsQuery = usePSWatch<_RealTeam>(`SELECT * FROM "real_teams" WHERE id IN (?,?)`, [transformedRF._homeTeam, transformedRF._awayTeam], { detectChanges: true })
+  const realTeamsQuery = usePSWatch<_RealTeam>(`SELECT * FROM "real_teams" WHERE id IN (?,?)`, [transformedRF?._homeTeam, transformedRF?._awayTeam], { detectChanges: true })
 
   await realTeamsQuery.await()
 
@@ -179,8 +174,8 @@ export const usePopulatedRealFixture = async (rfId: string) => {
   return usePSQueryWatcher<_P_RealFixture>([realFixtureQuery, realTeamsQuery, realEventsQuery], (realFixture) => {
     realFixture.value = {
       ...transformedRF,
-      _homeTeam: realTeamsQuery.data.value.find((rt: _RealTeam) => rt.id === transformedRF._homeTeam),
-      _awayTeam: realTeamsQuery.data.value.find((rt: _RealTeam) => rt.id === transformedRF._awayTeam),
+      _homeTeam: realTeamsQuery.data.value.find((rt: _RealTeam) => rt.id === transformedRF?._homeTeam),
+      _awayTeam: realTeamsQuery.data.value.find((rt: _RealTeam) => rt.id === transformedRF?._awayTeam),
       _events: realEventsQuery.data.value,
       /*
       fixtureSlots: transformedChallenge.fixtureSlots.map((fs: any) => ({
@@ -330,6 +325,6 @@ export const parseTournament = (tournament?: _BPTournamentRecord) => {
     ...tournament,
     scopeConfig: JSON.parse((tournament.scopeConfig as string) || '[]'),
     snapshotConfig: JSON.parse((tournament.snapshotConfig as string) || '[]'),
-    pointsDef: JSON.parse((tournament.pointsDef as string) || '{}'),
+    displayConfig: JSON.parse((tournament.displayConfig as string) || '{}'),
   }
 }

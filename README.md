@@ -94,3 +94,4 @@ nativeRoute.params.stid // Then use like this
 - Wip: Table improvements: 511.85kb
 - Feat: Instead of match routes, now there are challenge type based (initial, dummy) routes and components: 512.93kb
 - Pre: Nuxt 4 update: 513.01kb, after the update (and the migration that changed a lot of paths): 515.1kb
+- Feat: Table logic improved (wip) with backend schema: 515.62kb

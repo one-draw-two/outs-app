@@ -86,19 +86,19 @@ export interface BetFixtureSlot {
   [key: string]: any
 }
 
-// Update your existing _P_Challenge interface
-export interface _P_Challenge extends Omit<_Challenge, 'fixtureSlots'> {
-  fixtureSlots: FixtureSlot[]
+export interface _P_FixtureSlot extends Omit<FixtureSlot, '_realFixture'> {
+  _realFixture: _P_RealFixture // Replace string with populated fixture
 }
 
-// Update your _P_Bet interface
+export interface _P_Challenge extends Omit<_Challenge, 'fixtureSlots'> {
+  fixtureSlots: _P_FixtureSlot[]
+}
+
 export interface _P_Bet extends Omit<_Bet, 'betFixtureSlots'> {
   betFixtureSlots: BetFixtureSlot[]
 }
 
-// export interface _P_Round extends Omit<_Round, '_stage'> {
 export interface _P_Round extends _Round {
-  // _stage: _Stage | null
   challenges?: _P_Challenge[]
   snapshots?: {
     $realFixture?: EnhancedRealFixture | _P_RealFixture | null
@@ -150,20 +150,51 @@ export interface BPTournamentConfig {
   options?: Record<string, any>
 }
 
-export interface BPTournamentPointDef {
-  isDisplayed: boolean
+export interface DisplayGroupingOption {
+  key: string
   label: string
+}
+
+interface ColumnDisplay {
+  tid: string
+  source: 'children' | 'own'
+}
+
+export interface ColumnDisplayConfig {
+  tournamentIdGroups?: ColumnDisplay[]
+  ungroupedTournamentIds?: {
+    label: string
+    columns: ColumnDisplay[]
+  }
+}
+
+export interface GroupingConfig {
+  enabled: boolean
+  availableKeys: DisplayGroupingOption[]
+  columnDisplay?: ColumnDisplayConfig
+}
+
+export interface ColumnHighlightingRule {
+  tournamentId: string
+  color: string
+}
+
+export interface ColumnHighlightingConfig {
+  enabled: boolean
+  rules?: ColumnHighlightingRule[]
+}
+
+export interface DisplayConfig {
+  grouping?: { [linkLevel: string]: GroupingConfig }
+  columnHighlighting?: { [linkLevel: string]: ColumnHighlightingConfig }
+  [configType: string]: { [linkLevel: string]: GroupingConfig | ColumnHighlightingConfig | any } | undefined
 }
 
 export interface ParsedBPTournament extends Omit<_BPTournamentRecord, 'scopeConfig' | 'snapshotConfig'> {
   scopeConfig: BPTournamentConfig[]
   snapshotConfig: BPTournamentConfig[]
-  pointsDef: {
-    realFixture?: Array<BPTournamentPointDef>
-    round?: Array<BPTournamentPointDef>
-    stage?: Array<BPTournamentPointDef>
-    season?: Array<BPTournamentPointDef>
-  }
+
+  displayConfig?: DisplayConfig
 }
 
 // Update _P_Season to use the parsed tournament type

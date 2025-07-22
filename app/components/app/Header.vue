@@ -15,8 +15,7 @@
     -->
     <div class="relative main-container flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <NuxtLink :to="useSL('')" class="block bg-white rounded-md p-2"><img src="/outstanding.svg" class="h-3" alt="Logo" /></NuxtLink>
-
+        <NuxtLink :to="useSL('')" class="block bg-white rounded-md py-2 px-4"><img src="/outstanding.svg" class="h-3" alt="Logo" /></NuxtLink>
         <AppSeasonPicker></AppSeasonPicker>
       </div>
       <AppUserButton />

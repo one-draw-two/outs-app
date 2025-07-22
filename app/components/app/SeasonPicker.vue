@@ -1,7 +1,7 @@
 <template>
   <div class="relative group" @click="goToDetails">
     <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-[#A3F2D1] via-[#B9A9F2] to-[#9ED9F4] to-[#F2F6A2] bg-[length:200%_200%] animate-gradient-hover"></div>
-    <div class="relative px-4 w-48 h-8 rounded-xl flex items-center gap-2 font-posterama cursor-pointer bg-white/90 m-[2px] transition-all duration-200 group-hover:text-blue-500">
+    <div class="relative px-2 h-8 rounded-xl flex items-center gap-2 font-posterama cursor-pointer bg-white/90 m-[2px] transition-all duration-200 group-hover:text-blue-500">
       <select v-model="selectedSeasonId" @change="change" class="stroke-textX !not-italic w-full min-w-0 truncate bg-transparent text-whiteX" :class="isInRouteContext ? 'pointer-events-none' : ''">
         <option class="truncate bg-gray-100" value="">Select a season</option>
         <option class="truncate bg-gray-100" v-for="s of seasons" :key="s.id" :value="s.id" :disabled="false && !activeUserSubscriptionSeasons?.includes(s.id)">Season {{ s.name }}</option>

@@ -8,30 +8,37 @@
       </div>
 
       <div class="flex gap-4 items-center">
-        <FormsToggleSwitch @change="toggleGrouping" />
+        <FormsToggleSwitch v-if="dgGrouping?.availableKeys?.length! > 1" @change="toggleGrouping" />
         <button @click="shufflePoints" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md">Shuffle Points</button>
       </div>
     </div>
 
-    <StandingsTopHeader :children-standings="childrenStandings" class="bg-white sticky top-0 z-[5] py-4" />
+    <StandingsTopHeader v-if="false" :children-standings="childrenStandings" class="bg-white sticky top-0 z-[5] py-4" />
 
     <div class="overflow-x-scroll hide-scroll">
       <div class="py-8 max-lg:hidden border-y border-gray-100">
         <div class="flex w-full gap-8">
-          <div class="bg-white sticky z-[3] left-0 w-48 shrink-0"></div>
+          <div class="bg-white sticky z-[3] left-0 w-48 shrink-0">
+            <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
+              <span class="text-xs">{{ groupingKey?.label }}</span>
+            </UtilLineBar>
+            <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
+              <span class="text-xs">User</span>
+            </UtilLineBar>
+          </div>
           <div class="flex-1">
             <div class="flex min-w-max gap-4">
-              <div v-for="group in groupedChildren" :key="group.key">
+              <div v-for="group in dgContributionsGroupedLabels" :key="group.key">
                 <div>
                   <UtilLineBar color="green-500" background-color="white" text-color="gray-700" variant="subtle">
-                    <span class="text-xs font-bold">{{ group.label }}</span>
+                    <span class="text-xs font-bold">{{ group.item?.name }}</span>
                   </UtilLineBar>
                 </div>
                 <div class="flex gap-4">
-                  <div v-for="cs in group.items" :key="cs.id" class="w-24 truncate">
+                  <div v-for="cs in group._groupedStandings" :key="cs.id" class="w-24 truncate">
                     <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
                       <NuxtLink :to="useSL(`standings/${cs.id}`)" class="text-xs">
-                        <span class="text-xs font-medium truncate">{{ cs.label }}</span>
+                        <span class="text-xs font-medium truncate">{{ cs.item?.name }}</span>
                       </NuxtLink>
                     </UtilLineBar>
                   </div>
@@ -41,11 +48,15 @@
           </div>
           <div class="bg-white lg:sticky z-[3] right-0 truncate w-48 shrink-0">
             <UtilLineBar color="green-500" background-color="white" text-color="gray-700" variant="subtle" class="w-full">
-              <span class="text-xs font-bold">&nbsp;</span>
+              <span class="text-xs font-bold">{{ dgGrouping?.columnDisplay?.ungroupedTournamentIds?.label }}</span>
             </UtilLineBar>
-            <UtilLineBar color="green-500" background-color="white" text-color="gray-700" variant="subtle" class="w-full">
-              <span class="text-xs font-bold">Points</span>
-            </UtilLineBar>
+            <div class="flex gap-2">
+              <UtilLineBar v-for="tDef of dgGroupingColumnsPopulated" color="green-500" background-color="white" text-color="gray-700" variant="subtle" class="w-full">
+                <NuxtLink :to="tDef.link ? useSL(`standings/${tDef.standings.id}`) : ''" class="text-xs">
+                  <span class="text-xs font-bold">{{ tDef.label ?? tDef.t?.name }}</span>
+                </NuxtLink>
+              </UtilLineBar>
+            </div>
           </div>
         </div>
       </div>
@@ -59,28 +70,23 @@
         >
           <div class="flex relative w-full gap-8">
             <div class="sticky bg-white z-[3] left-0 flex gap-2 truncate w-48 shrink-0">
-              <div class="tabular-nums w-8 shrink-0">
-                {{ row.isCurve ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isCurve).length }}
-              </div>
+              <div class="tabular-nums w-8 shrink-0">{{ row.isCurve ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isCurve).length }}</div>
               <div class="flex-1 truncate">{{ row._user.name }}</div>
             </div>
             <div class="flex-1 flex gap-4">
-              <div v-for="(cs, csi) of childrenStandings" :key="cs.id" class="w-24 z-0 relative shrink-0">
-                <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
-                  {{ (cs.rows as any)?.find((r: any) => r._user?.id === row._user?.id)?.points?.[1] ?? '-' }}
-                </UtilLineBar>
+              <div v-for="group in dgContributionsGroupedLabels" :key="group.key" class="flex gap-4">
+                <div v-for="cs in group._groupedStandings" :key="cs.id" class="w-24 truncate">
+                  <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
+                    <span class="text-xs font-medium truncate">{{ cs?.rows?.find((sr: any) => sr._user?.id === row._user?.id)?.points?.[1] ?? 0 }}</span>
+                  </UtilLineBar>
+                </div>
               </div>
             </div>
 
             <div class="lg:sticky bg-white z-[3] right-0 flex gap-2 truncate w-48 shrink-0">
-              <div
-                v-for="(pointItem, displayIndex) in filteredScopedTournamnetPointsDef"
-                :key="pointItem.originalIndex"
-                class="tabular-nums text-right w-32 px-2"
-                :class="['cursor-pointer', { 'text-gray-500': sortBy?.index === pointItem.originalIndex }]"
-              >
-                <span>{{ row?.points?.[pointItem.originalIndex] }}</span>
-              </div>
+              <UtilLineBar v-for="tDef of dgGroupingColumnsPopulated" color="green-500" background-color="white" text-color="gray-700" variant="subtle" class="w-full">
+                <span class="text-xs font-bold">{{ tDef.standings?.rows?.find((sr: any) => sr._user?.id === row._user?.id)?.points?.[tDef.pInd ?? 1] }}</span>
+              </UtilLineBar>
             </div>
           </div>
         </div>
@@ -90,14 +96,14 @@
 </template>
 
 <script setup lang="ts">
-import type { _Season, _Standing, ParsedBPTournament } from '~/../types'
+import type { _Season, _P_Group, ParsedBPTournament } from '~/../types'
 
 const season = useState<_Season>('season')
 
 interface Props {
-  standings: any
-  childrenStandings: _Standing[]
-  childrenFixtures: any[]
+  standings: _P_Group
+  childrenStandings: _P_Group[]
+  childrenFixtures: _P_Group[]
   tournament?: ParsedBPTournament
   rowClass?: string
 }
@@ -106,33 +112,85 @@ const { isCurrentUserRow } = useUserHelpers()
 
 const props = withDefaults(defineProps<Props>(), { rowClass: '' })
 
-const groupingKey = ref('_tournament')
-const toggleGrouping = (val: boolean) => (groupingKey.value = val ? '_link._refId' : '_tournament')
+console.log(season.value)
+console.log(props.standings)
+console.log(props.tournament)
+console.log(props.childrenStandings)
 
-const groupedChildren = computed(() => {
-  const key = groupingKey.value
-  const tournamentsArr = season.value?.tournaments || []
-  const stagesArr = season.value?.stages || []
-  const groups: Record<string, { key: string; label: string; items: Array<_Standing & { label: string }> }> = {}
+const dgGrouping = computed(() => props.tournament?.displayConfig?.grouping?.[props.standings?._link?._refColl?.toLowerCase()])
 
-  for (const cs of props.childrenStandings) {
-    let groupVal = key === '_link._refId' ? (cs._link as any)?._refId : cs._tournament
-    let groupLabel = groupVal
-    let childLabel = cs.name
+const dgGroupingColumnsPopulated = computed(() =>
+  dgGrouping.value?.columnDisplay?.ungroupedTournamentIds?.columns.map((tDef: any) => ({
+    ...tDef,
+    t: season.value?.tournaments?.find((t: any) => t.id === tDef.tid),
+    standings: (tDef.source === 'children' ? props.childrenStandings : [props.standings]).find((cs) => cs._tournament === tDef.tid),
+  }))
+)
 
-    if (key === '_tournament') groupLabel = tournamentsArr.find((t: any) => t.id === groupVal)?.name || groupVal
-    if (key === '_link._refId') groupLabel = stagesArr.find((stage: any) => stage.id === groupVal)?.name || groupVal
+const childrenStandingsThatAreUngrouped = computed(() =>
+  props.childrenStandings.filter((cs) =>
+    dgGrouping.value?.columnDisplay?.tournamentIdGroups
+      ?.filter((tGroup) => tGroup.source === 'children')
+      ?.map((tGroup) => tGroup.tid)
+      ?.includes(cs._tournament!)
+  )
+)
 
-    if (key === '_link._refId') childLabel = tournamentsArr.find((t: any) => t.id === cs._tournament)?.name || cs._tournament
-    else if (key === '_tournament') childLabel = stagesArr.find((stage: any) => stage.id === (cs._link as any)?._refId)?.name || cs.name
+const groupIndex = ref(0)
+const groupingKey = computed(() => dgGrouping.value?.availableKeys?.[groupIndex.value])
+const toggleGrouping = (val: boolean) => (groupIndex.value = val ? 1 : 0)
 
-    if (!groups[groupVal]) groups[groupVal] = { key: groupVal, label: groupLabel, items: [] }
-    groups[groupVal].items.push({ ...cs, label: childLabel! })
+const getterFn = (cs: any) => {
+  if (groupingKey.value?.key === '_link._refId') return cs._link?._refId
+  else if (groupingKey.value?.key === '_tournament') return cs?._tournament
+  else return null
+}
+
+const groupItemFn = (key: string) => {
+  if (groupingKey.value?.key === '_link._refId') {
+    const firstItem = childrenStandingsThatAreUngrouped.value?.[0]
+    const refColl = firstItem?._link?._refColl?.toLowerCase()
+    if (refColl === 'stage') {
+      return season.value?.stages?.find((s: any) => s.id === key)
+    } else if (refColl === 'round') {
+      return season.value?.rounds?.find((r: any) => r.id === key)
+    } else if (refColl === 'season') {
+      return season.value // If it's season, just return the season
+    }
+  } else if (groupingKey.value?.key === '_tournament') {
+    return season.value?.tournaments?.find((t: any) => t.id === key)
   }
-  return Object.values(groups)
+
+  return null
+}
+
+const dgContributionsGroupedLabels = computed(() => {
+  if (!childrenStandingsThatAreUngrouped.value?.length) return []
+  const groupedByRefId: Record<string, any[]> = {}
+
+  const currentGroupingKeyStr = groupingKey.value?.key || '_tournament'
+  const oppositeGroupingKeyStr = currentGroupingKeyStr === '_link._refId' ? '_tournament' : '_link._refId'
+
+  const getOppositeItem = (cs: any) =>
+    oppositeGroupingKeyStr === '_link._refId' ? season.value?.stages?.find((s: any) => s.id === cs._link?._refId) : season.value?.tournaments?.find((t: any) => t.id === cs._tournament)
+
+  childrenStandingsThatAreUngrouped.value.forEach((cs) => {
+    const groupKey = getterFn(cs)
+    if (!groupedByRefId[groupKey]) groupedByRefId[groupKey] = []
+    groupedByRefId[groupKey].push(cs)
+  })
+
+  return Object.entries(groupedByRefId).map(([refId, standings]) => ({
+    key: refId,
+    item: groupItemFn(getterFn(standings[0])),
+    _groupedStandings: standings.map((s) => ({
+      ...s,
+      item: getOppositeItem(s),
+    })),
+  }))
 })
-const scopedTournamnetPointsDef = computed(() => props.tournament?.pointsDef?.[props.standings._link._refColl?.toLowerCase() as keyof ParsedBPTournament['pointsDef']] || [])
-const filteredScopedTournamnetPointsDef = computed(() => scopedTournamnetPointsDef.value.map((pointDef, originalIndex) => ({ pointDef, originalIndex })).filter(({ pointDef }) => pointDef.isDisplayed))
+
+wecl(dgContributionsGroupedLabels, 'dgContributionsGroupedLabels')
 
 const standingsName = computed(() => props.standings?.name || 'Standings')
 const localRows = ref<any>([])
