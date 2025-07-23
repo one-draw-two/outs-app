@@ -8,6 +8,7 @@
       </div>
 
       <div class="flex gap-4 items-center">
+        <FormsToggleSwitch @change="isDetailsOn = !isDetailsOn" />
         <FormsToggleSwitch v-if="dgGrouping?.availableKeys?.length! > 1" @change="toggleGrouping" />
         <button @click="shufflePoints" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md">Shuffle Points</button>
       </div>
@@ -15,100 +16,86 @@
 
     <StandingsTopHeader v-if="false" :children-standings="childrenStandings" class="bg-white sticky top-0 z-[5] py-4" />
 
-    <div class="overflow-x-scroll hide-scroll" @mouseleave="clearHighlight">
-      <div class="py-8 max-lg:hidden border-y border-gray-100">
-        <div class="flex w-full gap-8">
-          <div class="bg-white sticky z-[3] left-0 w-48 shrink-0">
-            <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
-              <span class="text-xs">{{ groupingKey?.label }}</span>
-            </UtilLineBar>
-            <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
-              <span class="text-xs">User</span>
-            </UtilLineBar>
-          </div>
-          <div class="flex-1">
-            <div class="flex min-w-max gap-4">
-              <div class="flex-1" v-for="group in dgContributionsGroupedLabels" :key="group.key">
-                <UtilLineBar color="green-500" background-color="white" text-color="gray-700" variant="subtle">
-                  <span class="text-xs font-bold">{{ group.item?.name }}</span>
-                </UtilLineBar>
-                <div class="flex">
-                  <div v-for="cs in group._groupedStandings" :key="cs.id" class="flex-1 min-w-24 truncate px-2">
-                    <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
-                      <NuxtLink :to="useSL(`standings/${cs.id}`)" class="text-xs">
-                        <span class="text-xs font-medium truncate">{{ cs.item?.name }}</span>
-                      </NuxtLink>
-                    </UtilLineBar>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="bg-white lg:sticky z-[3] right-0 truncate w-48 shrink-0">
-            <UtilLineBar color="green-500" background-color="white" text-color="gray-700" variant="subtle" class="w-full">
-              <span class="text-xs font-bold">{{ dgGrouping?.columnDisplay?.ungroupedTournamentIds?.label }}</span>
-            </UtilLineBar>
-            <div class="flex gap-2">
-              <UtilLineBar v-for="tDef of dgGroupingColumnsPopulated" color="green-500" background-color="white" text-color="gray-700" variant="subtle" class="w-full">
-                <NuxtLink :to="tDef.link ? useSL(`standings/${tDef.standings.id}`) : ''" class="text-xs">
-                  <span class="text-xs font-bold">{{ tDef.label ?? tDef.t?.name }}</span>
-                </NuxtLink>
-              </UtilLineBar>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="maino overflow-x-scroll hide-scroll" @mouseleave="clearHighlight">
+      <StandingsRowHeader
+        :grouping-key="groupingKey"
+        :dg-contributions-grouped-labels="dgContributionsGroupedLabels"
+        :dg-grouping="dgGrouping"
+        :dg-grouping-columns-populated="dgGroupingColumnsPopulated"
+        :is-observed="true"
+        :is-details-on="isDetailsOn"
+        @update:isRowTitleInvisible="(value) => (isRowTitleInvisible = value)"
+      />
 
       <TransitionGroup tag="div" name="standing-row">
         <div
           v-for="(row, ri) of sortedRows"
           :key="row._user.id || ri"
-          class="h-10 border-b border-gray-100 hover:bg-blue-50"
+          class="w-[var(--twContMaxW)] h-16 lg:h-10 border-b border-gray-100 hover:bg-blue-50 bg-green-200"
           :class="[row.isMetaRow ? 'bg-yellow-50 text-yellow-800 font-medium' : isCurrentUserRow(row) ? 'bg-green-50 text-green-900 font-medium' : 'bg-white', rowClass]"
         >
-          <div class="flex bg-inherit size-full items-stretch relative gap-8">
-            <div class="sticky bg-inherit z-[3] left-0 flex gap-2 truncate w-48 shrink-0 items-center">
-              <div class="tabular-nums w-8 shrink-0">{{ row.isMetaRow ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isMetaRow).length }}</div>
-              <div class="flex-1 truncate">{{ row._user.name }}</div>
+          <div class="flex bg-inherit w-full max-lg:w-max h-full items-stretch relative">
+            <div class="sticky top-0 left-0 z-[10] lg:hidden w-12 overflow-visible">
+              <Transition name="appear-from-left">
+                <StandingsRowTitle
+                  v-if="isRowTitleInvisible"
+                  :row="row"
+                  :ri="row.isMetaRow ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isMetaRow).length"
+                  class="text-xs italic text-gray-700 w-[var(--twContMaxW)] shrink-0"
+                />
+              </Transition>
             </div>
-            <div class="flex-1 flex">
-              <div v-for="group in dgContributionsGroupedLabels" :key="group.key" class="flex flex-1">
-                <div
-                  v-for="cs in group._groupedStandings"
-                  :key="cs.id"
-                  class="flex-1 min-w-24 truncate px-2"
-                  @mouseenter="setHighlight(ri, cs.id)"
-                  :class="{ 'bg-blue-50': highlightedStandingId === cs.id || highlightedRow === ri }"
-                >
-                  <UtilLineBar
-                    class="h-full"
-                    color="blue-500"
-                    :background-color="highlightedStandingId === cs.id || highlightedRow === ri ? 'blue-50' : 'white'"
-                    text-color="gray-700"
-                    variant="subtle"
+
+            <div class="max-lg:-ml-12 flex bg-inherit w-full max-lg:w-max h-full items-stretch gap-8X justify-between">
+              <StandingsRowTitle
+                :row="row"
+                :ri="row.isMetaRow ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isMetaRow).length"
+                :is-truncate="true"
+                class="lg:sticky bg-inherit z-[3] left-0 truncate w-48 shrink-0"
+              />
+
+              <div v-if="isDetailsOn" class="h-full w-8 bg-gradient-to-r from-white max-lg:hidden sticky top-0 left-48 z-3" />
+              <div v-if="isDetailsOn" class="flex-1 flex">
+                <div v-for="group in dgContributionsGroupedLabels" :key="group.key" class="flex flex-1">
+                  <div
+                    v-for="cs in group._groupedStandings"
+                    :key="cs.id"
+                    class="flex-1 min-w-24 truncate px-2"
+                    @mouseenter="setHighlight(ri, cs.id)"
+                    :class="{ 'bg-blue-50': highlightedStandingId === cs.id || highlightedRow === ri }"
                   >
-                    <span class="text-xs font-medium truncate">{{ cs?.rows?.find((sr: any) => sr._user?.id === row._user?.id)?.points?.[1] ?? 0 }}</span>
-                  </UtilLineBar>
+                    <UtilLineBar
+                      class="h-full"
+                      color="blue-500"
+                      :background-color="highlightedStandingId === cs.id || highlightedRow === ri ? 'blue-50' : 'white'"
+                      text-color="gray-700"
+                      variant="subtle"
+                    >
+                      <span class="text-xs font-medium truncate">{{ cs?.rows?.find((sr: any) => sr._user?.id === row._user?.id)?.points?.[1] ?? 0 }}</span>
+                    </UtilLineBar>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="lg:sticky bg-inherit z-[3] right-0 flex gap-2 truncate w-48 shrink-0 items-center">
-              <template v-if="!row.isMetaRow">
-                <div
-                  v-for="tDef of dgGroupingColumnsPopulated"
-                  :key="tDef.standings?.id"
-                  @mouseenter="setHighlight(ri, tDef.standings?.id)"
-                  :class="{ 'bg-blue-50': highlightedStandingId === tDef.standings?.id || highlightedRow === ri }"
-                  class="size-full flex-center"
-                >
-                  <UtilLineBar color="green-500" background-color="white" text-color="gray-700" variant="subtle" class="w-full">
-                    <span class="text-xs font-bold">{{ tDef.standings?.rows?.find((sr: any) => sr._user?.id === row._user?.id)?.points?.[tDef.pInd ?? 1] }}</span>
-                  </UtilLineBar>
-                </div>
-              </template>
-              <UtilLineBar v-else color="yellow-500" background-color="white" text-color="gray-700" variant="subtle" class="w-full">
-                <span class="text-xs font-bold">{{ row.points[0] }}</span>
-              </UtilLineBar>
+              <div v-if="isDetailsOn" class="h-full w-8 bg-gradient-to-l from-white max-lg:hidden sticky top-0 right-48 z-3" />
+
+              <div class="lg:sticky bg-inherit z-[3] right-0 flex gap-2 truncate w-48 shrink-0 items-center">
+                <template v-if="!row.isMetaRow">
+                  <div
+                    v-for="tDef of dgGroupingColumnsPopulated"
+                    :key="tDef.standings?.id"
+                    @mouseenter="setHighlight(ri, tDef.standings?.id)"
+                    :class="{ 'bg-blue-50': highlightedStandingId === tDef.standings?.id || highlightedRow === ri }"
+                    class="size-full flex-center"
+                  >
+                    <UtilLineBar color="green-500" background-color="white" text-color="gray-700" variant="subtle" class="w-full">
+                      <span class="text-xs font-bold">{{ tDef.standings?.rows?.find((sr: any) => sr._user?.id === row._user?.id)?.points?.[tDef.pInd ?? 1] }}</span>
+                    </UtilLineBar>
+                  </div>
+                </template>
+                <UtilLineBar v-else color="yellow-500" background-color="white" text-color="gray-700" variant="subtle" class="w-full">
+                  <span class="text-xs font-bold">{{ row.points[0] }}</span>
+                </UtilLineBar>
+              </div>
             </div>
           </div>
         </div>
@@ -159,6 +146,8 @@ const childrenStandingsThatAreUngrouped = computed(() =>
       ?.includes(cs._tournament!)
   )
 )
+
+const isDetailsOn = ref(false)
 
 const groupIndex = ref(0)
 const groupingKey = computed(() => dgGrouping.value?.availableKeys?.[groupIndex.value])
@@ -271,6 +260,8 @@ const clearHighlight = () => {
   highlightedRow.value = null
   highlightedStandingId.value = null
 }
+
+const isRowTitleInvisible = ref(false)
 
 defineExpose({
   sortedRows,
