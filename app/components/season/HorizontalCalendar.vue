@@ -2,40 +2,42 @@
   <div class="flex">
     <div class="placeholder w-[var(--container-gap)] shrink-0"></div>
 
-    <div class="lg:flex">
-      <div class="w-72 shrink-0 mr-8 sticky left-[var(--container-gap)]">
-        <img src="/C3.png" class="w-full" alt="Season Label" />
+    <div class="lg:flex max-lg:space-y-4">
+      <div class="max-lg:w-[var(--container-width)] lg:w-72 aspect-3/1 shrink-0 mr-8 sticky left-[var(--container-gap)] bg-gray-300 rounded-md">
+        <img v-if="false" src="/C3.png" class="w-full" alt="Season Label" />
       </div>
 
-      <div class="flex gap-2 flex-1 z-1">
-        <div v-for="(stage, si) in season?.stages" :key="stage.id" class="flex-1">
-          <div class="flex flex-col">
-            <div class="h-12 flex-shrink-0 rounded-md flex items-center justify-center mb-2 font-bold" :class="getStageBackgroundClass(stage, 50)">
-              <NuxtLink :to="useSL(`stage/${stage.id}`)" class="w-full h-full flex items-center justify-center">
-                {{ stage.name }}
-              </NuxtLink>
-            </div>
+      <div class="flex flex-1 z-1">
+        <div class="flex gap-2">
+          <div v-for="(stage, si) in season?.stages" :key="stage.id" class="flex-1">
+            <div class="flex flex-col">
+              <div class="h-12 flex-shrink-0 rounded-md flex items-center justify-center mb-2 font-bold" :class="getStageBackgroundClass(stage, 50)">
+                <NuxtLink :to="useSL(`stage/${stage.id}`)" class="w-full h-full flex items-center justify-center">
+                  {{ stage.name }}
+                </NuxtLink>
+              </div>
 
-            <div class="h-10 w-full relative rounded-full" :class="getStageBackgroundClass(stage, 20)">
-              <div class="flex justify-between h-full items-center">
-                <div v-for="round in stage.rounds" :key="round.id" class="flex flex-col items-center p-2">
-                  <NuxtLink
-                    :to="useSL(`round/${round.id}`)"
-                    class="size-6 rounded-full text-white text-xs font-bold cursor-pointer transition-opacity duration-500 flex items-center justify-center hover:opacity-80"
-                    :class="getRoundColorClass(round.status)"
-                    :title="round.name"
-                  >
-                    {{ round.name.substring(0, 2) }}
-                  </NuxtLink>
+              <div class="h-10 w-full relative rounded-full" :class="getStageBackgroundClass(stage, 20)">
+                <div class="flex justify-between h-full items-center">
+                  <div v-for="round in stage.rounds" :key="round.id" class="flex flex-col items-center p-2">
+                    <NuxtLink
+                      :to="useSL(`round/${round.id}`)"
+                      class="size-6 rounded-full text-white text-xs font-bold cursor-pointer transition-opacity duration-500 flex items-center justify-center hover:opacity-80"
+                      :class="getRoundColorClass(round.status)"
+                      :title="round.name"
+                    >
+                      {{ round.name.substring(0, 2) }}
+                    </NuxtLink>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        <div class="placeholder w-[var(--container-gap)] shrink-0"></div>
       </div>
     </div>
-
-    <div class="placeholder w-[var(--container-gap)] shrink-0"></div>
   </div>
 </template>
 

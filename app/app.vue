@@ -1,6 +1,7 @@
 <template>
   <AppHeader v-if="user" :user="user" />
   <NuxtPage class="pt-12" />
+  <AppFooter />
   <AppUserOverlay v-if="user" />
   <AppNetworkTray />
   <AppDecorations />

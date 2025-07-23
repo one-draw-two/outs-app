@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <div class="h-12 flex items-center justify-between">
+    <div v-if="true" class="h-12 flex items-center justify-between">
       <div class="flex gap-4">
         <NuxtLink :to="useSL(`standings/${standings?.id}`)" class="block">{{ standingsName }}</NuxtLink>
         <NuxtLink v-if="standings?._parentGroup" :to="useSL(`standings/${standings?._parentGroup}`)" class="block"> Parent </NuxtLink>
@@ -10,13 +10,12 @@
       <div class="flex gap-4 items-center">
         <FormsToggleSwitch @change="isDetailsOn = !isDetailsOn" />
         <FormsToggleSwitch v-if="dgGrouping?.availableKeys?.length! > 1" @change="toggleGrouping" />
-        <button @click="shufflePoints" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md">Shuffle Points</button>
       </div>
     </div>
 
     <StandingsTopHeader v-if="false" :children-standings="childrenStandings" class="bg-white sticky top-0 z-[5] py-4" />
 
-    <div class="maino overflow-x-scroll hide-scroll" @mouseleave="clearHighlight">
+    <div class="overflow-x-scroll hide-scroll" @mouseleave="clearHighlight">
       <StandingsRowHeader
         :grouping-key="groupingKey"
         :dg-contributions-grouped-labels="dgContributionsGroupedLabels"
@@ -25,28 +24,29 @@
         :is-observed="true"
         :is-details-on="isDetailsOn"
         @update:isRowTitleInvisible="(value) => (isRowTitleInvisible = value)"
+        @shuffle="shufflePoints"
       />
 
       <TransitionGroup tag="div" name="standing-row">
         <div
           v-for="(row, ri) of sortedRows"
           :key="row._user.id || ri"
-          class="w-[var(--twContMaxW)] h-16 lg:h-10 border-b border-gray-100 hover:bg-blue-50 bg-green-200"
+          class="w-[var(--container-width)] h-16 lg:h-10 border-b border-gray-100 hover:bg-blue-50 bg-green-200"
           :class="[row.isMetaRow ? 'bg-yellow-50 text-yellow-800 font-medium' : isCurrentUserRow(row) ? 'bg-green-50 text-green-900 font-medium' : 'bg-white', rowClass]"
         >
-          <div class="flex bg-inherit w-full max-lg:w-max h-full items-stretch relative">
-            <div class="sticky top-0 left-0 z-[10] lg:hidden w-12 overflow-visible">
+          <div class="flex bg-inherit w-full max-lg:w-maxXX h-full items-stretch relative">
+            <div class="absolute top-0 left-0 z-[10] lg:hidden w-12 overflow-visible bg-green-200">
               <Transition name="appear-from-left">
                 <StandingsRowTitle
                   v-if="isRowTitleInvisible"
                   :row="row"
                   :ri="row.isMetaRow ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isMetaRow).length"
-                  class="text-xs italic text-gray-700 w-[var(--twContMaxW)] shrink-0"
+                  class="text-xs italic text-gray-700 w-[var(--container-width)] shrink-0"
                 />
               </Transition>
             </div>
 
-            <div class="max-lg:-ml-12 flex bg-inherit w-full max-lg:w-max h-full items-stretch gap-8X justify-between">
+            <div class="max-lg:-ml-12X flex bg-inherit w-full max-lg:w-maxXX h-full items-stretch gap-8X justify-between">
               <StandingsRowTitle
                 :row="row"
                 :ri="row.isMetaRow ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isMetaRow).length"
@@ -78,7 +78,7 @@
               </div>
               <div v-if="isDetailsOn" class="h-full w-8 bg-gradient-to-l from-white max-lg:hidden sticky top-0 right-48 z-3" />
 
-              <div class="lg:sticky bg-inherit z-[3] right-0 flex gap-2 truncate w-48 shrink-0 items-center">
+              <div class="lg:sticky bg-inherit z-[3] right-0 flex gap-2 truncate shrink-0 items-center w-48">
                 <template v-if="!row.isMetaRow">
                   <div
                     v-for="tDef of dgGroupingColumnsPopulated"

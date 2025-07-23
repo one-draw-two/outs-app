@@ -6,7 +6,7 @@
     <aside v-if="isUserOverlayOpen" class="fixed top-0 right-0 z-50 h-full w-[80vw] lg:max-w-1/2 bg-white" @click.stop>
       <div class="safe-area-padding-top space-y-8">
         <div class="flex items-center justify-between h-12 bg-gray-400 px-8">
-          <h1 class="stroke-text">{{ userName }}</h1>
+          <h1>{{ userName }}</h1>
         </div>
         <div class="px-8">
           <NetworkButton />

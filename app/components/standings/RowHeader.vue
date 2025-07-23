@@ -1,14 +1,15 @@
 <template>
-  <div class="w-[var(--twContMaxW)] py-8 border-y border-gray-100">
+  <div class="w-[var(--container-width)] pb-8 border-yXborder-gray-100">
     <div class="flex h-12 w-full justify-between">
-      <div ref="observerTarget" class="tobeobserved bg-white sticky z-[3] left-0 w-48 shrink-0">
+      <div ref="observerTarget" class="bg-white lg:sticky z-[3] left-0 shrink-0" :class="isDetailsOn ? 'w-48' : 'flex-1'">
         <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
           <span class="text-xs">{{ groupingKey?.label }}</span>
         </UtilLineBar>
         <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
-          <span class="text-xs">User</span>
+          <span @click="emit('shuffle')" class="text-xs">User</span>
         </UtilLineBar>
       </div>
+
       <div v-if="isDetailsOn" class="h-full w-8 bg-gradient-to-r from-white max-lg:hidden sticky top-0 left-48 z-3 shrink-0" />
       <div v-if="isDetailsOn" class="flex-1">
         <div class="flex min-w-max gap-4">
@@ -29,7 +30,8 @@
         </div>
       </div>
       <div v-if="isDetailsOn" class="h-full w-8 bg-gradient-to-l from-white max-lg:hidden sticky top-0 right-48 z-3 shrink-0" />
-      <div class="bg-white lg:sticky z-[3] right-0 truncate w-48 shrink-0">
+
+      <div class="barbar bg-white lg:sticky z-[3] right-0 truncate w-48 shrink-0" :class="isDetailsOn ? 'w-48' : ''">
         <UtilLineBar color="green-500" background-color="white" text-color="gray-700" variant="subtle" class="w-full">
           <span class="text-xs font-bold">{{ dgGrouping?.columnDisplay?.ungroupedTournamentIds?.label }}</span>
         </UtilLineBar>
@@ -55,7 +57,7 @@ const props = defineProps<{
   isDetailsOn?: boolean
 }>()
 
-const emit = defineEmits(['update:isRowTitleInvisible'])
+const emit = defineEmits(['update:isRowTitleInvisible', 'shuffle'])
 const observerTarget = ref<HTMLElement | null>(null)
 const observer = ref<IntersectionObserver | null>(null)
 
