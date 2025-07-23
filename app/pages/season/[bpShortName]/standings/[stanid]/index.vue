@@ -8,7 +8,7 @@
     </template>
     <template #page>
       <main class="pb-48">
-        <StandingsTable :standings="standings" :children-standings="childrenStandings" :children-fixtures="childrenFixtures" :tournament="tournament!" rowClass="hover:bg-gray-50" />
+        <StandingsTable :standings="standings" :children-standings="childrenStandings" :children-fixtures="childrenFixtures" :tournament="tournament!" />
       </main>
     </template>
   </LayoGroupAndFixture>
@@ -22,7 +22,7 @@ const stanid = useRoute().params.stanid
 useDynamicPS().updatePowerSyncParams({ selected_parent_gid: stanid })
 
 const { processedGroups } = await useGroupsWithUsers({ id: stanid }, false)
-const standings = computed(() => processedGroups?.value?.[0])
+const standings: any = computed(() => processedGroups?.value?.[0])
 
 useState<any>('pickerSeasonId').value = standings.value?._season
 

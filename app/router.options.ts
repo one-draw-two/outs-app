@@ -2,6 +2,8 @@ import type { RouterConfig } from '@nuxt/schema'
 
 export default {
   scrollBehavior(to, from, savedPosition) {
+    // console.log('scrollBehavior', { to, from, savedPosition })
+
     if (to.hash) {
       return {
         el: to.hash,

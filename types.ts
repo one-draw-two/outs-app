@@ -172,6 +172,15 @@ export interface GroupingConfig {
   enabled: boolean
   availableKeys: DisplayGroupingOption[]
   columnDisplay?: ColumnDisplayConfig
+  metaRows?: {
+    enabled: boolean
+    rows: Array<{
+      id: string
+      name: string
+      multiplier: number
+    }>
+    source: string
+  }
 }
 
 export interface ColumnHighlightingRule {

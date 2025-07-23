@@ -15,7 +15,7 @@
 
     <StandingsTopHeader v-if="false" :children-standings="childrenStandings" class="bg-white sticky top-0 z-[5] py-4" />
 
-    <div class="overflow-x-scroll hide-scroll">
+    <div class="overflow-x-scroll hide-scroll" @mouseleave="clearHighlight">
       <div class="py-8 max-lg:hidden border-y border-gray-100">
         <div class="flex w-full gap-8">
           <div class="bg-white sticky z-[3] left-0 w-48 shrink-0">
@@ -28,14 +28,12 @@
           </div>
           <div class="flex-1">
             <div class="flex min-w-max gap-4">
-              <div v-for="group in dgContributionsGroupedLabels" :key="group.key">
-                <div>
-                  <UtilLineBar color="green-500" background-color="white" text-color="gray-700" variant="subtle">
-                    <span class="text-xs font-bold">{{ group.item?.name }}</span>
-                  </UtilLineBar>
-                </div>
-                <div class="flex gap-4">
-                  <div v-for="cs in group._groupedStandings" :key="cs.id" class="w-24 truncate">
+              <div class="flex-1" v-for="group in dgContributionsGroupedLabels" :key="group.key">
+                <UtilLineBar color="green-500" background-color="white" text-color="gray-700" variant="subtle">
+                  <span class="text-xs font-bold">{{ group.item?.name }}</span>
+                </UtilLineBar>
+                <div class="flex">
+                  <div v-for="cs in group._groupedStandings" :key="cs.id" class="flex-1 min-w-24 truncate px-2">
                     <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
                       <NuxtLink :to="useSL(`standings/${cs.id}`)" class="text-xs">
                         <span class="text-xs font-medium truncate">{{ cs.item?.name }}</span>
@@ -65,27 +63,51 @@
         <div
           v-for="(row, ri) of sortedRows"
           :key="row._user.id || ri"
-          class="py-2 border-b border-gray-100"
-          :class="[row.isCurve ? 'bg-yellow-50 text-yellow-800 font-medium' : isCurrentUserRow(row) ? 'bg-green-50 text-green-900 font-medium' : 'bg-white', rowClass]"
+          class="h-10 border-b border-gray-100 hover:bg-blue-50"
+          :class="[row.isMetaRow ? 'bg-yellow-50 text-yellow-800 font-medium' : isCurrentUserRow(row) ? 'bg-green-50 text-green-900 font-medium' : 'bg-white', rowClass]"
         >
-          <div class="flex relative w-full gap-8">
-            <div class="sticky bg-white z-[3] left-0 flex gap-2 truncate w-48 shrink-0">
-              <div class="tabular-nums w-8 shrink-0">{{ row.isCurve ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isCurve).length }}</div>
+          <div class="flex bg-inherit size-full items-stretch relative gap-8">
+            <div class="sticky bg-inherit z-[3] left-0 flex gap-2 truncate w-48 shrink-0 items-center">
+              <div class="tabular-nums w-8 shrink-0">{{ row.isMetaRow ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isMetaRow).length }}</div>
               <div class="flex-1 truncate">{{ row._user.name }}</div>
             </div>
-            <div class="flex-1 flex gap-4">
-              <div v-for="group in dgContributionsGroupedLabels" :key="group.key" class="flex gap-4">
-                <div v-for="cs in group._groupedStandings" :key="cs.id" class="w-24 truncate">
-                  <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
+            <div class="flex-1 flex">
+              <div v-for="group in dgContributionsGroupedLabels" :key="group.key" class="flex flex-1">
+                <div
+                  v-for="cs in group._groupedStandings"
+                  :key="cs.id"
+                  class="flex-1 min-w-24 truncate px-2"
+                  @mouseenter="setHighlight(ri, cs.id)"
+                  :class="{ 'bg-blue-50': highlightedStandingId === cs.id || highlightedRow === ri }"
+                >
+                  <UtilLineBar
+                    class="h-full"
+                    color="blue-500"
+                    :background-color="highlightedStandingId === cs.id || highlightedRow === ri ? 'blue-50' : 'white'"
+                    text-color="gray-700"
+                    variant="subtle"
+                  >
                     <span class="text-xs font-medium truncate">{{ cs?.rows?.find((sr: any) => sr._user?.id === row._user?.id)?.points?.[1] ?? 0 }}</span>
                   </UtilLineBar>
                 </div>
               </div>
             </div>
-
-            <div class="lg:sticky bg-white z-[3] right-0 flex gap-2 truncate w-48 shrink-0">
-              <UtilLineBar v-for="tDef of dgGroupingColumnsPopulated" color="green-500" background-color="white" text-color="gray-700" variant="subtle" class="w-full">
-                <span class="text-xs font-bold">{{ tDef.standings?.rows?.find((sr: any) => sr._user?.id === row._user?.id)?.points?.[tDef.pInd ?? 1] }}</span>
+            <div class="lg:sticky bg-inherit z-[3] right-0 flex gap-2 truncate w-48 shrink-0 items-center">
+              <template v-if="!row.isMetaRow">
+                <div
+                  v-for="tDef of dgGroupingColumnsPopulated"
+                  :key="tDef.standings?.id"
+                  @mouseenter="setHighlight(ri, tDef.standings?.id)"
+                  :class="{ 'bg-blue-50': highlightedStandingId === tDef.standings?.id || highlightedRow === ri }"
+                  class="size-full flex-center"
+                >
+                  <UtilLineBar color="green-500" background-color="white" text-color="gray-700" variant="subtle" class="w-full">
+                    <span class="text-xs font-bold">{{ tDef.standings?.rows?.find((sr: any) => sr._user?.id === row._user?.id)?.points?.[tDef.pInd ?? 1] }}</span>
+                  </UtilLineBar>
+                </div>
+              </template>
+              <UtilLineBar v-else color="yellow-500" background-color="white" text-color="gray-700" variant="subtle" class="w-full">
+                <span class="text-xs font-bold">{{ row.points[0] }}</span>
               </UtilLineBar>
             </div>
           </div>
@@ -112,10 +134,12 @@ const { isCurrentUserRow } = useUserHelpers()
 
 const props = withDefaults(defineProps<Props>(), { rowClass: '' })
 
+/*
 console.log(season.value)
 console.log(props.standings)
 console.log(props.tournament)
 console.log(props.childrenStandings)
+*/
 
 const dgGrouping = computed(() => props.tournament?.displayConfig?.grouping?.[props.standings?._link?._refColl?.toLowerCase()])
 
@@ -194,7 +218,7 @@ wecl(dgContributionsGroupedLabels, 'dgContributionsGroupedLabels')
 
 const standingsName = computed(() => props.standings?.name || 'Standings')
 const localRows = ref<any>([])
-const sortBy = ref({ index: 0 })
+const sortIndex = ref(0)
 
 /*
 wecl(season)
@@ -205,39 +229,23 @@ wecl(groupedChildren)
 watchEffect(() => (localRows.value = props.standings?.rows ? JSON.parse(JSON.stringify(props.standings.rows)) : []))
 
 // Function to sort by specific point index
-const sortByPointIndex = (index: number) => {
-  sortBy.value.index = index
-}
+const sortByPointIndex = (index: number) => (sortIndex.value = index)
 
-// Sort rows by points descending
 const sortedRows = computed<any>(() => {
   if (!localRows.value?.length) return []
 
-  // Define a type that matches your row structure
-  type StandingRow = {
-    _user: { id: string; name: string }
-    points: number[]
-    isCurve?: boolean
+  const metaRows = []
+  const metaRowsConfig = dgGrouping.value?.metaRows
+
+  if (metaRowsConfig?.enabled) {
+    const metaValues = getNestedValue(props.standings, metaRowsConfig.source)
+    if (metaValues?.length >= metaRowsConfig.rows.length)
+      metaRows.push(...metaRowsConfig.rows.map((row, index) => ({ _user: { id: row.id, name: row.name }, points: [metaValues[index]], isMetaRow: true })))
   }
 
-  // Create pseudo rows for curves
-  const curveRows: StandingRow[] = []
-  const curves = props.standings?.stats_numbers?.curves
-
-  if (curves?.length >= 3) {
-    curveRows.push(
-      { _user: { id: 'hi-curve', name: 'HI' }, points: [curves[0]], isCurve: true },
-      { _user: { id: 'mi-curve', name: 'MI' }, points: [curves[1]], isCurve: true },
-      { _user: { id: 'lo-curve', name: 'LO' }, points: [curves[2]], isCurve: true }
-    )
-  }
-
-  const combined: StandingRow[] = [...localRows.value, ...curveRows]
-
-  return combined.sort((a: StandingRow, b: StandingRow) => {
-    const pointsA = Array.isArray(a.points) ? a.points[sortBy.value.index] ?? 0 : sortBy.value.index === 0 ? a.points : 0
-    const pointsB = Array.isArray(b.points) ? b.points[sortBy.value.index] ?? 0 : sortBy.value.index === 0 ? b.points : 0
-
+  return [...localRows.value, ...metaRows].sort((a, b) => {
+    const pointsA = Array.isArray(a.points) ? a.points[sortIndex.value] ?? 0 : sortIndex.value === 0 ? a.points : 0
+    const pointsB = Array.isArray(b.points) ? b.points[sortIndex.value] ?? 0 : sortIndex.value === 0 ? b.points : 0
     return pointsB - pointsA // Always descending
   })
 })
@@ -249,6 +257,19 @@ const shufflePoints = () => {
     if (Array.isArray(row.points)) return { ...row, points: [randomPoints, ...row.points.slice(1)] }
     return { ...row, points: randomPoints }
   })
+}
+
+const highlightedRow = ref<number | null>(null)
+const highlightedStandingId = ref<string | null>(null)
+
+const setHighlight = (rowIndex: number, standingId: string) => {
+  highlightedRow.value = rowIndex
+  highlightedStandingId.value = standingId
+}
+
+const clearHighlight = () => {
+  highlightedRow.value = null
+  highlightedStandingId.value = null
 }
 
 defineExpose({

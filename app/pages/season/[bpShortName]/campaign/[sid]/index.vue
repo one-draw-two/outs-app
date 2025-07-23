@@ -1,6 +1,6 @@
 <template>
   <LayoSeasonAndStage>
-    <StandingsTable :standings="mainTournamentGroup" :children-standings="childrenStandings" :children-fixtures="[]" :tournament="tournament!" rowClass="hover:bg-gray-50" />
+    <StandingsTable :standings="mainTournamentGroup" :children-standings="childrenStandings" :children-fixtures="[]" :tournament="tournament!" />
   </LayoSeasonAndStage>
 </template>
 
@@ -14,7 +14,7 @@ watch(toRef(sid), async (to) => !to || season.value?.id === to || (useState<any>
 
 const { processedGroups } = await useGroupsWithUsers({ _refId: sid }, false)
 
-const mainTournamentGroup = computed(() => processedGroups.value.find((group) => group._tournament === 'BTCAMP'))
+const mainTournamentGroup: any = computed(() => processedGroups.value.find((group) => group._tournament === 'BTCAMP'))
 
 const { data: rawTournament } = await usePSWatchSingle<_BPTournamentRecord>('SELECT * FROM "blueprint_tournaments" WHERE id = ?', [mainTournamentGroup.value?._tournament])
 const tournament = computed(() => (rawTournament.value ? parseTournament(rawTournament.value) : null))
