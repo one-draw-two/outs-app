@@ -10,6 +10,7 @@
     "dev": "DEV=true NODE_ENV=development nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
     "cap:android:sync": "npx cap sync android",
     "cap:android:open": "npx cap open android",
     "cap:android:icons": "npx cordova-res android --skip-config --copy",
