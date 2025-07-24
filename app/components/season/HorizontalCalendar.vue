@@ -1,9 +1,9 @@
 <template>
   <div class="flex">
-    <div class="placeholder w-[var(--container-gap)] shrink-0"></div>
+    <div class="placeholder w-[var(--twContPadding)] shrink-0"></div>
 
     <div class="lg:flex max-lg:space-y-4">
-      <div class="max-lg:w-[var(--container-width)] lg:w-72 aspect-3/1 shrink-0 mr-8 sticky left-[var(--container-gap)] bg-gray-300 rounded-md">
+      <div class="max-lg:w-[var(--container-width)] lg:w-72 aspect-3/1 shrink-0 mr-8 sticky left-[var(--twContPadding)] bg-gray-300 rounded-md">
         <img v-if="false" src="/C3.png" class="w-full" alt="Season Label" />
       </div>
 
@@ -35,7 +35,7 @@
           </div>
         </div>
 
-        <div class="placeholder w-[var(--container-gap)] shrink-0"></div>
+        <div class="placeholder w-[var(--twContPadding)] shrink-0"></div>
       </div>
     </div>
   </div>

@@ -1,6 +1,14 @@
 <template>
   <LayoSeasonAndStage>
     <div>
+      <!-- 
+      <div class="h-12 flex items-center gap-8 border-b border-gray-200 mb-8">
+        <NuxtLink :to="useSL(`round/${round?.id}`)" class="block pb-2 hover:border-b-2 hover:border-gray-400" active-class="border-b-2 border-blue-500"> Overview </NuxtLink>
+        <NuxtLink :to="useSL(`round/${round?.id}/matches`)" class="block pb-2 hover:border-b-2 hover:border-gray-400" active-class="border-b-2 border-blue-500"> Matches </NuxtLink>
+        <NuxtLink :to="useSL(`round/${round?.id}/challenges`)" class="block pb-2 hover:border-b-2 hover:border-gray-400" active-class="border-b-2 border-blue-500"> Challenges </NuxtLink>
+      </div>      
+      -->
+
       <h1>Tournaments</h1>
       <div v-for="(tournament, tournamentId) in tournamentGroupsMap" :key="tournamentId" class="space-y-4">
         <h2 class="text-xl font-bold">{{ tournament.parsedTournament?.name || tournamentId }}</h2>

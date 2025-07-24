@@ -1,8 +1,9 @@
 <template>
   <div class="bg-yellow-100 lg:flex items-stretch hover:bg-gray-100">
-    <div class="flex-1 bg-yellow-200">
+    <div class="max-lg:w-[var(--container-width)] lg:w-96 h-32 bg-yellow-100">
       <slot />
     </div>
+
     <div class="flex-2 bg-blue-200 flex items-stretch gap-4">
       <div v-for="h in tournamentCols" class="flex-1 bg-blue-200 flex flex-col justify-stretch gap-2">
         <p v-if="!h.standings && !h.fixture">{{ h.name }}</p>

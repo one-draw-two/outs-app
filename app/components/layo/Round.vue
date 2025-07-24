@@ -1,32 +1,26 @@
 <template>
   <div class="space-y-8">
     <div class="h-48 flex items-center" :class="`bg-${roundStatusColor}-500/20`">
-      <div class="h-16 main-container flex gap-8 items-center">
-        <div class="flex items-center gap-4">
-          <NuxtLink :to="useSL(`stage/${round?._stage}`)" class="hover:underline">Stage {{ stage?.name }}</NuxtLink>
-          <NuxtLink v-for="r of stage?.rounds" :key="r?.id" :to="getRoundLink(r?.id)" class="hover:underline"> Round {{ r?.name }} </NuxtLink>
-          <NuxtLink :to="useSL(`round/${round?.id}`)" class="hover:underline">Round {{ round?.name }}</NuxtLink>
-
-          <PrevTripleCrop :clip="'circle'" :title="`Round status: ${round?.status}`">
-            <div class="size-3" :class="`bg-${roundStatusColor}-500`" />
-          </PrevTripleCrop>
+      <div class="lg:h-16 main-container flex max-lg:flex-col gap-8 lg:items-center">
+        <div>
+          <div class="flex items-center gap-4">
+            <NuxtLink :to="useSL(`stage/${round?._stage}`)" class="hover:underline">{{ stage?.name }}</NuxtLink>
+            <NuxtLink v-for="r of stage?.rounds" :key="r?.id" :to="getRoundLink(r?.id)" class="hover:underline">
+              <PrevTripleCrop :clip="'circle'" :title="`Round status: ${r?.status}`">
+                <div class="size-3" :class="r.id === round.id ? 'bg-orange-300' : `bg-${getRoundStatusColor(r)}-500`" />
+              </PrevTripleCrop>
+            </NuxtLink>
+          </div>
+          <h1>Round {{ (round?.sePI ?? 0) + 1 }}</h1>
         </div>
 
         <div class="flex-1 flex justify-end items-center gap-8">
           <NuxtLink :to="useSL(`round/${round?.id}/challenges`)">Challenges Deadline {{ $day(round?._h_roundDeadline).format('ddd DD/MM HH:mm') }}</NuxtLink>
-          <p v-highlight="round">Cursor {{ round?._h_lastFinishedMatchIndex }}</p>
           <RoundHorizontalProgress :round="round" :status-color="`bg-${roundStatusColor}-500`" />
         </div>
       </div>
     </div>
-
     <div class="main-container" :key="round?.id">
-      <!-- Navigation tabs -->
-      <div class="h-12 flex items-center gap-8 border-b border-gray-200 mb-8">
-        <NuxtLink :to="useSL(`round/${round?.id}`)" class="block pb-2 hover:border-b-2 hover:border-gray-400" active-class="border-b-2 border-blue-500"> Overview </NuxtLink>
-        <NuxtLink :to="useSL(`round/${round?.id}/matches`)" class="block pb-2 hover:border-b-2 hover:border-gray-400" active-class="border-b-2 border-blue-500"> Matches </NuxtLink>
-        <NuxtLink :to="useSL(`round/${round?.id}/challenges`)" class="block pb-2 hover:border-b-2 hover:border-gray-400" active-class="border-b-2 border-blue-500"> Challenges </NuxtLink>
-      </div>
       <slot />
     </div>
   </div>
@@ -39,14 +33,16 @@ const season = useState<_P_Season>('season')
 const stage = computed(() => season.value?.stages?.find((s: any) => s.id === round.value?._stage))
 const round = useState<_P_Round>('round')
 
-const roundStatusColor = computed(() => {
-  if (round.value?.status === 'current-published') return 'orange'
-  if (round.value?.status === 'current-points-getting-calculated') return 'yellow'
-  if (round.value?.status === 'current-points-calculated') return 'teal'
-  if (round.value?.status === 'current-live') return 'green'
-  if (round.value?.status === 'completed') return 'blue'
+const roundStatusColor = computed(() => getRoundStatusColor(round.value))
+
+const getRoundStatusColor = (r: _P_Round) => {
+  if (r?.status === 'current-published') return 'orange'
+  if (r?.status === 'current-points-getting-calculated') return 'yellow'
+  if (r?.status === 'current-points-calculated') return 'teal'
+  if (r?.status === 'current-live') return 'green'
+  if (r?.status === 'completed') return 'blue'
   else return 'gray'
-})
+}
 
 const getRoundLink = (newRid: string) =>
   ['matches', 'challenges'].includes(useRoute().path.split('/').pop() ?? '') ? useSL(`round/${newRid}/${useRoute().path.split('/').pop()}`) : useSL(`round/${newRid}`)

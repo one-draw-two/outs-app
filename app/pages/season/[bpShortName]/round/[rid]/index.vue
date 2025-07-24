@@ -1,15 +1,21 @@
 <template>
   <LayoRound>
     <main class="space-y-4 relative">
-      <RealFixturePointColumns>
-        <div class="h-32 bg-green-500"></div>
-      </RealFixturePointColumns>
-      <div>
-        <!-- <NuxtLink :to="`${useSL(`round/${round?.id}/matches`)}#rfi-${round?._h_lastFinishedMatchIndex}`"><h2>See all matches</h2></NuxtLink> -->
-        <NuxtLink :to="`${useSL(`round/${round?.id}/matches`)}`"><h2>See all matches</h2></NuxtLink>
-        <div v-for="(rf, rfi) in realFixtures" :key="rf?.id" class="lg:flex items-stretch py-4 hover:bg-gray-100">
-          <RealFixtureItemLink :rf="rf" class="flex-1" />
-          <RealFixturePointRows :rf="rf" class="flex-2" />
+      <RealFixturePointColumns class="sticky top-0 max-lg:-top-32 z-10" />
+      <div v-for="(dateGroup, di) in groupedRealFixtures" :key="di" class="space-y-4">
+        <h3 class="font-mono font-bold bg-gray-50">{{ dateGroup.dateLabel }}</h3>
+        <div>
+          <div
+            v-for="rf in dateGroup.realFixtures"
+            :key="rf.$index"
+            :id="`rfi-${rf.$index}`"
+            class="lg:flex items-stretch py-4 hover:bg-gray-100"
+            @mouseenter="setHoveredItem(rf.$index)"
+            @mouseleave="clearHoveredItem"
+          >
+            <RealFixtureItemLink :rf="rf" :isHovered="hoveredItemIndex === rf.$index" class="w-96" />
+            <RealFixturePointRows :rf="rf" class="flex-2" />
+          </div>
         </div>
       </div>
     </main>
@@ -17,51 +23,44 @@
 </template>
 
 <script setup lang="ts">
-import type { _P_Season, _P_Round, _RealFixture } from '~/../types'
+import type { _P_Round, _RealFixture } from '~/../types'
 
-definePageMeta({
-  middleware: 'round',
-})
-
-const route = useRoute()
-const rid = route.params.rid as string
-
-// Get round data from useState (populated by middleware)
+definePageMeta({ middleware: 'round' })
 const round = useState<_P_Round>('round')
-const tournamentCols = useState('tournamentCols')
-const season = useState<_P_Season>('season')
-const stage = useState<any>('stage')
-
-// Set page title
-useHead({ title: `${round.value?.name}` })
+useHead({ title: `${round.value?.name} | Matches` })
 
 const $day = useNuxtApp().vueApp.config.globalProperties.$day
 
-const allRealFixtures = computed(() => round.value?.snapshots?.map((s: any) => s.$realFixture).filter(Boolean))
+const realFixtures = computed(() => round.value?.snapshots?.map((s: any) => s.$realFixture).filter(Boolean))
 
-// Get 5 fixtures around the lastFinishedMatchIndex
-const realFixtures = computed(() => {
-  const fixtures = allRealFixtures.value
-  if (!fixtures) return []
+wecl(realFixtures)
 
-  const totalFixtures = fixtures.length
+const groupedRealFixtures = computed(() => {
+  if (!realFixtures.value?.length) return []
 
-  // If we have 5 or fewer fixtures, return all
-  if (totalFixtures <= 5) return fixtures
+  const groups = (realFixtures.value ?? []).reduce((acc: Record<string, _RealFixture[]>, fixture: _RealFixture) => {
+    const startingAt = fixture.startingAt
+    if (!startingAt) return acc
 
-  // Get the central index
-  const centerIndex = round.value?._h_lastFinishedMatchIndex || 0
+    // Parse the date to ensure consistency
+    const date = $day(startingAt).format('YYYY-MM-DD') // Normalize to a consistent format
+    if (!acc[date]) acc[date] = []
+    acc[date].push(fixture)
 
-  // Calculate desired start and end (2 before, 2 after)
-  let startIndex = Math.max(0, centerIndex - 2)
-  let endIndex = startIndex + 5
+    return acc
+  }, {})
 
-  // Adjust if we're going past the end
-  if (endIndex > totalFixtures) {
-    endIndex = totalFixtures
-    startIndex = Math.max(0, endIndex - 5)
-  }
-
-  return fixtures.slice(startIndex, endIndex)
+  return Object.entries(groups).map(([date, fixtures]) => ({
+    date,
+    dateLabel: $day(date).format('ddd DD/MM'),
+    realFixtures: fixtures as _RealFixture[],
+  }))
 })
+
+wecl(groupedRealFixtures)
+
+// Hover state management
+const hoveredItemIndex = ref<number | null>(null)
+const setHoveredItem = (index: number) => (hoveredItemIndex.value = index)
+const clearHoveredItem = () => (hoveredItemIndex.value = null)
 </script>
