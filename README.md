@@ -96,3 +96,4 @@ nativeRoute.params.stid // Then use like this
 - Pre: Nuxt 4 update: 513.01kb, after the update (and the migration that changed a lot of paths): 515.1kb
 - Feat: Table logic improved (wip) with backend schema: 515.62kb
 - Wip: Table, responsive with sticky and widths working (not tested fully): 517.69kb
+- Wip: Powersync load error handling (not tested thoroughly): 517.82kb

@@ -37,6 +37,6 @@ const unregister = async () => {
 
 const register = async () => {
   console.log('Registering')
-  useGetPushTokens({})
+  useGetPushTokens()
 }
 </script>

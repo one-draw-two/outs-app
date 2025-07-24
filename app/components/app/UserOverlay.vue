@@ -13,7 +13,6 @@
           <ClearButton />
           <LogoutButton @clear-user="clearUser" />
         </div>
-        <NuxtLink to="/admin" class="text-blue-500 hover:underline">Admin</NuxtLink>
       </div>
     </aside>
   </Transition>
@@ -22,13 +21,16 @@
 <script setup lang="ts">
 import type { User } from '~/../types'
 
-const { clearAuth, clearRefresh } = useAuthStorage()
-const { $capacitor } = useNuxtApp()
+// const { clearAuth, clearRefresh } = useAuthStorage()
+// const { $capacitor } = useNuxtApp()
 
 const isUserOverlayOpen = useState<boolean>('isUserOverlayOpen')
 
 const userName = useState<User>('user').value?.name
 
+const clearUser = async () => await useClearUser().logOutUser()
+
+/*
 const clearUser = async () => {
   await useSecureFetch('logout', 'auth', 'post', { fcmToken: useState<string>('fcmToken').value })
   useState('user').value = null
@@ -41,4 +43,5 @@ const clearUser = async () => {
   clearRefresh()
   navigateTo('/access/login')
 }
+  */
 </script>
