@@ -97,4 +97,4 @@ nativeRoute.params.stid // Then use like this
 - Feat: Table logic improved (wip) with backend schema: 515.62kb
 - Wip: Table, responsive with sticky and widths working (not tested fully): 517.69kb
 - Wip: Powersync load error handling (not tested thoroughly): 517.82kb
-- Pre: Table responsive fixes: 519.34kb
+- Pre: Table responsive fixes: 519.34kb, 519.35kb after nuxt 4.0.2 update.
