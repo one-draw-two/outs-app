@@ -15,16 +15,16 @@
   - https://developer.chrome.com/blog/a-customizable-select
   - https://caniuse.com/mdn-css_properties_appearance_base-select (on 3/4/25 %46.14 global usage)
 - Monetization related:
+
   - https://developer.apple.com/app-store/small-business-program/
 
 - Previously there was an issue with not getting parameters in Nuxt layouts but its resolved with the latest architecture therefore these blocks have been removed:
+
 ```
 import { useRoute as useNativeRoute } from 'vue-router'
 const nativeRoute = useNativeRoute()
 nativeRoute.params.stid // Then use like this
 ```
-
-
 
 ## Bundle Logs
 
@@ -97,3 +97,4 @@ nativeRoute.params.stid // Then use like this
 - Feat: Table logic improved (wip) with backend schema: 515.62kb
 - Wip: Table, responsive with sticky and widths working (not tested fully): 517.69kb
 - Wip: Powersync load error handling (not tested thoroughly): 517.82kb
+- Pre: Table responsive fixes: 519.34kb

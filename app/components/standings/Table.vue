@@ -147,7 +147,7 @@ const childrenStandingsThatAreUngrouped = computed(() =>
   )
 )
 
-const isDetailsOn = ref(false)
+const isDetailsOn = ref(true)
 
 const groupIndex = ref(0)
 const groupingKey = computed(() => dgGrouping.value?.availableKeys?.[groupIndex.value])
@@ -207,7 +207,7 @@ wecl(dgContributionsGroupedLabels, 'dgContributionsGroupedLabels')
 
 const standingsName = computed(() => props.standings?.name || 'Standings')
 const localRows = ref<any>([])
-const sortIndex = ref(0)
+const sortIndex = ref(1)
 
 /*
 wecl(season)

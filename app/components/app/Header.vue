@@ -17,7 +17,7 @@
       <div class="flex items-center gap-2">
         <NuxtLink :to="useSL(`campaign/${season?.id}`)" class="z-1 block bg-white rounded-md py-2 px-4 shrink-0"><img src="/outstanding.svg" class="h-3" alt="Logo" /></NuxtLink>
         <img v-if="false" src="/C3.png" class="h-8" alt="Season Label" />
-        <AppSeasonPicker v-if="false"></AppSeasonPicker>
+        <AppSeasonPicker v-if="true" class="opacity-0"></AppSeasonPicker>
       </div>
       <AppUserButton />
     </div>
