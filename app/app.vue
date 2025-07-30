@@ -12,6 +12,5 @@ import type { User } from '~/../types'
 const user = useState<User | null>('user')
 
 useKeyboard()
-
-// useServiceWorker() Promlematic at the moment, disable
+useServiceWorker()
 </script>
