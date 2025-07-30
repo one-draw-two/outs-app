@@ -16,31 +16,119 @@ workbox.core.setCacheNameDetails({
 })
 
 // Find PowerSync chunks at runtime
+// Find PowerSync chunks at runtime
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open('powersync-chunks-' + CACHE_SUFFIX).then(async (cache) => {
-      // Find PowerSync chunks by pattern matching
-      const response = await fetch('/_nuxt/manifest.json')
-      if (response.ok) {
-        const manifest = await response.json()
-        const files = Object.keys(manifest)
+      try {
+        // Try multiple possible manifest locations in Nuxt 3 (production)
+        const manifestLocations = ['/_nuxt/manifest/latest.json', '/_nuxt/client.manifest.json', '/.output/public/_nuxt/manifest.json']
 
-        // Find the PowerSync chunks
-        const powerSyncChunks = files.filter((file) => file.includes('powersync') || file.includes('wa-sqlite'))
+        // This flag will track if we found any manifests
+        let foundManifest = false
 
-        // Precache them
-        await Promise.all(
-          powerSyncChunks.map((file) => {
-            const url = '/_nuxt/' + file
-            return fetch(url).then((response) => {
-              if (response.ok) {
-                return cache.put(url, response)
-              }
-            })
-          })
-        )
+        // Try each location
+        for (const location of manifestLocations) {
+          try {
+            console.log(`[SW ${SW_VERSION}] Trying to fetch manifest from: ${location}`)
+            const response = await fetch(location)
+            if (!response.ok) continue
 
-        console.log(`[SW ${SW_VERSION}] Precached PowerSync chunks:`, powerSyncChunks)
+            const manifest = await response.json()
+            foundManifest = true
+
+            // Extract files based on manifest format
+            let files = []
+
+            if (Array.isArray(manifest)) {
+              files = manifest
+            } else if (typeof manifest === 'object') {
+              if (manifest.all) files = manifest.all
+              else if (manifest.files) files = Object.keys(manifest.files)
+              else files = Object.keys(manifest)
+            }
+
+            // Find PowerSync chunks
+            const powerSyncChunks = files.filter((file) => file.includes('powersync') || file.includes('wa-sqlite'))
+
+            if (powerSyncChunks.length > 0) {
+              console.log(`[SW ${SW_VERSION}] Found PowerSync chunks in ${location}:`, powerSyncChunks)
+
+              // Determine base path
+              const basePath = '/_nuxt/'
+
+              // Cache each chunk
+              await Promise.allSettled(
+                powerSyncChunks.map((file) => {
+                  // Handle different path formats
+                  const url = file.startsWith('/') ? file : basePath + file
+                  console.log(`[SW ${SW_VERSION}] Attempting to cache: ${url}`)
+
+                  return fetch(url).then((response) => {
+                    if (response.ok) {
+                      console.log(`[SW ${SW_VERSION}] Successfully cached: ${url}`)
+                      return cache.put(url, response)
+                    } else {
+                      console.warn(`[SW ${SW_VERSION}] Failed to cache: ${url} (${response.status})`)
+                    }
+                  })
+                })
+              )
+            }
+          } catch (err) {
+            console.log(`[SW ${SW_VERSION}] Error processing manifest at ${location}:`, err)
+          }
+        }
+
+        console.log(`FOUND MANIFEST: ${foundManifest}`)
+
+        // If no manifest found, try direct chunk detection
+        if (!foundManifest) {
+          console.log(`[SW ${SW_VERSION}] No manifests found, attempting direct chunk detection`)
+
+          // Look for chunks directly by naming pattern (works in production)
+          const chunkPatterns = ['powersync', 'wa-sqlite']
+
+          // Fetch the HTML to extract script references
+          const htmlResponse = await fetch('/')
+          if (htmlResponse.ok) {
+            const html = await htmlResponse.text()
+
+            // Extract script src values
+            const scriptRegex = /<script[^>]+src=["']([^"']+)["'][^>]*>/g
+            let match
+            const scriptSrcs = []
+
+            while ((match = scriptRegex.exec(html)) !== null) {
+              scriptSrcs.push(match[1])
+            }
+
+            // Filter for PowerSync chunks
+            const powerSyncScripts = scriptSrcs.filter((src) => chunkPatterns.some((pattern) => src.includes(pattern)))
+
+            console.log(`[SW ${SW_VERSION}] Found PowerSync scripts in HTML:`, powerSyncScripts)
+
+            // Cache these scripts
+            if (powerSyncScripts.length > 0) {
+              await Promise.allSettled(
+                powerSyncScripts.map((src) => {
+                  console.log(`[SW ${SW_VERSION}] Attempting to cache: ${src}`)
+                  return fetch(src).then((response) => {
+                    if (response.ok) {
+                      console.log(`[SW ${SW_VERSION}] Successfully cached: ${src}`)
+                      return cache.put(src, response)
+                    } else {
+                      console.warn(`[SW ${SW_VERSION}] Failed to cache: ${src} (${response.status})`)
+                    }
+                  })
+                })
+              )
+            }
+          }
+        }
+      } catch (error) {
+        console.error(`[SW ${SW_VERSION}] Error in service worker install:`, error)
+        // Continue with service worker installation even if caching fails
       }
     })
   )
