@@ -1,9 +1,7 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js')
 
 // *** SINGLE VERSION PARAMETER TO CONTROL EVERYTHING ***
-const APP_VERSION = '1.1.1' // Update this when you need to invalidate caches
-
-// Derived values
+const APP_VERSION = '1.1.2' // Update this when you need to invalidate caches
 const SW_VERSION = APP_VERSION
 const CACHE_SUFFIX = 'v' + APP_VERSION.split('.').join('')
 
@@ -15,116 +13,102 @@ workbox.core.setCacheNameDetails({
   suffix: CACHE_SUFFIX,
 })
 
-// Find PowerSync chunks at runtime
-// Find PowerSync chunks at runtime
+// Load the client manifest dynamically
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open('powersync-chunks-' + CACHE_SUFFIX).then(async (cache) => {
       try {
-        // Try multiple possible manifest locations in Nuxt 3 (production)
-        const manifestLocations = ['/_nuxt/manifest/latest.json', '/_nuxt/client.manifest.json', '/.output/public/_nuxt/manifest.json']
+        // First, try to fetch the client manifest
+        const manifestLocations = ['/_nuxt/client.manifest.mjs', '/_nuxt/builds/latest.json', '/.output/server/chunks/build/client.manifest.mjs']
 
-        // This flag will track if we found any manifests
-        let foundManifest = false
+        let clientManifest = null
+        let manifestLocation = null
 
-        // Try each location
+        // Try each possible location until we find the manifest
         for (const location of manifestLocations) {
           try {
             console.log(`[SW ${SW_VERSION}] Trying to fetch manifest from: ${location}`)
             const response = await fetch(location)
-            if (!response.ok) continue
+            if (response.ok) {
+              const text = await response.text()
 
-            const manifest = await response.json()
-            foundManifest = true
+              // Try to extract the manifest object - handling both JSON and JS/TS module formats
+              try {
+                if (text.includes('export default') || text.includes('export const client_manifest')) {
+                  // Handle JS module format by creating a function from the text
+                  const extractManifest = new Function('exports', text + '; return exports.default || exports.client_manifest;')
+                  clientManifest = extractManifest({})
+                } else {
+                  // Try JSON format
+                  clientManifest = JSON.parse(text)
+                }
 
-            // Extract files based on manifest format
-            let files = []
-
-            if (Array.isArray(manifest)) {
-              files = manifest
-            } else if (typeof manifest === 'object') {
-              if (manifest.all) files = manifest.all
-              else if (manifest.files) files = Object.keys(manifest.files)
-              else files = Object.keys(manifest)
+                if (clientManifest) {
+                  console.log(`[SW ${SW_VERSION}] Successfully loaded manifest from ${location}`)
+                  manifestLocation = location
+                  break
+                }
+              } catch (parseError) {
+                console.log(`[SW ${SW_VERSION}] Failed to parse manifest at ${location}:`, parseError)
+              }
             }
-
-            // Find PowerSync chunks
-            const powerSyncChunks = files.filter((file) => file.includes('powersync') || file.includes('wa-sqlite'))
-
-            if (powerSyncChunks.length > 0) {
-              console.log(`[SW ${SW_VERSION}] Found PowerSync chunks in ${location}:`, powerSyncChunks)
-
-              // Determine base path
-              const basePath = '/_nuxt/'
-
-              // Cache each chunk
-              await Promise.allSettled(
-                powerSyncChunks.map((file) => {
-                  // Handle different path formats
-                  const url = file.startsWith('/') ? file : basePath + file
-                  console.log(`[SW ${SW_VERSION}] Attempting to cache: ${url}`)
-
-                  return fetch(url).then((response) => {
-                    if (response.ok) {
-                      console.log(`[SW ${SW_VERSION}] Successfully cached: ${url}`)
-                      return cache.put(url, response)
-                    } else {
-                      console.warn(`[SW ${SW_VERSION}] Failed to cache: ${url} (${response.status})`)
-                    }
-                  })
-                })
-              )
-            }
-          } catch (err) {
-            console.log(`[SW ${SW_VERSION}] Error processing manifest at ${location}:`, err)
+          } catch (fetchError) {
+            console.log(`[SW ${SW_VERSION}] Failed to fetch manifest at ${location}:`, fetchError)
           }
         }
 
-        console.log(`FOUND MANIFEST: ${foundManifest}`)
+        // If we found a manifest, extract PowerSync chunks
+        if (clientManifest) {
+          // Extract PowerSync and wa-sqlite related files from the manifest
+          const powerSyncChunks = []
 
-        // If no manifest found, try direct chunk detection
-        if (!foundManifest) {
-          console.log(`[SW ${SW_VERSION}] No manifests found, attempting direct chunk detection`)
+          // Process the manifest entries
+          for (const [key, entry] of Object.entries(clientManifest)) {
+            // Look for PowerSync and wa-sqlite related files
+            if (key.includes('powersync') || key.includes('wa-sqlite') || (entry.name && (entry.name.includes('powersync') || entry.name.includes('wa-sqlite')))) {
+              if (entry.file) {
+                const url = `/_nuxt/${entry.file}`
+                powerSyncChunks.push(url)
+              }
 
-          // Look for chunks directly by naming pattern (works in production)
-          const chunkPatterns = ['powersync', 'wa-sqlite']
-
-          // Fetch the HTML to extract script references
-          const htmlResponse = await fetch('/')
-          if (htmlResponse.ok) {
-            const html = await htmlResponse.text()
-
-            // Extract script src values
-            const scriptRegex = /<script[^>]+src=["']([^"']+)["'][^>]*>/g
-            let match
-            const scriptSrcs = []
-
-            while ((match = scriptRegex.exec(html)) !== null) {
-              scriptSrcs.push(match[1])
-            }
-
-            // Filter for PowerSync chunks
-            const powerSyncScripts = scriptSrcs.filter((src) => chunkPatterns.some((pattern) => src.includes(pattern)))
-
-            console.log(`[SW ${SW_VERSION}] Found PowerSync scripts in HTML:`, powerSyncScripts)
-
-            // Cache these scripts
-            if (powerSyncScripts.length > 0) {
-              await Promise.allSettled(
-                powerSyncScripts.map((src) => {
-                  console.log(`[SW ${SW_VERSION}] Attempting to cache: ${src}`)
-                  return fetch(src).then((response) => {
-                    if (response.ok) {
-                      console.log(`[SW ${SW_VERSION}] Successfully cached: ${src}`)
-                      return cache.put(src, response)
-                    } else {
-                      console.warn(`[SW ${SW_VERSION}] Failed to cache: ${src} (${response.status})`)
-                    }
-                  })
+              // Also include any assets from PowerSync entries
+              if (entry.assets) {
+                entry.assets.forEach((asset) => {
+                  const assetUrl = `/_nuxt/${asset}`
+                  powerSyncChunks.push(assetUrl)
                 })
-              )
+              }
             }
           }
+
+          // Cache all PowerSync chunks
+          if (powerSyncChunks.length > 0) {
+            console.log(`[SW ${SW_VERSION}] Found PowerSync chunks in manifest:`, powerSyncChunks)
+
+            await Promise.allSettled(
+              powerSyncChunks.map((url) => {
+                console.log(`[SW ${SW_VERSION}] Attempting to cache: ${url}`)
+                return fetch(url).then((response) => {
+                  if (response.ok) {
+                    console.log(`[SW ${SW_VERSION}] Successfully cached: ${url}`)
+                    return cache.put(url, response)
+                  } else {
+                    console.warn(`[SW ${SW_VERSION}] Failed to cache: ${url} (${response.status})`)
+                  }
+                })
+              })
+            )
+          } else {
+            console.log(`[SW ${SW_VERSION}] No PowerSync chunks found in manifest`)
+
+            // Fallback to direct HTML parsing if no chunks found in manifest
+            await tryDirectHtmlParsing(cache)
+          }
+        } else {
+          console.log(`[SW ${SW_VERSION}] Could not load client manifest from any location`)
+
+          // Fallback to direct HTML parsing
+          await tryDirectHtmlParsing(cache)
         }
       } catch (error) {
         console.error(`[SW ${SW_VERSION}] Error in service worker install:`, error)
@@ -133,6 +117,57 @@ self.addEventListener('install', (event) => {
     })
   )
 })
+
+// Fallback function to parse HTML directly
+async function tryDirectHtmlParsing(cache) {
+  console.log(`[SW ${SW_VERSION}] Attempting direct chunk detection`)
+
+  // Look for chunks directly by naming pattern (works in production)
+  const chunkPatterns = ['powersync', 'wa-sqlite']
+
+  try {
+    // Fetch the HTML to extract script references
+    const htmlResponse = await fetch('/')
+    if (htmlResponse.ok) {
+      const html = await htmlResponse.text()
+
+      // Extract script src values
+      const scriptRegex = /<script[^>]+src=["']([^"']+)["'][^>]*>/g
+      let match
+      const scriptSrcs = []
+
+      while ((match = scriptRegex.exec(html)) !== null) {
+        scriptSrcs.push(match[1])
+      }
+
+      // Filter for PowerSync chunks
+      const powerSyncScripts = scriptSrcs.filter((src) => chunkPatterns.some((pattern) => src.includes(pattern)))
+
+      console.log(`[SW ${SW_VERSION}] Found PowerSync scripts in HTML:`, powerSyncScripts)
+
+      // Cache these scripts
+      if (powerSyncScripts.length > 0) {
+        await Promise.allSettled(
+          powerSyncScripts.map((src) => {
+            console.log(`[SW ${SW_VERSION}] Attempting to cache: ${src}`)
+            return fetch(src).then((response) => {
+              if (response.ok) {
+                console.log(`[SW ${SW_VERSION}] Successfully cached: ${src}`)
+                return cache.put(src, response)
+              } else {
+                console.warn(`[SW ${SW_VERSION}] Failed to cache: ${src} (${response.status})`)
+              }
+            })
+          })
+        )
+      }
+    }
+  } catch (error) {
+    console.error(`[SW ${SW_VERSION}] Error in direct HTML parsing:`, error)
+  }
+}
+
+// The rest of your service worker remains the same...
 
 // Precache critical assets
 workbox.precaching.precacheAndRoute([
