@@ -2,8 +2,7 @@
   <LayoGroupAndFixture color="gray">
     <template #header-left>
       <div class="flex items-center gap-4">
-        <NuxtLink :to="useSL(`${linkColl?.toLowerCase()}/${link?._refId}`)">{{ linkColl }}</NuxtLink>
-        <h1>{{ pageName }}</h1>
+        <StandingsBreadcrumbs :breadCrumbChain="breadcrumbChain" />
       </div>
     </template>
     <template #page>
@@ -15,14 +14,16 @@
 </template>
 
 <script setup lang="ts">
-import type { _BPTournamentRecord } from '~/../types'
+import type { _BPTournamentRecord, _P_Group } from '~/../types'
 
 const stanid = useRoute().params.stanid
 
 useDynamicPS().updatePowerSyncParams({ selected_parent_gid: stanid })
 
-const { processedGroups } = await useGroupsWithUsers({ id: stanid }, false)
+const { processedGroups, parentChain } = await useGroupsWithUsers({ id: stanid }, false, undefined, true)
 const standings: any = computed(() => processedGroups?.value?.[0])
+const breadcrumbChain = computed(() => [...parentChain.value].reverse())
+wecl(breadcrumbChain, 'breadcrumbChain')
 
 useState<any>('pickerSeasonId').value = standings.value?._season
 
@@ -37,8 +38,8 @@ const { processedGroups: childrenFixtures } = await useGroupsWithUsers({ _parent
 const { processedGroups: childrenStandings } = await useGroupsWithUsers({ _parentGroup: stanid }, false)
 
 wecl(standings)
-wecl(childrenFixtures, 'fixto')
-wecl(childrenStandings, 'standings')
+// wecl(childrenFixtures, 'fixto')
+// wecl(childrenStandings, 'standings')
 
 const pageTitle = computed(() => `${pageName.value} Standings `) // Should be more descriptive what the standings is about
 useHead({ title: pageTitle })

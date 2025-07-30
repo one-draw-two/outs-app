@@ -209,6 +209,7 @@ export interface ParsedBPTournament extends Omit<_BPTournamentRecord, 'scopeConf
 // Update _P_Season to use the parsed tournament type
 export interface _P_Season extends Omit<_Season, ''> {
   tournaments?: ParsedBPTournament[]
+  stages?: _P_Stage[]
 }
 
 export interface _P_Stage extends Omit<_Stage, 'rounds' | 'groups'> {

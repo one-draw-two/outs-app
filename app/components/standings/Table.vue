@@ -203,7 +203,7 @@ const dgContributionsGroupedLabels = computed(() => {
   }))
 })
 
-wecl(dgContributionsGroupedLabels, 'dgContributionsGroupedLabels')
+// wecl(dgContributionsGroupedLabels, 'dgContributionsGroupedLabels')
 
 const standingsName = computed(() => props.standings?.name || 'Standings')
 const localRows = ref<any>([])

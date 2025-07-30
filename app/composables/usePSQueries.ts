@@ -210,7 +210,7 @@ export const usePopulatedBet = async (options: { challengeId?: string; roundId?:
   })
 }
 
-export const useGroupsWithUsers = async (filters: Record<string, any> = {}, isFixture = false, userInPsKeys?: string) => {
+export const useGroupsWithUsers = async (filters: Record<string, any> = {}, isFixture = false, userInPsKeys?: string, fetchParentChain = false) => {
   const tableName = isFixture ? 'group_fixtures' : 'group_standings'
 
   let query = `SELECT * FROM "${tableName}" WHERE 1=1`
@@ -285,7 +285,24 @@ export const useGroupsWithUsers = async (filters: Record<string, any> = {}, isFi
     })
   )
 
-  return { processedGroups }
+  // Handle parent chain fetching if requested
+  const parentChain = ref<any[]>([])
+
+  if (fetchParentChain && !isFixture && processedGroups.value.length > 0) {
+    const fetchParents = async (currentGroup: any) => {
+      if (currentGroup._parentGroup) {
+        const { processedGroups: parentGroups } = await useGroupsWithUsers({ id: currentGroup._parentGroup }, false, undefined, false)
+        if (parentGroups.value.length > 0) {
+          parentChain.value.push(parentGroups.value[0])
+          await fetchParents(parentGroups.value[0])
+        }
+      }
+    }
+
+    await fetchParents(processedGroups.value[0])
+  }
+
+  return { processedGroups, parentChain }
 }
 
 export const usePopulatedGroupCursor = async (fid: string | string[]) => {

@@ -1,5 +1,10 @@
 <template>
   <LayoGroupAndFixture color="gray">
+    <template #header-left>
+      <div class="flex items-center gap-4">
+        <StandingsBreadcrumbs :breadCrumbChain="breadcrumbChain" />
+      </div>
+    </template>
     <template #page>
       <main class="relative">
         <div class="flex justify-between sticky top-0 z-10 bg-gray-200 py-4">
@@ -39,9 +44,15 @@ const fid = useRoute().params.fid
 const { processedGroups } = await useGroupsWithUsers({ id: fid }, true)
 
 const thisFixture = computed(() => processedGroups?.value[0])
+
+const { processedGroups: standingsQuery, parentChain } = await useGroupsWithUsers({ id: thisFixture.value?._parentGroup }, false, undefined, true)
+
+const standings = computed(() => standingsQuery?.value?.[0])
+const breadcrumbChain = computed(() => [...[...parentChain.value].reverse(), standings.value!])
+
 const rows = computed<any>(() => ({ home: thisFixture?.value?.rows?.[0], away: thisFixture?.value?.rows?.[1] }))
 
-// wecl(processedGroups)
+wecl(breadcrumbChain)
 
 // Check if cursor already exists in round data
 const existingCursor = computed(() => round.value?.userCursors?.[fid as string])
