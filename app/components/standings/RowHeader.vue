@@ -62,6 +62,7 @@ const observerTarget = ref<HTMLElement | null>(null)
 const observer = ref<IntersectionObserver | null>(null)
 
 onMounted(() => {
+  return
   if (!props.isObserved) return
 
   observer.value = new IntersectionObserver(
@@ -75,9 +76,7 @@ onMounted(() => {
     }
   )
 
-  if (observerTarget.value) {
-    observer.value.observe(observerTarget.value)
-  }
+  if (observerTarget.value) observer.value?.observe(observerTarget.value!)
 })
 
 onBeforeUnmount(() => {

@@ -4,8 +4,8 @@
 definePageMeta({
   middleware: [
     async function (to) {
-      const DEBUG = true
-      const TIMEOUT = 4000
+      const DEBUG = false
+      const TIMEOUT = 2000
 
       if (DEBUG) console.log('Index page: Checking subscriptions...')
       if (DEBUG) console.log(useState<Boolean>('subscriptionsLoaded').value)

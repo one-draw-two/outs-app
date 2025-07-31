@@ -22,6 +22,18 @@
   }
 }
 
+.vertical-come-in {
+  opacity: 0;
+  transform: translateY(32px);
+  animation: vertical-come-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes vertical-come-in {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 .appear-from-left-enter-active,
 .appear-from-left-leave-active,
 .appear-from-right-enter-active,

@@ -3,6 +3,8 @@ import { PowerSyncDatabase, WASQLiteOpenFactory, WASQLiteVFS } from '@powersync/
 import { AppSchema } from '~/../powersync/AppSchema'
 import { opfsNotSupportedMessage, purgeVFS, listVfsEntries } from '~/../powersync/utils'
 
+const DEBUG = false
+
 export default defineNuxtPlugin(async (nuxtApp) => {
   // const isUseIndexDB = useRuntimeConfig().public.platform === 'cap' // Set in package.json (build:s > nuxt generate) script
   // In package.json -> "build:s": "pnpm build && NUXT_PUBLIC_PLATFORM=cap pnpm generate && pnpm cap:sync", the NUXT_PUBLIC_PLATFORM=cap is unused at the moment
@@ -20,20 +22,24 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       flags: isUseIndexDB ? Object.assign({}, baseFlags, { enableMultiTabs: typeof SharedWorker !== 'undefined' }) : baseFlags,
     })
 
+    await db.waitForReady()
+
     // Wait for database to initialize (at least open)
+    /*
     try {
       await db.execute('SELECT 1')
-      console.log('PowerSync database test query successful')
+      if (DEBUG) console.log('PowerSync database test query successful')
     } catch (queryError) {
       console.error('PowerSync database test query failed:', queryError)
       throw queryError
     }
+    */
 
     nuxtApp.provide('db', db)
 
     // Signal that the database is initialized
     useState('dbInitialized').value = true
-    console.log('PowerSync database initialized successfully')
+    if (DEBUG) console.log('PowerSync database initialized successfully')
 
     nuxtApp.vueApp.config.globalProperties.$vfsPurge = isUseIndexDB ? opfsNotSupportedMessage : () => purgeVFS(db)
     nuxtApp.vueApp.config.globalProperties.$vfsList = isUseIndexDB
