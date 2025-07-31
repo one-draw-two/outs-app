@@ -13,8 +13,8 @@
             @mouseenter="setHoveredItem(rf.$index)"
             @mouseleave="clearHoveredItem"
           >
-            <RealFixtureItemLink :rf="rf" :isHovered="hoveredItemIndex === rf.$index" class="w-96" />
-            <RealFixturePointRows :rf="rf" class="flex-2" />
+            <RealFixtureItemLink :rf="rf" :isHovered="hoveredItemIndex === rf.$index" class="lg:w-1/2" />
+            <RealFixturePointRows :rf="rf" class="flex-2 max-lg:hidden" />
           </div>
         </div>
       </div>

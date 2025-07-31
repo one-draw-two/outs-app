@@ -3,8 +3,6 @@ import type { User, _P_Season, _P_Round, ParsedBPTournament } from '~/../types'
 const ISDEBUG = false
 
 export default defineNuxtRouteMiddleware(async (to) => {
-  ISDEBUG && console.log('IM IN MIDDLEWARE ACTUALLY')
-
   if (!to.params.rid) return
   const rid = to.params.rid as string
   const currentRoundId = useState<string>('currentRoundId', () => '')
@@ -41,12 +39,14 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   const headers = computed(() => [
     { name: 'You' },
-    ...roundTournaments.value?.map((t) => ({
-      id: t.id,
-      name: t.name,
-      fixture: round.value?.userFixtures?.find((fixture) => fixture._tournament === t.id && getUserRow(fixture)),
-      standings: round?.value?.userStandings?.find((s: any) => s._tournament === t.id),
-    })),
+    ...roundTournaments.value
+      ?.filter((t) => t.name !== 'Curves')
+      .map((t) => ({
+        id: t.id,
+        name: t.name,
+        fixture: round.value?.userFixtures?.find((fixture) => fixture._tournament === t.id && getUserRow(fixture)),
+        standings: round?.value?.userStandings?.find((s: any) => s._tournament === t.id),
+      })),
   ])
 
   useState('round').value = round.value

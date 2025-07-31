@@ -1,24 +1,26 @@
 <template>
   <NuxtLink :to="useSL(`round/${useRoute().params.rid}/snapshot/${rf?.$snapshotId}`)" class="block flex items-center">
-    <div class="w-full grid grid-cols-[2rem_4rem_3rem_3rem_1fr_1rem_3rem] gap-4 items-center">
-      <div class="font-mono">{{ (rf.$index + 1).toString().padStart(2, '0') }}</div>
+    <div class="w-full grid grid-cols-[3rem_2rem_1fr_1rem] gap-4 items-center">
+      <div v-if="false" class="font-mono">{{ (rf.$index + 1).toString().padStart(2, '0') }}</div>
 
-      <div class="font-mono">{{ $day(rf?.startingAt).format('HH:mm') }}</div>
+      <div class="flex flex-col items-center">
+        <div class="tabular-nums">{{ $day(rf?.startingAt).format('HH:mm') }}</div>
+        <div v-highlight="rf" class="tabular-nums">{{ minuteDisplay }}</div>
+      </div>
 
-      <div v-highlight="rf" class="tabular-nums">{{ minuteDisplay }}</div>
-
-      <PrevTripleCrop :clip="'flag'">
-        <img :src="challengePath" class="flag w-full h-full object-cover bg-white" />
-      </PrevTripleCrop>
+      <div class="space-y-1">
+        <PrevFlag v-if="challengePath" :challenge-code="challengePath!" class="h-4 w-6 shrink-0" />
+        <PrevFlag v-if="seasonCountryCode" :country-code="seasonCountryCode!" class="h-4 w-6 shrink-0" />
+      </div>
 
       <div class="min-w-0 flex flex-col">
         <div class="truncate">{{ homeTeamName }}</div>
         <div class="truncate">{{ awayTeamName }}</div>
       </div>
 
-      <div class="italic text-gray-500">{{ rf?.$correctBet }}</div>
+      <div v-if="false" class="italic text-gray-500">{{ rf?.$correctBet }}</div>
 
-      <div v-highlight="rf" class="flex flex-col min-w-0">
+      <div v-highlight="rf" class="flex flex-col min-w-0 items-end">
         <div>{{ resultTopRow }}</div>
         <div>{{ resultBottomRow }}</div>
       </div>
@@ -28,6 +30,13 @@
 
 <script setup lang="ts">
 import type { _RealFixture } from '~/../types'
+
+// grid-cols-[2rem_4rem_3rem_3rem_1fr_1rem_3rem]
+/*
+<PrevTripleCrop :clip="'flag'">
+  <img :src="challengePath" class="flag w-full h-full object-cover bg-white" />
+</PrevTripleCrop>
+*/
 
 const props = defineProps<{
   rf: _RealFixture
@@ -72,6 +81,16 @@ const challengePath = computed(() => {
   if (props.rf?.$challenge?.type === 'Goals') return '/png/2x5.png'
   if (props.rf?.$challenge?.type === 'Bonus') return '/png/bonus.png'
   if (props.rf?.$challenge?.type === 'RoundGoalCount') return '/png/goals.png'
+})
+
+const seasonCountryCode = computed(() => {
+  const code = props.rf?.afFullLocation?.split('~')[0]?.trim()
+  if (code === '39') return 'ENG'
+  if (code === '61') return 'FRA'
+  if (code === '78') return 'GER'
+  if (code === '135') return 'ITA'
+  if (code === '140') return 'ESP'
+  if (code === '203') return 'TUR'
 })
 
 // <PrevFlag :challenge-code="props.rf.$challenge.type!" />

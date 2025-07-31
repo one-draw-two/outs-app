@@ -66,12 +66,15 @@ const hourOrResultStatus = computed(() => {
   else return ''
 })
 
+console.log(props.realFixture?.afFullLocation)
+
 const seasonCountryCode = computed(() => {
-  if (props.realFixture?.afSeasonId === '39') return 'ENG'
-  if (props.realFixture?.afSeasonId === '61') return 'FRA'
-  if (props.realFixture?.afSeasonId === '78') return 'GER'
-  if (props.realFixture?.afSeasonId === '135') return 'ITA'
-  if (props.realFixture?.afSeasonId === '140') return 'ESP'
-  if (props.realFixture?.afSeasonId === '203') return 'TUR'
+  const code = props.realFixture?.afFullLocation?.split('~')[0]?.trim()
+  if (code === '39') return 'ENG'
+  if (code === '61') return 'FRA'
+  if (code === '78') return 'GER'
+  if (code === '135') return 'ITA'
+  if (code === '140') return 'ESP'
+  if (code === '203') return 'TUR'
 })
 </script>

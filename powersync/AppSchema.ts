@@ -162,6 +162,7 @@ const real_fixtures = new Table(
     result: column.text,
     startingAt: column.text,
     liveMinute: column.text,
+    afFullLocation: column.text,
   },
   { indexes: {} }
 )
