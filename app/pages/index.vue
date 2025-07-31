@@ -11,12 +11,22 @@ definePageMeta({
       if (DEBUG) console.log(useState<Boolean>('subscriptionsLoaded').value)
 
       // Added later
-      useDynamicPS().updatePowerSyncParams({})
+      // useDynamicPS().updatePowerSyncParams({})
 
       if (to.meta.isPublic) return
       if (useState<Boolean>('subscriptionsLoaded').value) return
 
       if (DEBUG) console.log('Continue with db fetch')
+      if (DEBUG) console.log(`DB initialized: ${useState<Boolean>('dbInitialized').value}`)
+
+      const startTime = Date.now()
+      while (!useState<Boolean>('dbInitialized').value) {
+        if (Date.now() - startTime > TIMEOUT) {
+          console.error('Database initialization timed out')
+          return navigateTo('/access/login', { replace: true })
+        }
+        await new Promise((resolve) => setTimeout(resolve, 100))
+      }
 
       const { $db }: any = useNuxtApp()
 

@@ -15,7 +15,7 @@
         </div>
 
         <div class="flex-1 flex justify-end items-center gap-8">
-          <NuxtLink :to="useSL(`round/${round?.id}/challenges`)">Challenges Deadline {{ $day(round?._h_roundDeadline).format('ddd DD/MM HH:mm') }}</NuxtLink>
+          <NuxtLink :to="useSL(`round/${round?.id}/challenges`)">Challenges Deadline xxx {{ $day(round?._h_roundDeadline).format('ddd DD/MM HH:mm') }}</NuxtLink>
           <RoundHorizontalProgress :round="round" :status-color="`bg-${roundStatusColor}-500`" />
         </div>
       </div>

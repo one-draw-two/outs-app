@@ -1,6 +1,6 @@
 import type { User, AuthResponseSuccess } from '~/../types'
 
-const DEBUG = false
+const DEBUG = true
 
 export default function (res: AuthResponseSuccess, navToPath?: string, isToSaveOffline?: boolean) {
   if (DEBUG) console.log('Initializing user with response...')
