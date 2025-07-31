@@ -1,9 +1,7 @@
 <template>
   <LayoGroupAndFixture color="gray">
     <template #header-left>
-      <div class="flex items-center gap-4">
-        <StandingsBreadcrumbs :breadCrumbChain="breadcrumbChain" />
-      </div>
+      <StandingsBreadcrumbs :breadCrumbChain="breadcrumbChain" class="w-full truncate" />
     </template>
     <template #page>
       <main class="relative">
@@ -19,7 +17,6 @@
 
         <div v-for="(bas, rfi) in betsAddedSnapshots" :key="bas.$realFixture?.$index" :id="`rfi-${bas.$realFixture?.$index}`" class="flex justify-between items-stretch py-4 hover:bg-gray-100">
           <RealFixtureItemLink :rf="bas.$realFixture" class="flex-2 lg:flex" />
-
           <template v-for="side in ['home', 'away']" :key="side">
             <RealFixtureBetAndPointsDisplay
               :bet="bas[`$${side}Bet`]"
@@ -52,8 +49,6 @@ const breadcrumbChain = computed(() => [...[...parentChain.value].reverse(), sta
 
 const rows = computed<any>(() => ({ home: thisFixture?.value?.rows?.[0], away: thisFixture?.value?.rows?.[1] }))
 
-wecl(breadcrumbChain)
-
 // Check if cursor already exists in round data
 const existingCursor = computed(() => round.value?.userCursors?.[fid as string])
 const cursor = ref<any>(null)
@@ -71,16 +66,28 @@ if (!existingCursor.value) {
 // const { data: cursor }: { data: any } = await usePopulatedGroupCursor(fid as string)
 
 const betsAddedSnapshots = computed(() =>
-  round.value?.snapshots?.map((s: any) => {
-    // Use either the freshly fetched cursor or the one from round data
-    const cursorData = cursor.value.value || existingCursor.value
-    const cursorSnapshot = cursorData?.betsAddedSnapshots?.find((bas: any) => bas._snapshot === s.id)
-    return {
-      ...s,
-      $homeBet: cursorSnapshot?._bets?.find((b: any) => b._user === rows.value.home?._user.id),
-      $awayBet: cursorSnapshot?._bets?.find((b: any) => b._user === rows.value.away?._user.id),
-    }
-  })
+  round.value?.snapshots
+    ?.map((s: any) => {
+      // Use either the freshly fetched cursor or the one from round data
+      const cursorData = cursor.value.value || existingCursor.value
+      const cursorSnapshot = cursorData?.betsAddedSnapshots?.find((bas: any) => bas._snapshot === s.id)
+      return {
+        ...s,
+        $homeBet: cursorSnapshot?._bets?.find((b: any) => b._user === rows.value.home?._user.id),
+        $awayBet: cursorSnapshot?._bets?.find((b: any) => b._user === rows.value.away?._user.id),
+      }
+    })
+    .filter((snapshot) => {
+      const hasBet = snapshot.$homeBet || snapshot.$awayBet
+      const meetsChallengeThreshold =
+        (snapshot.$homeBet && !snapshot.$awayBet && snapshot.$homeBet.cursorBetIndex <= snapshot.$realFixture?.$aboveBetsBasedOnChallengeType) ||
+        (!snapshot.$homeBet && snapshot.$awayBet && snapshot.$awayBet.cursorBetIndex <= snapshot.$realFixture?.$aboveBetsBasedOnChallengeType) ||
+        (snapshot.$homeBet &&
+          snapshot.$awayBet &&
+          (snapshot.$homeBet.cursorBetIndex <= snapshot.$realFixture?.$aboveBetsBasedOnChallengeType || snapshot.$awayBet.cursorBetIndex <= snapshot.$realFixture?.$aboveBetsBasedOnChallengeType))
+
+      return hasBet && meetsChallengeThreshold
+    })
 )
 
 wecl(betsAddedSnapshots, 'Bets added snapshots')

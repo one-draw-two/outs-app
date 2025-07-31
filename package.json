@@ -29,6 +29,8 @@
     "@capacitor/network": "^7.0.1",
     "@capacitor/preferences": "^7.0.1",
     "@capacitor/push-notifications": "^7.0.1",
+    "@hugeicons/core-free-icons": "^1.0.16",
+    "@hugeicons/vue": "^1.0.3",
     "@outs1x2/capacitor-liveactivities": "^0.2.6",
     "@powersync/web": "^1.25.0",
     "@tailwindcss/vite": "^4.1.11",

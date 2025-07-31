@@ -1,10 +1,12 @@
 <template>
-  <template v-for="(item, index) in breadcrumbsWithLinks" :key="item.id">
-    <NuxtLink :to="item.$urlLink" class="hover:text-primary">
-      {{ item.$label }}
-    </NuxtLink>
-    <span v-if="index < breadcrumbsWithLinks.length - 1" class="text-gray-400">/</span>
-  </template>
+  <div class="flex items-center gap-1">
+    <div v-for="(item, index) in breadcrumbsWithLinks" :key="item.id" class="flex-1 flex items-center gap-1">
+      <NuxtLink :to="item.$urlLink" class="block hover:text-primary truncate">
+        {{ item.$label }}
+      </NuxtLink>
+      <span v-if="index < breadcrumbsWithLinks.length - 1" class="text-gray-400">/</span>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">

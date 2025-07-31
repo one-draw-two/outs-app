@@ -12,8 +12,10 @@
         "@capacitor/network": "^7.0.1",
         "@capacitor/preferences": "^7.0.1",
         "@capacitor/push-notifications": "^7.0.1",
+        "@hugeicons/core-free-icons": "^1.0.16",
+        "@hugeicons/vue": "^1.0.3",
         "@outs1x2/capacitor-liveactivities": "^0.2.6",
-        "@powersync/web": "^1.24.0",
+        "@powersync/web": "^1.25.0",
         "@tailwindcss/vite": "^4.1.11",
         "capacitor-plugin-safe-area": "^4.0.0",
         "dayjs": "^1.11.13",
@@ -173,6 +175,10 @@
     "@esbuild/win32-x64": ["@esbuild/win32-x64@0.25.8", "", { "os": "win32", "cpu": "x64" }, "sha512-cn3Yr7+OaaZq1c+2pe+8yxC8E144SReCQjN6/2ynubzYjvyqZjTXfQJpAcQpsdJq3My7XADANiYGHoFC69pLQw=="],
 
     "@fastify/busboy": ["@fastify/busboy@3.1.1", "", {}, "sha512-5DGmA8FTdB2XbDeEwc/5ZXBl6UbBAyBOOLlPuBnZ/N1SwdH9Ii+cOX3tBROlDgcTXxjOYnLMVoKk9+FXAw0CJw=="],
+
+    "@hugeicons/core-free-icons": ["@hugeicons/core-free-icons@1.0.16", "", {}, "sha512-rm48rjUN8a58yOZ7mpk3HkMvZPmOMTkMtNdXXq9m0Af6BsRQWJZl+4zd6ssj52y+A9Zn4Yg/TptobNtNpx3GCg=="],
+
+    "@hugeicons/vue": ["@hugeicons/vue@1.0.3", "", { "peerDependencies": { "vue": "^2.6.0 || ^3.0.0" } }, "sha512-DF9A277Ej4Eahu11Hkd3v6V0eZ1NHWZWs9OOByJaxGekgG8q7DAbkhltIo3bqsoxVprxaKSX3Mmn5a2dyzLsHA=="],
 
     "@ionic/cli-framework-output": ["@ionic/cli-framework-output@2.2.8", "", { "dependencies": { "@ionic/utils-terminal": "2.3.5", "debug": "^4.0.0", "tslib": "^2.0.1" } }, "sha512-TshtaFQsovB4NWRBydbNFawql6yul7d5bMiW1WYYf17hd99V6xdDdk3vtF51bw6sLkxON3bDQpWsnUc9/hVo3g=="],
 

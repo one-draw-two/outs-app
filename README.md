@@ -99,3 +99,4 @@ nativeRoute.params.stid // Then use like this
 - Wip: Powersync load error handling (not tested thoroughly): 517.82kb
 - Pre: Table responsive fixes: 519.34kb, 519.35kb after nuxt 4.0.2 update.
 - Feat: Breadcrumbs for standings: 520.18kb
+- Feat: With HugeIcons: 524.67kb
