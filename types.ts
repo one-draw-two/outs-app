@@ -213,7 +213,7 @@ export interface _P_Season extends Omit<_Season, ''> {
 }
 
 export interface _P_Stage extends Omit<_Stage, 'rounds' | 'groups'> {
-  rounds: _Round[]
+  rounds: _P_Round[]
   groups: _P_Group[]
 }
 

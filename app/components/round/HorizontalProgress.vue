@@ -1,20 +1,24 @@
 <template>
-  <div class="w-96 flex rounded overflow-hidden">
-    <div
-      v-for="(snapshot, index) in snapshots"
-      :key="index"
-      class="relative h-8 flex-grow transition-all duration-200 hover:brightness-90"
-      :class="{
-        'bg-gray-200': index > lastFinishedIndex,
-        'bg-orange-300': index === lastFinishedIndex,
-        [statusColor]: index < lastFinishedIndex,
-      }"
-      @mouseover="hoveredMatch = snapshot"
-      @mouseleave="hoveredMatch = null"
-    >
-      <!-- Diagonal separator -->
-      <div v-if="index < snapshots.length - 1" class="absolute top-[-3px] right-0 h-[110%] w-[2px] transform z-10">
-        <div class="h-full w-full bg-white transform rotate-[15deg] origin-bottom-left"></div>
+  <div class="w-full px-4 space-y-2">
+    <h1>Round {{ round?.name }}</h1>
+    <NuxtLink class="block" :to="useSL(`round/${round?.id}/challenges`)">Last submissions by {{ $day(round?._h_roundDeadline).format('ddd DD/MM HH:mm') }}</NuxtLink>
+    <div class="lg:w-96 w-full flex rounded overflow-hidden">
+      <div
+        v-for="(snapshot, index) in snapshots"
+        :key="index"
+        class="relative h-8 flex-grow transition-all duration-200 hover:brightness-90"
+        :class="{
+          'bg-gray-200': index > lastFinishedIndex,
+          'bg-orange-300': index === lastFinishedIndex,
+          [statusColor]: index < lastFinishedIndex,
+        }"
+        @mouseover="hoveredMatch = snapshot"
+        @mouseleave="hoveredMatch = null"
+      >
+        <!-- Diagonal separator -->
+        <div v-if="index < snapshots.length - 1" class="absolute top-[-3px] right-0 h-[110%] w-[2px] transform z-10">
+          <div class="h-full w-full bg-white transform rotate-[15deg] origin-bottom-left"></div>
+        </div>
       </div>
     </div>
   </div>

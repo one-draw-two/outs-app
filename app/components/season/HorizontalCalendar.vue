@@ -26,7 +26,7 @@
                       :class="getRoundColorClass(round.status)"
                       :title="round.name"
                     >
-                      {{ round.name.substring(0, 2) }}
+                      {{ round.name?.substring(0, 2) }}
                     </NuxtLink>
                   </div>
                 </div>
@@ -50,7 +50,7 @@ const stid = computed(() => route.params.stid)
 
 const getStageBackgroundClass = (stage: any, opacity?: number) => (stid.value === stage.id ? `bg-${stage.color}-500` : `bg-${stage.color}-500/${opacity}`)
 
-const getRoundColorClass = (status: string) => {
+const getRoundColorClass = (status: string | null) => {
   if (status === 'unknown') return 'bg-gray-500'
   if (status === 'current-points-calculated') return 'bg-blue-500'
   if (status === 'current') return 'bg-green-500'
