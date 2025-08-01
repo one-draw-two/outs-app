@@ -1,7 +1,9 @@
 <template>
   <LayoRound>
     <main class="space-y-4 relative">
-      <RealFixturePointColumns class="sticky top-0 max-lg:-top-32 z-10" />
+      <RealFixturePointColumns class="sticky top-0 max-lg:-top-32 z-10">
+        <RoundHorizontalProgress :round="round" :status-color="`bg-${round.$statusColor}-500`" />
+      </RealFixturePointColumns>
       <div v-for="(dateGroup, di) in groupedRealFixtures" :key="di" class="space-y-4">
         <h3 class="font-mono font-bold bg-gray-50">{{ dateGroup.dateLabel }}</h3>
         <div>

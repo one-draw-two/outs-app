@@ -34,6 +34,7 @@
           </div>
         </TransitionGroup>
       </div>
+
       <div class="overflow-x-scroll hide-scroll" @mouseleave="clearHighlight">
         <StandingsRowHeader
           :grouping-key="groupingKey"
@@ -50,25 +51,10 @@
           <div
             v-for="(row, ri) of sortedRows"
             :key="row._user.id || ri"
-            class="w-[var(--container-width)] h-16 lg:h-10 border-b border-gray-100 hover:bg-blue-50X"
+            class="topo w-[var(--container-width)] lg:w-full h-16 lg:h-10 border-b border-gray-100 hover:bg-blue-50X"
             :class="[row.isMetaRow ? 'bg-yellow-50 text-yellow-800 font-medium' : isCurrentUserRow(row) ? 'bg-green-50 text-green-900 font-medium' : 'lg:bg-white', rowClass]"
           >
-            <div v-if="false" class="top-0 h-8 w-full bg-blue-200 relative z-3">{{ row._user?.name }}</div>
-
             <div class="flex bg-inherit w-full max-lg:w-maxXX h-full items-stretch relative">
-              <!-- 
-                           <div class="absolute top-0 left-0 z-[10] lg:hidden w-12 overflow-visible bg-green-200">
-                <Transition name="appear-from-left">
-                  <StandingsRowTitle
-                    v-if="isRowTitleInvisible"
-                    :row="row"
-                    :ri="row.isMetaRow ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isMetaRow).length"
-                    class="text-xs italic text-gray-700 w-[var(--container-width)] shrink-0"
-                  />
-                </Transition>
-              </div> 
-              -->
-
               <div class="flex bg-inherit w-full h-full items-stretch justify-between">
                 <StandingsRowTitle
                   :row="row"
@@ -77,13 +63,13 @@
                   class="lg:sticky bg-inherit z-[3] left-0 truncate w-48 shrink-0"
                 />
 
-                <div v-if="isDetailsOn" class="h-full w-8 bg-gradient-to-r from-white max-lg:hidden sticky top-0 left-48 z-3" />
-                <div v-if="isDetailsOn" class="flex-1 flex">
+                <div v-if="isDetailsOn" class="h-full taksi w-8 bg-gradient-to-r from-white max-lg:hidden sticky top-0 left-48 z-3 shrink-0" />
+                <div v-if="isDetailsOn" class="flex-1 flex gap-4">
                   <div v-for="group in dgContributionsGroupedLabels" :key="group.key" class="flex flex-1">
                     <div
                       v-for="cs in group._groupedStandings"
                       :key="cs.id"
-                      class="flex-1 min-w-24 truncate px-2"
+                      class="flex-1 min-w-24 truncate px-2X"
                       @mouseenter="setHighlight(ri, cs.id)"
                       :class="{ 'bg-blue-50': highlightedStandingId === cs.id || highlightedRow === ri }"
                     >
@@ -99,7 +85,7 @@
                     </div>
                   </div>
                 </div>
-                <div v-if="isDetailsOn" class="h-full w-8 bg-gradient-to-l from-white max-lg:hidden sticky top-0 right-48 z-3" />
+                <div v-if="isDetailsOn" class="h-full w-8 bg-gradient-to-l from-white max-lg:hidden sticky top-0 right-48 z-3 shrink-0" />
 
                 <div class="lg:sticky bg-inherit z-[3] right-0 flex gap-2 truncate shrink-0 items-center w-48">
                   <template v-if="!row.isMetaRow">
@@ -150,6 +136,19 @@ console.log(season.value)
 console.log(props.standings)
 console.log(props.tournament)
 console.log(props.childrenStandings)
+
+              <!-- 
+                           <div class="absolute top-0 left-0 z-[10] lg:hidden w-12 overflow-visible bg-green-200">
+                <Transition name="appear-from-left">
+                  <StandingsRowTitle
+                    v-if="isRowTitleInvisible"
+                    :row="row"
+                    :ri="row.isMetaRow ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isMetaRow).length"
+                    class="text-xs italic text-gray-700 w-[var(--container-width)] shrink-0"
+                  />
+                </Transition>
+              </div> 
+              -->
 */
 
 const dgGrouping = computed(() => props.tournament?.displayConfig?.grouping?.[props.standings?._link?._refColl?.toLowerCase()])

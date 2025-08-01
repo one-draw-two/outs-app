@@ -1,6 +1,6 @@
 <template>
   <div class="bg-yellow-100 lg:flex items-stretch hover:bg-gray-100">
-    <div class="max-lg:w-[var(--container-width)] lg:w-1/2 h-32 bg-yellow-100">
+    <div class="max-lg:w-[var(--container-width)] lg:w-1/2 h-32 bg-yellow-100 flex-center">
       <slot />
     </div>
 
