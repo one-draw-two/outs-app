@@ -5,7 +5,7 @@
         <RoundHorizontalProgress :round="round" :status-color="`bg-${round.$statusColor}-500`" />
       </RealFixturePointColumns>
       <div v-for="(dateGroup, di) in groupedRealFixtures" :key="di" class="space-y-4">
-        <h3 class="font-mono font-bold bg-gray-50">{{ dateGroup.dateLabel }}</h3>
+        <h3 class="font-bold bg-gray-50">{{ dateGroup.dateLabel }}</h3>
         <div>
           <div
             v-for="rf in dateGroup.realFixtures"

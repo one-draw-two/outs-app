@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-8">
-    <div class="lg:h-24 py-8 flex items-center" :class="`bg-${round.$statusColor}-500/20`">
+    <div class="lg:h-24 py-8 flex items-center" :class="`bg-${stage?.color}-500/20`">
       <div class="lg:h-16 main-container flex max-lg:flex-col gap-4 lg:items-center">
         <div class="flex items-center justify-between gap-4 px-4 rounded-full py-2" :class="`bg-${stage?.color}-300`">
           <NuxtLink :to="useSL(`stage/${round?._stage}`)" class="hover:underline">

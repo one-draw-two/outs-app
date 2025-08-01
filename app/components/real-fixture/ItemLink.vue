@@ -1,8 +1,6 @@
 <template>
   <NuxtLink :to="useSL(`round/${useRoute().params.rid}/snapshot/${rf?.$snapshotId}`)" class="block flex items-center">
     <div class="w-full grid grid-cols-[3rem_2rem_1fr_1rem] gap-4 items-center">
-      <div v-if="false" class="font-mono">{{ (rf.$index + 1).toString().padStart(2, '0') }}</div>
-
       <div class="flex flex-col items-center">
         <div class="tabular-nums">{{ $day(rf?.startingAt).format('HH:mm') }}</div>
         <div v-highlight="rf" class="tabular-nums">{{ minuteDisplay }}</div>
@@ -31,8 +29,11 @@
 <script setup lang="ts">
 import type { _RealFixture } from '~/../types'
 
-// grid-cols-[2rem_4rem_3rem_3rem_1fr_1rem_3rem]
 /*
+// grid-cols-[2rem_4rem_3rem_3rem_1fr_1rem_3rem]
+
+<div v-if="false" class="font-mono">{{ (rf.$index + 1).toString().padStart(2, '0') }}</div>
+
 <PrevTripleCrop :clip="'flag'">
   <img :src="challengePath" class="flag w-full h-full object-cover bg-white" />
 </PrevTripleCrop>

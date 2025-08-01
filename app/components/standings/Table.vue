@@ -3,7 +3,7 @@
     <div v-if="true" class="h-12 flex items-center justify-between sticky top-0 bg-white z-10">
       <div class="flex gap-4">
         <NuxtLink :to="useSL(`standings/${standings?.id}`)" class="block">{{ standingsName }}</NuxtLink>
-        <NuxtLink v-if="standings?._parentGroup" :to="useSL(`standings/${standings?._parentGroup}`)" class="block"> Parent </NuxtLink>
+        <div @click="shufflePoints">Shuffle</div>
         <NuxtLink v-if="childrenFixtures?.length > 0" :to="useSL(`standings/${standings?.id}/fixtures`)" class="block"> Fixtures </NuxtLink>
       </div>
 
@@ -16,6 +16,7 @@
     <StandingsTopHeader v-if="false" :children-standings="childrenStandings" class="bg-white sticky top-0 z-[5] py-4" />
 
     <div class="relative">
+      <!-- Mobile background username and totals (that doesn't scroll with the foreground scrolling table) -->
       <div v-if="isDetailsOn" class="lg:hidden vertical-come-in absolute -z-1 pointer-events-none top-0 space-y-8X">
         <div class="h-16 w-full placeholder" />
         <TransitionGroup tag="div" name="standing-row">
@@ -66,7 +67,6 @@
           :dg-grouping="dgGrouping"
           :dg-grouping-columns-populated="dgGroupingColumnsPopulated"
           :is-details-on="isDetailsOn"
-          @shuffle="shufflePoints"
         />
 
         <TransitionGroup tag="div" name="standing-row">
@@ -79,7 +79,6 @@
                 :dg-grouping="dgGrouping"
                 :dg-grouping-columns-populated="dgGroupingColumnsPopulated"
                 :is-details-on="isDetailsOn"
-                @shuffle="shufflePoints"
               />
             </div>
             <div

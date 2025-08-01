@@ -6,7 +6,7 @@
           <span class="text-xs">{{ groupingKey?.label }}</span>
         </UtilLineBar>
         <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
-          <span @click="emit('shuffle')" class="text-xs">User</span>
+          <span class="text-xs">User</span>
         </UtilLineBar>
       </div>
 
@@ -55,6 +55,4 @@ const props = defineProps<{
   dgGroupingColumnsPopulated?: any[]
   isDetailsOn?: boolean
 }>()
-
-const emit = defineEmits(['shuffle'])
 </script>
