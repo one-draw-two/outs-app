@@ -1,6 +1,6 @@
 <template>
-  <div class="flex gap-2 items-center" :class="{ truncate: isTruncate }">
-    <div class="tabular-nums w-8 shrink-0">{{ ri }}</div>
+  <div class="flex gap-2 items-center bg-blue-200" :class="{ truncate: isTruncate }">
+    <div class="text-xs text-gray-500 tabular-nums w-6 shrink-0">{{ ri }}</div>
     <div class="flex-1" :class="{ truncate: isTruncate }">{{ row._user.name }}</div>
   </div>
 </template>

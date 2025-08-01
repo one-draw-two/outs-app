@@ -41,9 +41,7 @@
           :dg-contributions-grouped-labels="dgContributionsGroupedLabels"
           :dg-grouping="dgGrouping"
           :dg-grouping-columns-populated="dgGroupingColumnsPopulated"
-          :is-observed="true"
           :is-details-on="isDetailsOn"
-          @update:isRowTitleInvisible="(value) => (isRowTitleInvisible = value)"
           @shuffle="shufflePoints"
         />
 
@@ -60,7 +58,7 @@
                   :row="row"
                   :ri="row.isMetaRow ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isMetaRow).length"
                   :is-truncate="true"
-                  class="lg:sticky bg-inherit z-[3] left-0 truncate w-48 shrink-0"
+                  class="lg:sticky bg-inherit z-[3] left-0 truncate w-48 lg:shrink-0"
                 />
 
                 <div v-if="isDetailsOn" class="h-full taksi w-8 bg-gradient-to-r from-white max-lg:hidden sticky top-0 left-48 z-3 shrink-0" />

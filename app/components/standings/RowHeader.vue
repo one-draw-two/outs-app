@@ -1,7 +1,7 @@
 <template>
   <div class="w-[var(--container-width)] pb-8 border-yXborder-gray-100">
     <div class="flex h-12 w-full justify-between">
-      <div ref="observerTarget" class="bg-white lg:sticky z-[3] left-0 shrink-0" :class="isDetailsOn ? 'w-48' : 'flex-1'">
+      <div class="bg-white lg:sticky z-[3] left-0 shrink-0" :class="isDetailsOn ? 'max-lg:hidden w-48' : 'flex-1'">
         <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
           <span class="text-xs">{{ groupingKey?.label }}</span>
         </UtilLineBar>
@@ -53,35 +53,8 @@ const props = defineProps<{
   dgContributionsGroupedLabels: any[]
   dgGrouping: any
   dgGroupingColumnsPopulated?: any[]
-  isObserved?: boolean
   isDetailsOn?: boolean
 }>()
 
-const emit = defineEmits(['update:isRowTitleInvisible', 'shuffle'])
-const observerTarget = ref<HTMLElement | null>(null)
-const observer = ref<IntersectionObserver | null>(null)
-
-onMounted(() => {
-  return
-  if (!props.isObserved) return
-
-  observer.value = new IntersectionObserver(
-    (entries) => {
-      const isVisible = entries[0]?.isIntersecting
-      emit('update:isRowTitleInvisible', !isVisible)
-    },
-    {
-      threshold: 0,
-      rootMargin: '0px',
-    }
-  )
-
-  if (observerTarget.value) observer.value?.observe(observerTarget.value!)
-})
-
-onBeforeUnmount(() => {
-  if (observer.value) {
-    observer.value.disconnect()
-  }
-})
+const emit = defineEmits(['shuffle'])
 </script>
