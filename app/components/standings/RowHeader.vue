@@ -1,5 +1,5 @@
 <template>
-  <div class="w-[var(--container-width)] pb-8 border-yXborder-gray-100">
+  <div class="py-2">
     <div class="flex h-12 w-full justify-between">
       <div class="bg-white lg:sticky z-[3] left-0 shrink-0" :class="isDetailsOn ? 'max-lg:hidden w-48' : 'flex-1'">
         <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
