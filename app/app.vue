@@ -13,4 +13,5 @@ const user = useState<User | null>('user')
 
 useKeyboard()
 useServiceWorker()
+useViewportDims()
 </script>
