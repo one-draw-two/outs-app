@@ -25,8 +25,8 @@ const backgroundGradientStyle = computed(() => {
     backgroundImage: `
       repeating-linear-gradient(
         to bottom,
-        rgb(204 251 241) 0,
-        rgb(204 251 241) ${HEADER_HEIGHT}px,
+        var(--table-row-header-color) 0,
+        var(--table-row-header-color) ${HEADER_HEIGHT}px,
         transparent ${HEADER_HEIGHT}px,
         transparent ${blockHeight}px
       )

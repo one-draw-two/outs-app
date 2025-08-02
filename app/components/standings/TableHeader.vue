@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-100 sticky top-0 z-10">
+  <div class="bg-gray-50 sticky -top-px z-10 border-y border-gray-200">
     <div class="main-container flex items-center justify-between h-20">
       <div class="flex gap-4">
         <NuxtLink :to="useSL(`standings/${standings?.id}`)" class="block">{{ standings?.name }}</NuxtLink>

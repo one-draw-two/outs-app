@@ -7,7 +7,7 @@
 
       <TableBGScroll :is-details-on="isDetailsOn" :header-repeat-interval="HEADER_REPEAT_INTERVAL">
         <template v-for="(row, ri) of sortedRows" :key="row._user.id || `row-${ri}`">
-          <div v-if="ri === 0 || (isDetailsOn && ri % HEADER_REPEAT_INTERVAL === 0)" :key="`header-${ri}`" class="bg-teal-100 z-2">
+          <div v-if="ri === 0 || (isDetailsOn && ri % HEADER_REPEAT_INTERVAL === 0)" :key="`header-${ri}`" class="z-2">
             <StandingsRowHeader
               :grouping-key="groupingKey"
               :dg-contributions-grouped-labels="dgContributionsGroupedLabels"
@@ -26,7 +26,7 @@
                   :row="row"
                   :ri="row.isMetaRow ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isMetaRow).length"
                   :is-truncate="true"
-                  class="lg:sticky bg-inherit z-[3] left-[var(--twContPadding)] truncate w-48 lg:shrink-0"
+                  class="lg:sticky bg-inherit z-[3] left-[var(--twContPadding)] truncate w-48 lg:shrink-0 lg:bg-white"
                 />
 
                 <div v-if="isDetailsOn" class="h-full taksi w-8 bg-gradient-to-r from-white max-lg:hidden sticky top-0 left-[var(--table-shade-left)] z-3 shrink-0" />
@@ -53,7 +53,7 @@
                 </div>
                 <div v-if="isDetailsOn" class="h-full w-8 bg-gradient-to-l from-white max-lg:hidden sticky top-0 right-48 z-3 shrink-0" />
 
-                <div class="lg:sticky bg-inherit z-[3] right-0 flex gap-2 truncate shrink-0 items-center w-48">
+                <div class="lg:sticky bg-inherit z-[3] right-0 flex gap-2 truncate shrink-0 items-center w-48 lg:bg-white">
                   <template v-if="!row.isMetaRow">
                     <div
                       v-for="tDef of dgGroupingColumnsPopulated"

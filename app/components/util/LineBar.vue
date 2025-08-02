@@ -1,8 +1,8 @@
 <template>
-  <div class="relative flex items-center" :class="[containerClass]">
+  <div class="bg-inherit relative flex items-center" :class="[containerClass]">
     <div class="absolute h-px w-full top-1/2 left-0" :class="lineClass"></div>
-    <div class="z-1 mx-auto" :class="contentClass">
-      <div :class="[backgroundClass, textClass, paddingClass]">
+    <div class="bg-inherit z-1 mx-auto" :class="contentClass">
+      <div :class="[paddingClass, textClass]" class="bg-inherit">
         <div class="relative -top-px">
           <slot />
         </div>
@@ -14,7 +14,6 @@
 <script setup lang="ts">
 interface Props {
   color?: string
-  backgroundColor?: string
   textColor?: string
   variant?: 'default' | 'subtle' | 'bold'
   alignment?: 'left' | 'center' | 'right'
@@ -23,7 +22,6 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   color: 'gray-300',
-  backgroundColor: 'white',
   textColor: 'gray-700',
   variant: 'default',
   alignment: 'center',
@@ -31,7 +29,6 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const lineClass = computed(() => `bg-${props.color} ${props.variant === 'subtle' ? 'opacity-30' : props.variant === 'bold' ? 'opacity-80' : 'opacity-50'}`)
-const backgroundClass = computed(() => `bg-${props.backgroundColor}`)
 const textClass = computed(() => `text-${props.textColor}`)
 const paddingClass = computed(() => `px-${props.padding}`)
 const contentClass = computed(() => (props.alignment === 'left' ? 'mr-auto ml-0' : props.alignment === 'right' ? 'ml-auto mr-0' : 'mx-auto'))

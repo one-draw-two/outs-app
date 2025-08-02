@@ -18,7 +18,7 @@
         <div class="vertical-come-in bg-gray-900 rounded-border-section relative">
           <div v-for="(_, rfi) of calendar" @click="clickOnFSB(rfi)" :class="[rfi >= calendar.length / 2 ? 'italic' : '']" class="cursor-pointer clear-highlight px-8">
             <div v-if="!slots[rfi]?.rf" class="w-full py-2 rounded-md" @click.stop="clickOnEmptySlot(rfi)">
-              <UtilLineBar color="white" background-color="transparent" text-color="white" alignment="left" variant="subtle" class="h-1 mb-1 mt-2">
+              <UtilLineBar color="white" text-color="white" alignment="left" variant="subtle" class="h-1 mb-1 mt-2">
                 <div class="text-micro top-1.5 flex justify-between space-x-2">
                   <p class="bg-gray-900 px-1 font-mono" :class="`text-${slots[rfi]?.color}`">{{ slots[rfi]?.name }}</p>
                 </div>
@@ -45,7 +45,7 @@
               </template>
             </PrevRealFixture>
             <div v-if="rfi === calendar.length / 2 - 1" class="h-4 bg-gray-500/25">
-              <UtilLineBar color="white" background-color="transparent" text-color="white" alignment="center" variant="subtle" class="h-4" />
+              <UtilLineBar color="white" text-color="white" alignment="center" variant="subtle" class="h-4" />
             </div>
           </div>
 
@@ -67,7 +67,7 @@
             <PrevRealFixture :key="calendar.find((c) => c.id === rf.id)!.id" :comp-name="'OldStyle'" :real-fixture="calendar.find((c) => c.id === rf.id)!" :options="rfOptions" />
           </div>
           <div class="max-md:hidden h-4 bg-gray-500/25">
-            <UtilLineBar color="white" background-color="transparent" text-color="white" alignment="center" variant="subtle" class="h-4" />
+            <UtilLineBar color="white" text-color="white" alignment="center" variant="subtle" class="h-4" />
           </div>
           <div v-for="(rf, rfi) of calendar.filter((rf) => slots.map((s) => s.rf?.id).findIndex((rfid) => rf.id === rfid) >= 0)" :key="rf.id" class="max-md:hidden opacity-10 px-8">
             <PrevRealFixture :key="calendar.find((c) => c.id === rf.id)!.id" :comp-name="'OldStyle'" :real-fixture="calendar.find((c) => c.id === rf.id)!" :options="rfOptions" />

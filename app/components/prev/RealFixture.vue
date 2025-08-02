@@ -1,6 +1,6 @@
 <template>
   <div class="w-full py-2 text-white" :class="options?.bg ? `bg-${options.bg}` : ''">
-    <UtilLineBar :color="line" background-color="transparent" text-color="white" alignment="left" variant="subtle" class="h-1 mt-2 mb-1">
+    <UtilLineBar :color="line" text-color="white" alignment="left" variant="subtle" class="h-1 mt-2 mb-1">
       <div v-if="slot" class="absolute text-micro space-x-2 right-0">
         <p>
           <span class="pl-4 font-mono" :class="[bgComputed, `text-${slot.color}`]">{{ slot.name }}</span>
