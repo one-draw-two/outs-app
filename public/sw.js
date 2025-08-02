@@ -181,13 +181,26 @@ workbox.precaching.precacheAndRoute([
 
 // Handle PowerSync chunk requests with highest priority
 workbox.routing.registerRoute(
-  ({ url }) => url.pathname.includes('powersync') || url.pathname.includes('wa-sqlite'),
+  ({ url }) => {
+    // More specific matching for PowerSync files
+    const isPowerSync = url.pathname.includes('powersync') || url.pathname.includes('wa-sqlite')
+    const isJsFile = url.pathname.endsWith('.js')
+    return isPowerSync && isJsFile
+  },
   new workbox.strategies.CacheFirst({
     cacheName: 'powersync-chunks-' + CACHE_SUFFIX,
     plugins: [
       new workbox.expiration.ExpirationPlugin({
         maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
       }),
+      {
+        // Add error handling
+        handlerDidError: async ({ request }) => {
+          console.error(`[SW ${SW_VERSION}] Failed to load PowerSync chunk:`, request.url)
+          // Return undefined to trigger fetch error handling
+          return undefined
+        },
+      },
     ],
   })
 )

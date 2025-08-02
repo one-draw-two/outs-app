@@ -54,4 +54,14 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     console.error('Failed to initialize PowerSync database:', error)
     useState('dbInitialized').value = false
   }
+
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled promise rejection:', event.reason)
+    // Log to your error tracking service
+    if (event.reason?.message?.includes('module script')) {
+      console.error('Module loading failed - possible MIME type or caching issue')
+      // Attempt recovery by clearing caches
+      caches.keys().then((keys) => Promise.all(keys.map((key) => caches.delete(key))))
+    }
+  })
 })
