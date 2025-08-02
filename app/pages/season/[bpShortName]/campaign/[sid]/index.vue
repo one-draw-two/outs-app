@@ -1,17 +1,7 @@
 <template>
   <LayoSeasonAndStage>
     <main>
-      <StandingsTableHeader
-        :standings="mainTournamentGroup"
-        :children-fixtures="[]"
-        :tournament="tournament!"
-        :is-details-on="isDetailsOn"
-        @update:is-details-on="isDetailsOn = $event"
-        @shuffle="tableRefShufflePoints"
-        @toggle-grouping="tableRefToggleGrouping"
-      />
-
-      <StandingsTable ref="table" :standings="mainTournamentGroup" :children-standings="childrenStandings" :children-fixtures="[]" :tournament="tournament!" :is-details-on="isDetailsOn" />
+      <StandingsTable :standings="mainTournamentGroup" :children-standings="childrenStandings" :children-fixtures="[]" :tournament="tournament!" />
     </main>
   </LayoSeasonAndStage>
 </template>
@@ -42,11 +32,6 @@ wecl(mainTournamentGroup, 'main gorup')
 wecl(tournament, 'ta')
 wecl(childrenStandings)
 */
-
-const table = ref()
-const isDetailsOn = ref(false)
-const tableRefShufflePoints = () => table.value?.shufflePoints()
-const tableRefToggleGrouping = () => table.value?.toggleGrouping()
 
 const pageTitle = computed(() => `Season ${season.value?.name}`)
 useHead({ title: pageTitle })

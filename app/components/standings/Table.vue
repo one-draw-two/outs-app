@@ -1,5 +1,15 @@
 <template>
   <div class="relative">
+    <StandingsTableHeader
+      :standings="standings"
+      :children-fixtures="childrenFixtures"
+      :tournament="tournament"
+      :is-details-on="isDetailsOn"
+      @update:is-details-on="isDetailsOn = $event"
+      @shuffle="shufflePoints"
+      @toggle-grouping="toggleGrouping"
+    />
+
     <StandingsTopHeader v-if="false" :children-standings="childrenStandings" class="bg-white sticky top-0 z-[5] py-4" />
 
     <div class="relative">
@@ -78,7 +88,6 @@ const props = defineProps<{
   childrenStandings: _P_Group[]
   childrenFixtures: _P_Group[]
   tournament?: ParsedBPTournament
-  isDetailsOn: boolean
 }>()
 
 const HEADER_REPEAT_INTERVAL = 8
@@ -86,6 +95,8 @@ const HEADER_REPEAT_INTERVAL = 8
 const season = useState<_Season>('season')
 
 const { isCurrentUserRow } = useUserHelpers()
+
+const isDetailsOn = ref(false)
 
 /*
 console.log(season.value)

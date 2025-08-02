@@ -7,17 +7,7 @@
     </template>
     <template #page>
       <main>
-        <StandingsTableHeader
-          :standings="standings"
-          :children-fixtures="childrenFixtures"
-          :tournament="tournament!"
-          :is-details-on="isDetailsOn"
-          @update:is-details-on="isDetailsOn = $event"
-          @shuffle="tableRefShufflePoints"
-          @toggle-grouping="tableRefToggleGrouping"
-        />
-
-        <StandingsTable :standings="standings" :children-standings="childrenStandings" :children-fixtures="childrenFixtures" :tournament="tournament!" :is-details-on="isDetailsOn" />
+        <StandingsTable :standings="standings" :children-standings="childrenStandings" :children-fixtures="childrenFixtures" :tournament="tournament!" />
       </main>
     </template>
   </LayoGroupAndFixture>
@@ -50,11 +40,6 @@ const { processedGroups: childrenStandings } = await useGroupsWithUsers({ _paren
 wecl(standings)
 // wecl(childrenFixtures, 'fixto')
 // wecl(childrenStandings, 'standings')
-
-const table = ref()
-const isDetailsOn = ref(false)
-const tableRefShufflePoints = () => table.value?.shufflePoints()
-const tableRefToggleGrouping = () => table.value?.toggleGrouping()
 
 const pageTitle = computed(() => `${pageName.value} Standings `) // Should be more descriptive what the standings is about
 useHead({ title: pageTitle })
