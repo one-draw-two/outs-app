@@ -3,7 +3,7 @@ import { PowerSyncDatabase, WASQLiteOpenFactory, WASQLiteVFS } from '@powersync/
 import { AppSchema } from '~/../powersync/AppSchema'
 import { opfsNotSupportedMessage, purgeVFS, listVfsEntries } from '~/../powersync/utils'
 
-const DEBUG = false
+const DEBUG = true
 
 export default defineNuxtPlugin(async (nuxtApp) => {
   // const isUseIndexDB = useRuntimeConfig().public.platform === 'cap' // Set in package.json (build:s > nuxt generate) script

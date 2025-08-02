@@ -4,7 +4,7 @@
 definePageMeta({
   middleware: [
     async function (to) {
-      const DEBUG = false
+      const DEBUG = true
       const TIMEOUT = 2000
 
       if (DEBUG) console.log('Index page: Checking subscriptions...')
