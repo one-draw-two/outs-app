@@ -13,7 +13,7 @@ const props = defineProps<{
 }>()
 
 const HEADER_HEIGHT = 64
-const ROW_HEIGHT = { mobile: 64, desktop: 40 }
+const ROW_HEIGHT = { mobile: 64, desktop: 64 }
 
 const backgroundGradientStyle = computed(() => {
   const rowHeight = useState('viewport-mobile').value ? ROW_HEIGHT.mobile : ROW_HEIGHT.desktop

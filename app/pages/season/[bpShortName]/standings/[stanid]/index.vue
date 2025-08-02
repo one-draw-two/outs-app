@@ -2,12 +2,12 @@
   <LayoGroupAndFixture color="gray">
     <template #header-left>
       <div class="flex items-center gap-4">
-        <StandingsBreadcrumbs :breadCrumbChain="breadcrumbChain" />
+        <StandingsBreadcrumbs v-if="false" :breadCrumbChain="breadcrumbChain" />
       </div>
     </template>
     <template #page>
       <main>
-        <StandingsTable :standings="standings" :children-standings="childrenStandings" :children-fixtures="childrenFixtures" :tournament="tournament!" />
+        <StandingsTable :standings="standings" :children-standings="childrenStandings" :children-fixtures="childrenFixtures" :tournament="tournament!" :breadcrumbs="breadcrumbChain" />
       </main>
     </template>
   </LayoGroupAndFixture>
@@ -23,7 +23,7 @@ useDynamicPS().updatePowerSyncParams({ selected_parent_gid: stanid })
 const { processedGroups, parentChain } = await useGroupsWithUsers({ id: stanid }, false, undefined, true)
 const standings: any = computed(() => processedGroups?.value?.[0])
 const breadcrumbChain = computed(() => [...parentChain.value].reverse())
-wecl(breadcrumbChain, 'breadcrumbChain')
+// wecl(breadcrumbChain, 'breadcrumbChain')
 
 useState<any>('pickerSeasonId').value = standings.value?._season
 

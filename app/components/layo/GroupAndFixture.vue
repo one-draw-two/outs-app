@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-8">
-    <div class="h-48 flex items-center" :class="`bg-${color}-500/20`">
+    <div class="h-12 flex items-center" :class="`bg-${color}-500/20`">
       <div class="h-12 main-container flex gap-8 items-center">
         <slot name="header-left" />
         <slot name="header-right" />
