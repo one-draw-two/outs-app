@@ -12,9 +12,8 @@
         <SeasonHorizontalCalendar />
       </div>
     </div>
-    <main class="main-container">
-      <slot />
-    </main>
+
+    <slot />
   </div>
 </template>
 

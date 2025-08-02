@@ -101,3 +101,4 @@ nativeRoute.params.stid // Then use like this
 - Feat: Breadcrumbs for standings: 520.18kb
 - Feat: With HugeIcons: 524.67kb
 - Feat: useViewport composable and TableBGScroll component: 525.79kb
+- Wip: Table improvements and styling: 527.31kb

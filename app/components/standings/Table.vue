@@ -1,45 +1,12 @@
 <template>
   <div class="relative">
-    <div v-if="true" class="h-12 flex items-center justify-between sticky top-0 bg-white z-10">
-      <div class="flex gap-4">
-        <NuxtLink :to="useSL(`standings/${standings?.id}`)" class="block">{{ standingsName }}</NuxtLink>
-        <div @click="shufflePoints">Shuffle</div>
-        <NuxtLink v-if="childrenFixtures?.length > 0" :to="useSL(`standings/${standings?.id}/fixtures`)" class="block"> Fixtures </NuxtLink>
-      </div>
-
-      <div class="flex gap-4 items-center">
-        <FormsToggleSwitch @change="isDetailsOn = !isDetailsOn" />
-        <FormsToggleSwitch v-if="dgGrouping?.availableKeys?.length! > 1" @change="toggleGrouping" />
-      </div>
-    </div>
-
     <StandingsTopHeader v-if="false" :children-standings="childrenStandings" class="bg-white sticky top-0 z-[5] py-4" />
 
     <div class="relative">
-      <!-- Mobile background username and totals (that doesn't scroll with the foreground scrolling table) -->
-      <div v-if="isDetailsOn" class="lg:hidden vertical-come-in absolute -z-1 pointer-events-none top-0 space-y-8X">
-        <div class="h-16 w-full placeholder" />
-        <TransitionGroup tag="div" name="standing-row">
-          <template v-for="(row, ri) of sortedRows" :key="row._user.id || `row-${ri}`">
-            <div v-if="ri > 0 && ri % HEADER_REPEAT_INTERVAL === 0" class="h-16 w-full placeholder" />
-            <div
-              class="w-[var(--container-width)] h-16 lg:h-10 border-b border-gray-100 hover:bg-blue-50X bg-green-200"
-              :class="[row.isMetaRow ? 'bg-yellow-50 text-yellow-800 font-medium' : isCurrentUserRow(row) ? 'bg-green-50 text-green-900 font-medium' : 'bg-white', rowClass]"
-            >
-              <StandingsRowTitle
-                :row="row"
-                :ri="row.isMetaRow ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isMetaRow).length"
-                :is-truncate="true"
-                class="lg:sticky bg-inherit z-[3] left-0 truncate w-48 shrink-0"
-              />
-            </div>
-          </template>
-        </TransitionGroup>
-      </div>
+      <TableMobileTitlesBG :is-details-on="isDetailsOn" :header-repeat-interval="HEADER_REPEAT_INTERVAL" :sorted-rows="sortedRows" :is-current-user-row="isCurrentUserRow" />
 
       <TableBGScroll :is-details-on="isDetailsOn" :header-repeat-interval="HEADER_REPEAT_INTERVAL">
         <template v-for="(row, ri) of sortedRows" :key="row._user.id || `row-${ri}`">
-          <!-- Add repeated header -->
           <div v-if="ri === 0 || (isDetailsOn && ri % HEADER_REPEAT_INTERVAL === 0)" :key="`header-${ri}`" class="bg-teal-100 z-2">
             <StandingsRowHeader
               :grouping-key="groupingKey"
@@ -50,8 +17,8 @@
             />
           </div>
           <div
-            class="w-[var(--container-width)] lg:w-full h-16 lg:h-10 border-b border-gray-100 hover:bg-blue-50X"
-            :class="[row.isMetaRow ? 'bg-yellow-50 text-yellow-800 font-medium' : isCurrentUserRow(row) ? 'bg-green-50 text-green-900 font-medium' : 'lg:bg-whiteXX', rowClass]"
+            class="px-[var(--twContPadding)] lg:w-full h-16 lg:h-10 border-b border-gray-100 hover:bg-blue-50X"
+            :class="[row.isMetaRow ? 'bg-yellow-50 text-yellow-800 font-medium' : isCurrentUserRow(row) ? 'bg-green-50 text-green-900 font-medium' : 'lg:bg-whiteXX']"
           >
             <div class="flex bg-inherit w-full max-lg:w-maxXX h-full items-stretch relative">
               <div class="flex bg-inherit w-full h-full items-stretch justify-between">
@@ -59,10 +26,10 @@
                   :row="row"
                   :ri="row.isMetaRow ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isMetaRow).length"
                   :is-truncate="true"
-                  class="lg:sticky bg-inherit z-[3] left-0 truncate w-48 lg:shrink-0"
+                  class="lg:sticky bg-inherit z-[3] left-[var(--twContPadding)] truncate w-48 lg:shrink-0"
                 />
 
-                <div v-if="isDetailsOn" class="h-full taksi w-8 bg-gradient-to-r from-white max-lg:hidden sticky top-0 left-48 z-3 shrink-0" />
+                <div v-if="isDetailsOn" class="h-full taksi w-8 bg-gradient-to-r from-white max-lg:hidden sticky top-0 left-[var(--table-shade-left)] z-3 shrink-0" />
                 <div v-if="isDetailsOn" class="flex-1 flex gap-4">
                   <div v-for="group in dgContributionsGroupedLabels" :key="group.key" class="flex flex-1">
                     <div
@@ -116,41 +83,27 @@
 <script setup lang="ts">
 import type { _Season, _P_Group, ParsedBPTournament } from '~/../types'
 import TableBGScroll from './TableBGScroll.vue'
+import TableMobileTitlesBG from './TableMobileTitlesBG.vue'
 
-const season = useState<_Season>('season')
-
-interface Props {
+const props = defineProps<{
   standings: _P_Group
   childrenStandings: _P_Group[]
   childrenFixtures: _P_Group[]
   tournament?: ParsedBPTournament
-  rowClass?: string
-}
+  isDetailsOn: boolean
+}>()
 
 const HEADER_REPEAT_INTERVAL = 8
 
-const { isCurrentUserRow } = useUserHelpers()
+const season = useState<_Season>('season')
 
-const props = withDefaults(defineProps<Props>(), { rowClass: '' })
+const { isCurrentUserRow } = useUserHelpers()
 
 /*
 console.log(season.value)
 console.log(props.standings)
 console.log(props.tournament)
 console.log(props.childrenStandings)
-
-              <!-- 
-                           <div class="absolute top-0 left-0 z-[10] lg:hidden w-12 overflow-visible bg-green-200">
-                <Transition name="appear-from-left">
-                  <StandingsRowTitle
-                    v-if="isRowTitleInvisible"
-                    :row="row"
-                    :ri="row.isMetaRow ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isMetaRow).length"
-                    class="text-xs italic text-gray-700 w-[var(--container-width)] shrink-0"
-                  />
-                </Transition>
-              </div> 
-              -->
 */
 
 const dgGrouping = computed(() => props.tournament?.displayConfig?.grouping?.[props.standings?._link?._refColl?.toLowerCase()])
@@ -171,8 +124,6 @@ const childrenStandingsThatAreUngrouped = computed(() =>
       ?.includes(cs._tournament!)
   )
 )
-
-const isDetailsOn = ref(false)
 
 const groupIndex = ref(0)
 const groupingKey = computed(() => dgGrouping.value?.availableKeys?.[groupIndex.value])
@@ -230,7 +181,6 @@ const dgContributionsGroupedLabels = computed(() => {
 
 // wecl(dgContributionsGroupedLabels, 'dgContributionsGroupedLabels')
 
-const standingsName = computed(() => props.standings?.name || 'Standings')
 const localRows = ref<any>([])
 const sortIndex = ref(1)
 
@@ -288,10 +238,10 @@ const clearHighlight = () => {
   highlightedStandingId.value = null
 }
 
-const isRowTitleInvisible = ref(false)
-
 defineExpose({
   sortedRows,
   localRows,
+  shufflePoints,
+  toggleGrouping,
 })
 </script>

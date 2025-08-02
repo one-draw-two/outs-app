@@ -1,7 +1,7 @@
 <template>
-  <div class="py-2">
+  <div class="px-[var(--twContPadding)] py-2">
     <div class="flex h-12 w-full justify-between">
-      <div class="bg-white lg:sticky z-[3] left-0 shrink-0" :class="isDetailsOn ? 'max-lg:hidden w-48' : 'flex-1'">
+      <div class="bg-white lg:sticky z-[3] left-[var(--twContPadding)] shrink-0" :class="isDetailsOn ? 'max-lg:hidden w-48' : 'flex-1'">
         <UtilLineBar color="blue-500" background-color="white" text-color="gray-700" variant="subtle">
           <span class="text-xs">{{ groupingKey?.label }}</span>
         </UtilLineBar>
@@ -10,7 +10,7 @@
         </UtilLineBar>
       </div>
 
-      <div v-if="isDetailsOn" class="h-full w-8 bg-gradient-to-r from-white max-lg:hidden sticky top-0 left-48 z-3 shrink-0" />
+      <div v-if="isDetailsOn" class="h-full w-8 bg-gradient-to-r from-white max-lg:hidden sticky top-0 left-[var(--table-shade-left)] z-3 shrink-0" />
       <div v-if="isDetailsOn" class="flex-1">
         <div class="flex min-w-max gap-4">
           <div class="flex-1" v-for="group in dgContributionsGroupedLabels" :key="group.key">
