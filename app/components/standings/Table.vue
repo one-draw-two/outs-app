@@ -18,7 +18,7 @@
           </div>
           <div
             class="px-[var(--twContPadding)] lg:w-full h-16 lg:h-10 border-b border-gray-100 hover:bg-blue-50X"
-            :class="[row.isMetaRow ? 'bg-yellow-50 text-yellow-800 font-medium' : isCurrentUserRow(row) ? 'bg-green-50 text-green-900 font-medium' : 'lg:bg-whiteXX']"
+            :class="[row.isMetaRow ? 'bg-yellow-50 text-yellow-800 font-medium' : isCurrentUserRow(row) ? 'bg-green-50 text-green-900 font-medium' : 'lg:bg-white']"
           >
             <div class="flex bg-inherit w-full max-lg:w-maxXX h-full items-stretch relative">
               <div class="flex bg-inherit w-full h-full items-stretch justify-between">
@@ -26,32 +26,20 @@
                   :row="row"
                   :ri="row.isMetaRow ? '—' : ri + 1 - sortedRows.slice(0, ri).filter((r: any) => r.isMetaRow).length"
                   :is-truncate="true"
-                  class="lg:sticky bg-inherit z-[3] left-[var(--twContPadding)] truncate w-48 lg:shrink-0 lg:bg-white"
+                  class="lg:sticky bg-inherit z-[3] left-[var(--twContPadding)] truncate w-48 lg:shrink-0 lg:bg-inherit"
                 />
 
-                <div v-if="isDetailsOn" class="h-full taksi w-8 bg-gradient-to-r from-white max-lg:hidden sticky top-0 left-[var(--table-shade-left)] z-3 shrink-0" />
-                <div v-if="isDetailsOn" class="flex-1 flex gap-4">
-                  <div v-for="group in dgContributionsGroupedLabels" :key="group.key" class="flex flex-1">
-                    <div
-                      v-for="cs in group._groupedStandings"
-                      :key="cs.id"
-                      class="flex-1 min-w-24 truncate px-2X"
-                      @mouseenter="setHighlight(ri, cs.id)"
-                      :class="{ 'bg-blue-50': highlightedStandingId === cs.id || highlightedRow === ri }"
-                    >
-                      <UtilLineBar
-                        class="h-full"
-                        color="blue-500"
-                        :background-color="highlightedStandingId === cs.id || highlightedRow === ri ? 'blue-50' : 'white'"
-                        text-color="gray-700"
-                        variant="subtle"
-                      >
+                <div v-if="isDetailsOn" class="h-full taksi w-8 bg-gradient-to-r from-inherit to-transparent max-lg:hidden sticky top-0 left-[var(--table-shade-left)] z-3 shrink-0" />
+                <div v-if="isDetailsOn" class="bg-inherit flex-1 flex gap-4">
+                  <div v-for="group in dgContributionsGroupedLabels" :key="group.key" class="bg-inherit flex flex-1">
+                    <div v-for="cs in group._groupedStandings" :key="cs.id" class="bg-inherit flex-1 min-w-24 truncate" @mouseenter="setHighlight(ri, cs.id)">
+                      <UtilLineBar class="h-full" :color="`${group.item.color ?? 'gray'}-500`" text-color="gray-700" variant="subtle">
                         <span class="text-xs font-medium truncate">{{ cs?.rows?.find((sr: any) => sr._user?.id === row._user?.id)?.points?.[1] ?? 0 }}</span>
                       </UtilLineBar>
                     </div>
                   </div>
                 </div>
-                <div v-if="isDetailsOn" class="h-full w-8 bg-gradient-to-l from-white max-lg:hidden sticky top-0 right-48 z-3 shrink-0" />
+                <div v-if="isDetailsOn" class="h-full w-8 bg-gradient-to-l from-inherit to-transparent max-lg:hidden sticky top-0 right-48 z-3 shrink-0" />
 
                 <div class="lg:sticky bg-inherit z-[3] right-0 flex gap-2 truncate shrink-0 items-center w-48 lg:bg-white">
                   <template v-if="!row.isMetaRow">
@@ -60,14 +48,14 @@
                       :key="tDef.standings?.id"
                       @mouseenter="setHighlight(ri, tDef.standings?.id)"
                       :class="{ 'bg-blue-50X': highlightedStandingId === tDef.standings?.id || highlightedRow === ri }"
-                      class="size-full flex-center"
+                      class="bg-inherit size-full flex-center"
                     >
-                      <UtilLineBar color="green-500" background-color="white" text-color="gray-700" variant="subtle" class="w-full">
+                      <UtilLineBar color="green-500" text-color="gray-700" variant="subtle" class="w-full">
                         <span class="text-xs font-bold">{{ tDef.standings?.rows?.find((sr: any) => sr._user?.id === row._user?.id)?.points?.[tDef.pInd ?? 1] }}</span>
                       </UtilLineBar>
                     </div>
                   </template>
-                  <UtilLineBar v-else color="yellow-500" background-color="white" text-color="gray-700" variant="subtle" class="w-full">
+                  <UtilLineBar v-else color="yellow-500" text-color="gray-700" variant="subtle" class="w-full">
                     <span class="text-xs font-bold">{{ row.points[0] }}</span>
                   </UtilLineBar>
                 </div>
@@ -179,7 +167,7 @@ const dgContributionsGroupedLabels = computed(() => {
   }))
 })
 
-// wecl(dgContributionsGroupedLabels, 'dgContributionsGroupedLabels')
+wecl(dgContributionsGroupedLabels, 'dgContributionsGroupedLabels')
 
 const localRows = ref<any>([])
 const sortIndex = ref(1)

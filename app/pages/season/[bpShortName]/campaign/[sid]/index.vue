@@ -45,9 +45,6 @@ wecl(childrenStandings)
 
 const table = ref()
 const isDetailsOn = ref(false)
-//         @shuffle="shufflePoints"
-//         @toggle-grouping="toggleGrouping"
-
 const tableRefShufflePoints = () => table.value?.shufflePoints()
 const tableRefToggleGrouping = () => table.value?.toggleGrouping()
 

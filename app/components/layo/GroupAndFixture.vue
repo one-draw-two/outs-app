@@ -6,9 +6,8 @@
         <slot name="header-right" />
       </div>
     </div>
-    <div class="main-container">
-      <slot name="page" />
-    </div>
+
+    <slot name="page" />
   </div>
 </template>
 
