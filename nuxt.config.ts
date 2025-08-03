@@ -53,6 +53,25 @@ export default defineNuxtConfig({
       },
     },
   },
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) =>
+        [
+          'el-dropdown',
+          'el-menu',
+          'el-options',
+          'el-dialog',
+          'el-dialog-panel',
+          'el-dialog-backdrop',
+          'el-command-palette',
+          'el-command-list',
+          'el-defaults',
+          'el-command-group',
+          'el-no-results',
+          'el-command-preview',
+        ].includes(tag),
+    },
+  },
   css: ['~/assets/styles/tw.postcss', '~/assets/styles/transitions.css', '~/assets/styles/typography.css', '~/assets/styles/main.css'],
   runtimeConfig: {
     public: {

@@ -9,6 +9,8 @@
 </template>
 
 <script setup lang="ts">
+import '@tailwindplus/elements'
+
 import type { User } from '~/../types'
 const user = useState<User | null>('user')
 

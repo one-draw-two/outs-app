@@ -10,9 +10,14 @@
       </div>
 
       <div class="flex gap-4 items-center">
-        <div @click="emit('shuffle')">Shuffle</div>
-        <FormsToggleSwitch :model-value="isDetailsOn" @change="emit('update:isDetailsOn', !isDetailsOn)" />
+        <!-- 
+                <div @click="emit('shuffle')">Shuffle</div>
+
         <FormsToggleSwitch v-if="dgGrouping?.availableKeys?.length! > 1" @change="emit('toggle-grouping', $event)" />
+        -->
+
+        <!-- Here i want to add a tailwind dropdown -->
+        <StandingsViewDropdown :is-details-on="isDetailsOn" @update:isDetailsOn="emit('update:isDetailsOn', $event)" />
       </div>
     </div>
   </div>

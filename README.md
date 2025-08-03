@@ -103,3 +103,4 @@ nativeRoute.params.stid // Then use like this
 - Feat: useViewport composable and TableBGScroll component: 525.79kb
 - Wip: Table improvements and styling: 527.31kb, further: 528.06kb
 - Pre: Standings table view popover filters attempt: 528.48kb
+- Major: Adding tw elements with a large payload, but I am trying to make custom elements over the years so be it: 551.9kb
