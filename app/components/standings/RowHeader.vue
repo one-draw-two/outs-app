@@ -1,11 +1,11 @@
 <template>
   <div class="h-16 px-[var(--twContPadding)] py-2">
-    <div class="flex h-12 w-full justify-between">
+    <div class="flex h-12 w-full justify-between max-lg:gap-4">
       <div class="lg:sticky z-[3] left-[var(--twContPadding)] shrink-0 bg-[var(--table-row-header-color)]" :class="isDetailsOn ? 'max-lg:hidden w-48' : 'flex-1'">
-        <UtilLineBar color="blue-500" text-color="gray-700" variant="subtle">
+        <UtilLineBar color="blue-500" text-color="gray-700" variant="subtle" alignment="left" :offset="6">
           <span class="text-xs">{{ groupingKey?.label }}</span>
         </UtilLineBar>
-        <UtilLineBar color="blue-500" text-color="gray-700" variant="subtle">
+        <UtilLineBar color="blue-500" text-color="gray-700" variant="subtle" alignment="left" :offset="6">
           <span class="text-xs">User</span>
         </UtilLineBar>
       </div>
@@ -14,12 +14,12 @@
       <div v-if="isDetailsOn" class="flex-1 lg:bg-[var(--table-row-header-color)]">
         <div class="flex min-w-max gap-4">
           <div v-for="group in dgContributionsGroupedLabels" :key="group.key" class="flex-1 bg-[var(--table-row-header-color)]">
-            <UtilLineBar :color="`${group.item.color ?? 'gray'}-500`" text-color="gray-700" variant="subtle">
+            <UtilLineBar :color="`${group.item?.color ?? 'gray'}-500`" text-color="gray-700" variant="subtle">
               <span class="text-xs font-bold">{{ group.item?.name }}</span>
             </UtilLineBar>
             <div class="bg-inherit flex">
               <div v-for="cs in group._groupedStandings" :key="cs.id" class="bg-inherit flex-1 min-w-24 truncate px-2X">
-                <UtilLineBar :color="`${group.item.color ?? 'gray'}-500`" text-color="gray-700" variant="subtle">
+                <UtilLineBar :color="`${group.item?.color ?? 'gray'}-500`" text-color="gray-700" variant="subtle">
                   <NuxtLink :to="useSL(`standings/${cs.id}`)" class="text-xs">
                     <span class="text-xs font-medium truncate">{{ cs.item?.name }}</span>
                   </NuxtLink>
@@ -32,11 +32,11 @@
       <div v-if="isDetailsOn" class="h-full w-8 bg-gradient-to-l from-[var(--table-row-header-color)] max-lg:hidden sticky top-0 right-48 z-3 shrink-0" />
 
       <div class="lg:sticky z-[3] right-0 truncate w-48 shrink-0 bg-[var(--table-row-header-color)]" :class="isDetailsOn ? 'w-48' : ''">
-        <UtilLineBar color="green-500" text-color="gray-700" variant="subtle" class="w-full">
+        <UtilLineBar color="green-500" text-color="gray-700" variant="subtle" class="w-full" alignment="right" :offset="6">
           <span class="text-xs font-bold">{{ dgGrouping?.columnDisplay?.ungroupedTournamentIds?.label }}</span>
         </UtilLineBar>
         <div class="bg-inherit flex gap-2">
-          <UtilLineBar v-for="tDef of dgGroupingColumnsPopulated" color="green-500" text-color="gray-700" variant="subtle" class="w-full">
+          <UtilLineBar v-for="tDef of dgGroupingColumnsPopulated" color="green-500" text-color="gray-700" variant="subtle" class="w-full" alignment="right" :offset="6">
             <NuxtLink :to="tDef.link ? useSL(`standings/${tDef.standings.id}`) : ''" class="text-xs">
               <span class="text-xs font-bold">{{ tDef.label ?? tDef.t?.name }}</span>
             </NuxtLink>

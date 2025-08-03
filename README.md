@@ -102,3 +102,4 @@ nativeRoute.params.stid // Then use like this
 - Feat: With HugeIcons: 524.67kb
 - Feat: useViewport composable and TableBGScroll component: 525.79kb
 - Wip: Table improvements and styling: 527.31kb, further: 528.06kb
+- Pre: Standings table view popover filters attempt: 528.48kb

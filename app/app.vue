@@ -5,6 +5,7 @@
   <AppUserOverlay v-if="user" />
   <AppNetworkTray />
   <AppDecorations />
+  <div class="hidden ml-24 ml-12 ml-8 ml-6 mr-24 mr-12 mr-8 mr-6"></div>
 </template>
 
 <script setup lang="ts">

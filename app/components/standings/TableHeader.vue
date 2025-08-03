@@ -1,11 +1,12 @@
 <template>
   <div class="bg-gray-50 sticky -top-px z-10 border-y border-gray-200">
     <div class="main-container flex items-center justify-between h-20">
-      <div class="flex gap-4">
-        <StandingsBreadcrumbs v-if="breadcrumbChain" :breadCrumbChain="breadcrumbChain" />
-        <NuxtLink :to="useSL(`standings/${standings?.id}`)" class="block">{{ standings?.name }}</NuxtLink>
-
-        <NuxtLink v-if="childrenFixtures?.length > 0" :to="useSL(`standings/${standings?.id}/fixtures`)" class="block"> Fixtures </NuxtLink>
+      <div>
+        <div class="flex gap-4">
+          <StandingsBreadcrumbs v-if="breadcrumbChain" :breadCrumbChain="breadcrumbChain" />
+          <NuxtLink v-if="childrenFixtures?.length > 0" :to="useSL(`standings/${standings?.id}/fixtures`)" class="block"> Fixtures </NuxtLink>
+        </div>
+        <h1>{{ standings?.name }}</h1>
       </div>
 
       <div class="flex gap-4 items-center">
