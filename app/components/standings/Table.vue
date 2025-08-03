@@ -108,13 +108,6 @@ const { isCurrentUserRow } = useUserHelpers()
 
 const isDetailsOn = ref(false)
 
-/*
-console.log(season.value)
-console.log(props.standings)
-console.log(props.tournament)
-console.log(props.childrenStandings)
-*/
-
 const dgGrouping = computed(() => props.tournament?.displayConfig?.grouping?.[props.standings?._link?._refColl?.toLowerCase()])
 
 const dgGroupingColumnsPopulated = computed(() =>
