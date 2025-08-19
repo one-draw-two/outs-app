@@ -44,7 +44,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
       .map((t) => ({
         id: t.id,
         name: t.name,
-        fixture: round.value?.userFixtures?.find((fixture) => fixture._tournament === t.id && getUserRow(fixture)),
+        fixture: round.value?.userFixtures?.find((fixture: any) => fixture._tournament === t.id && getUserRow(fixture)),
         standings: round?.value?.userStandings?.find((s: any) => s._tournament === t.id),
       })),
   ])
@@ -60,7 +60,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
     else return 'gray'
   }
 
-  useState('round').value = Object.assign({}, round.value, { $statusColor: roundStatusColor.value })
+  // Reactively update the round for consumer pages and components
+  watch(round, (r: any) => (useState('round').value = { ...r, $statusColor: roundStatusColor.value }), { immediate: true })
+
   useState('tournamentCols').value = headers.value
 
   currentRoundId.value = rid

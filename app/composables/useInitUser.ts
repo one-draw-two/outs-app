@@ -1,10 +1,11 @@
 import type { User, AuthResponseSuccess } from '~/../types'
 
 const DEBUG = false
+const TOKENS = true
 
 export default function (res: AuthResponseSuccess, navToPath?: string, isToSaveOffline?: boolean) {
   if (DEBUG) console.log('Initializing user with response...')
-  if (DEBUG) console.log(res)
+  if (DEBUG || TOKENS) console.log(res)
   useState<User>('user').value = res.data.user
   useState<String>('accessToken').value = res.data.accessToken
   useState<String>('powerSyncToken').value = res.data.powerSyncToken

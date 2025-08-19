@@ -1,5 +1,3 @@
-import type { UnwrapRef, Ref, ComputedRef } from 'vue'
-
 interface ChangeInfo<T> {
   type: 'insert' | 'update' | 'delete'
   rowId: string | number
@@ -19,7 +17,6 @@ export interface WithPSChange extends Record<string, any> {
 
 export interface PSWatchOptions {
   detectChanges?: boolean
-  abortController?: AbortController
   highlightDuration?: number
   watchSource?: Ref<any> | ComputedRef<any>
 }
@@ -38,128 +35,81 @@ export function usePSWatch<T extends WithPSChange>(sql: string, parameters: any[
 
   const { $db }: any = useNuxtApp()
   const data = ref<T[]>([])
-  const previousData = ref<T[]>([])
   const isLoading = ref(true)
   const error = ref<Error | null>(null)
   const changeInfo = ref<ChangeInfo<T> | null>(null)
-
-  let controller = options?.abortController || new AbortController()
   const detectChanges = options?.detectChanges ?? false
-  const highlightDuration = options?.highlightDuration ?? 5000
+  const highlightDuration = options?.highlightDuration ?? 1000
 
   let promiseResolve: (() => void) | undefined
-  let firstPopulationPromise = new Promise<void>((resolve) => {
-    promiseResolve = resolve
-  })
+  const firstPopulationPromise = new Promise<void>((resolve) => (promiseResolve = resolve))
 
-  const setChangeAsOld = (item: T) => {
-    if (item.$psChange) {
-      setTimeout(() => {
-        if (item.$psChange) {
-          item.$psChange.isOld = true
-          // Trigger a reactive update
-          data.value = [...data.value]
-        }
-      }, highlightDuration)
-    }
-  }
+  // Simple change highlighting
+  const setChangeAsOld = (item: T) => item.$psChange && setTimeout(() => (item.$psChange!.isOld = true), highlightDuration)
 
-  const detectChangeType = (oldData: T[], newData: T[]): ChangeInfo<T> | null => {
-    if (!detectChanges) return null
+  // Create watched query
+  const watchedQuery = $db.query({ sql, parameters }).differentialWatch({ rowComparator: { keyBy: (item: any) => item.id, compareBy: (item: any) => JSON.stringify(item) } })
 
-    const oldMap = new Map(oldData.map((item) => [item.id, item]))
-    const newMap = new Map(newData.map((item) => [item.id, item]))
-
-    // Find added item
-    for (const item of newData) {
-      if (!oldMap.has(item.id)) {
-        item.$psChange = { type: 'insert', timestamp: Date.now() }
-        setChangeAsOld(item)
-        return { type: 'insert', rowId: item.id, currentData: item }
-      }
-    }
-
-    // Find deleted item
-    for (const item of oldData) {
-      if (!newMap.has(item.id)) {
-        item.$psChange = { type: 'delete', timestamp: Date.now() }
-        setChangeAsOld(item)
-        return { type: 'delete', rowId: item.id, previousData: item }
-      }
-    }
-
-    // Find updated item
-    for (const item of newData) {
-      const oldItem = oldMap.get(item.id)
-      if (oldItem && JSON.stringify(oldItem) !== JSON.stringify(item)) {
-        const changedFields = Object.keys(item as Record<string, unknown>).filter((key) => JSON.stringify(oldItem[key]) !== JSON.stringify(item[key]))
-        item.$psChange = { type: 'update', timestamp: Date.now(), changedFields }
-        setChangeAsOld(item)
-        return { type: 'update', rowId: item.id, previousData: oldItem, currentData: item, changedFields }
-      }
-    }
-
-    return null
-  }
-
-  // --- Main fetch logic, supports reactivity if watchSource is provided ---
-  const fetch = async (params: any[] = parameters) => {
-    controller.abort()
-    controller = new AbortController()
-    isLoading.value = true
-
-    let isFirstUpdate = true
-
-    try {
-      for await (const update of $db.watch(sql, params, { signal: controller.signal })) {
-        const newData = update.rows?._array || []
-
-        if (detectChanges && !isFirstUpdate) {
-          const currentData = data.value as T[]
-          changeInfo.value = detectChangeType(currentData, newData)
-          previousData.value = [...currentData]
-        }
-
-        if (isFirstUpdate) {
-          isFirstUpdate = false
-          if (promiseResolve) promiseResolve()
-        }
-
-        data.value = newData
-        isLoading.value = false
-      }
-    } catch (e) {
-      if ((e as any).name !== 'AbortError') {
-        error.value = e as Error
-      }
+  // Register listener
+  const dispose = watchedQuery.registerListener({
+    onData: (newData: T[]) => {
+      data.value = newData
       isLoading.value = false
-      if (isFirstUpdate && promiseResolve) promiseResolve()
-    }
-  }
-
-  // Initial fetch
-  fetch(parameters)
-
-  // Watch for changes if watchSource is provided
-  let stopWatcher: (() => void) | undefined
-  if (options?.watchSource) {
-    stopWatcher = watch(
-      options.watchSource,
-      (val) => {
-        const params = [...parameters]
-        params[0] = val
-        fetch(params)
-      },
-      { immediate: false }
-    )
-  }
-
-  /*
-  onUnmounted(() => {
-    controller.abort()
-    if (stopWatcher) stopWatcher()
+      if (promiseResolve) {
+        promiseResolve()
+        promiseResolve = undefined
+      }
+    },
+    onError: (err: Error) => {
+      error.value = err
+      isLoading.value = false
+      if (promiseResolve) {
+        promiseResolve()
+        promiseResolve = undefined
+      }
+    },
+    onDiff: detectChanges
+      ? (diff: any) => {
+          // Handle added items
+          if (diff.added?.length) {
+            const item = diff.added[0]
+            item.$psChange = { type: 'insert', timestamp: Date.now() }
+            setChangeAsOld(item)
+            changeInfo.value = { type: 'insert', rowId: item.id, currentData: item }
+          }
+          // Handle removed items
+          else if (diff.removed?.length) {
+            const item = diff.removed[0]
+            changeInfo.value = { type: 'delete', rowId: item.id, previousData: item }
+          }
+          // Handle updated items
+          else if (diff.updated?.length) {
+            const { current, previous } = diff.updated[0]
+            const changedFields = Object.keys(current).filter((key) => JSON.stringify(current[key]) !== JSON.stringify(previous[key]))
+            current.$psChange = { type: 'update', timestamp: Date.now(), changedFields }
+            setChangeAsOld(current)
+            changeInfo.value = {
+              type: 'update',
+              rowId: current.id,
+              previousData: previous,
+              currentData: current,
+              changedFields,
+            }
+          }
+        }
+      : undefined,
   })
-    */
+
+  // Handle reactive parameter updates
+  let stopWatcher: (() => void) | undefined
+  if (options?.watchSource) stopWatcher = watch(options.watchSource, (val) => watchedQuery.updateSettings({ query: { sql, parameters: [val, ...parameters.slice(1)] } }), { immediate: false })
+
+  // Simple cleanup
+  getCurrentInstance() &&
+    onUnmounted(() => {
+      dispose()
+      stopWatcher?.()
+    })
 
   return {
     data,
@@ -170,9 +120,28 @@ export function usePSWatch<T extends WithPSChange>(sql: string, parameters: any[
   }
 }
 
+/*
+export function usePSWatchWithTimeout<T extends WithPSChange>(sql: string, parameters: any[] = [], timeoutMs: number = 3000, options?: PSWatchOptions) {
+  const result = usePSWatch<T>(sql, parameters, options)
+
+  // Create a timeout promise that resolves with empty data
+  const timeoutPromise = new Promise<void>((resolve) => {
+    setTimeout(() => {
+      console.log(`Query timed out: ${sql}`)
+      resolve()
+    }, timeoutMs)
+  })
+
+  // Override the await function to race with a timeout
+  const originalAwait = result.await
+  result.await = () => Promise.race([originalAwait(), timeoutPromise])
+
+  return result
+}
+  */
+
 export function usePSWatchSingle<T extends WithPSChange>(sql: string, parameters: any[] = [], options?: PSWatchOptions) {
   const arrayResult = usePSWatch<T>(sql, parameters, options)
-
   return {
     data: computed(() => arrayResult.data.value?.[0] || null),
     isLoading: arrayResult.isLoading,
@@ -182,15 +151,14 @@ export function usePSWatchSingle<T extends WithPSChange>(sql: string, parameters
   }
 }
 
-export function usePSQueryWatcher<T>(queries: { data: Ref<any>; isLoading?: Ref<boolean> }[], callback: (data: Ref<UnwrapRef<T> | null>) => void) {
+export function usePSQueryWatcher<T>(queries: { data: Ref<any>; isLoading?: Ref<boolean> }[], callback: (data: Ref<T | null>) => void) {
   const isLoading = ref(true)
-  const data = ref<UnwrapRef<T> | null>(null)
+  const data = ref<T | null>(null)
 
   watchEffect(() => {
     const allQueriesPopulated = queries.every((q) => q.data.value)
-
     if (allQueriesPopulated) {
-      callback(data as Ref<UnwrapRef<T> | null>)
+      callback(data as Ref<T | null>)
       isLoading.value = false
     } else {
       isLoading.value = true
@@ -199,33 +167,3 @@ export function usePSQueryWatcher<T>(queries: { data: Ref<any>; isLoading?: Ref<
 
   return { data, isLoading }
 }
-
-/*
-export const useLoadingWatcher = <T>(
-  data: Ref<T>,
-  label?: string,
-  options?: {
-    changeInfo?: Ref<ChangeInfo<any> | null>
-    onChangeCallback?: (info: ChangeInfo<any>) => void
-    onDataChange?: (value: T) => void // Add generic data change callback
-    skipEmptyArrays?: boolean
-  }
-) => {
-  watchEffect(() => {
-    if (label) console.log(label, data.value)
-    if (options?.onDataChange && data.value) {
-      if (options.skipEmptyArrays && Array.isArray(data.value) && data.value.length === 0) return
-      options.onDataChange(data.value)
-    }
-  })
-
-  if (options?.changeInfo) {
-    watch(options.changeInfo, (info) => {
-      if (info) {
-        console.log(`${label} Change:`, info)
-        options.onChangeCallback?.(info)
-      }
-    })
-  }
-}
-*/
