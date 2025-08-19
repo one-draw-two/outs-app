@@ -59,7 +59,7 @@ const groupedRealFixtures = computed(() => {
   }))
 })
 
-wecl(groupedRealFixtures)
+// wecl(groupedRealFixtures)
 
 // Hover state management
 const hoveredItemIndex = ref<number | null>(null)
