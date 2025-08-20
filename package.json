@@ -34,7 +34,7 @@
     "@outs1x2/capacitor-liveactivities": "^0.2.6",
     "@powersync/web": "^1.25.1",
     "@tailwindcss/vite": "^4.1.12",
-    "@tailwindplus/elements": "^1.0.8",
+    "@tailwindplus/elements": "^1.0.9",
     "capacitor-plugin-safe-area": "^4.0.0",
     "dayjs": "^1.11.13",
     "jwt-decode": "^4.0.0",

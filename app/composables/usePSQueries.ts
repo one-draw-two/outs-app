@@ -143,8 +143,6 @@ export const usePopulatedChallenge = async (challengeId: string) => {
 }
 
 export const usePopulatedRealFixture = async (rfId: string) => {
-  console.log('Sevgiyle geldik ve gidecegiz')
-
   const realFixtureQuery = usePSWatch<_RealFixture>(`SELECT * FROM "real_fixtures" WHERE id IN (?)`, [rfId])
 
   await realFixtureQuery.await()
@@ -155,16 +153,9 @@ export const usePopulatedRealFixture = async (rfId: string) => {
 
   await realTeamsQuery.await()
 
-  console.log(';')
-
   const realEventsQuery = usePSWatch<_RealEvent>(`SELECT * FROM "real_events" WHERE "_realFixture" IN (?)`, [rfId], { detectChanges: true })
-  // const realEventsQuery = usePSWatchWithTimeout<_RealEvent>(`SELECT * FROM "real_events" WHERE "_realFixture" = ?`, [rfId], 3000, { detectChanges: true })
-
-  console.log('A')
 
   await realEventsQuery.await()
-
-  console.log('B')
 
   /*
   const realFixtures = transformedChallenge?.fixtureSlots.map((fs: any) => fs._realFixture)
@@ -179,8 +170,6 @@ export const usePopulatedRealFixture = async (rfId: string) => {
 
   await realTeamsQuery.await()
   */
-
-  console.log('Ben bir hamsterim')
 
   return usePSQueryWatcher<_P_RealFixture>([realFixtureQuery, realTeamsQuery, realEventsQuery], (realFixture) => {
     realFixture.value = {

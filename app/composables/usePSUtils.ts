@@ -44,28 +44,39 @@ export function usePSWatch<T extends WithPSChange>(sql: string, parameters: any[
   let promiseResolve: (() => void) | undefined
   const firstPopulationPromise = new Promise<void>((resolve) => (promiseResolve = resolve))
 
+  // Helper function to resolve promise and update loading state
+  const resolvePromise = () => {
+    if (promiseResolve) {
+      isLoading.value = false
+      promiseResolve()
+      promiseResolve = undefined
+    }
+  }
+
   // Simple change highlighting
   const setChangeAsOld = (item: T) => item.$psChange && setTimeout(() => (item.$psChange!.isOld = true), highlightDuration)
 
   // Create watched query
-  const watchedQuery = $db.query({ sql, parameters }).differentialWatch({ rowComparator: { keyBy: (item: any) => item.id, compareBy: (item: any) => JSON.stringify(item) } })
+  const watchedQuery = $db.query({ sql, parameters }).differentialWatch({
+    rowComparator: { keyBy: (item: any) => item.id, compareBy: (item: any) => JSON.stringify(item) },
+  })
 
   // Register listener
   const dispose = watchedQuery.registerListener({
     onData: (newData: T[]) => {
       data.value = newData
-      isLoading.value = false
-      if (promiseResolve) {
-        promiseResolve()
-        promiseResolve = undefined
-      }
+      resolvePromise()
     },
     onError: (err: Error) => {
       error.value = err
-      isLoading.value = false
-      if (promiseResolve) {
-        promiseResolve()
-        promiseResolve = undefined
+      resolvePromise()
+    },
+    // This handler ensures we resolve even with empty results
+    onStateChange: (state: any) => {
+      if (!state.isLoading && promiseResolve) {
+        // PowerSync might not call onData with an empty array, so we set it here
+        if (state.data && state.data.length === 0) data.value = []
+        resolvePromise()
       }
     },
     onDiff: detectChanges
@@ -119,26 +130,6 @@ export function usePSWatch<T extends WithPSChange>(sql: string, parameters: any[
     await: () => firstPopulationPromise,
   }
 }
-
-/*
-export function usePSWatchWithTimeout<T extends WithPSChange>(sql: string, parameters: any[] = [], timeoutMs: number = 3000, options?: PSWatchOptions) {
-  const result = usePSWatch<T>(sql, parameters, options)
-
-  // Create a timeout promise that resolves with empty data
-  const timeoutPromise = new Promise<void>((resolve) => {
-    setTimeout(() => {
-      console.log(`Query timed out: ${sql}`)
-      resolve()
-    }, timeoutMs)
-  })
-
-  // Override the await function to race with a timeout
-  const originalAwait = result.await
-  result.await = () => Promise.race([originalAwait(), timeoutPromise])
-
-  return result
-}
-  */
 
 export function usePSWatchSingle<T extends WithPSChange>(sql: string, parameters: any[] = [], options?: PSWatchOptions) {
   const arrayResult = usePSWatch<T>(sql, parameters, options)
