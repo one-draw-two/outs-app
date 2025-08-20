@@ -29,13 +29,8 @@ const props = defineProps<{
   fixtureSlot?: any
 }>()
 
-const route = useRoute()
-
 useDynamicPS().updatePowerSyncParams({ selected_rf: props.rf.id })
 const { data: realFixture } = await usePopulatedRealFixture(props.rf.id as string)
 
 const timeSortedEvents = computed(() => realFixture.value?._events?.sort((a: any, b: any) => a.time - b.time))
-
-// wecl(realFixture, 'DB Populated RealFixture')
-// wecl(snapshotRealFixture, 'Snapshot Enhanced RealFixture')
 </script>

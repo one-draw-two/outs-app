@@ -63,6 +63,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
   // Reactively update the round for consumer pages and components
   watch(round, (r: any) => (useState('round').value = { ...r, $statusColor: roundStatusColor.value }), { immediate: true })
 
+  wecl(round, 'Round')
+
   useState('tournamentCols').value = headers.value
 
   currentRoundId.value = rid

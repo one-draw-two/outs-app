@@ -33,8 +33,6 @@ const season = useState<_P_Season>('season')
 const stage = computed(() => season.value?.stages?.find((s: any) => s.id === round.value?._stage))
 const round = useState<_P_Round>('round')
 
-wecl(round, 'Round')
-
 const getRoundLink = (newRid: string) =>
   ['matches', 'challenges'].includes(useRoute().path.split('/').pop() ?? '') ? useSL(`round/${newRid}/${useRoute().path.split('/').pop()}`) : useSL(`round/${newRid}`)
 </script>

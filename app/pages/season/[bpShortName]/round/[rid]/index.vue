@@ -35,7 +35,7 @@ const $day = useNuxtApp().vueApp.config.globalProperties.$day
 
 const realFixtures = computed(() => round.value?.snapshots?.map((s: any) => s.$realFixture).filter(Boolean))
 
-wecl(realFixtures)
+// wecl(realFixtures)
 
 const groupedRealFixtures = computed(() => {
   if (!realFixtures.value?.length) return []

@@ -1,19 +1,19 @@
 PODS:
-  - Capacitor (7.2.0):
+  - Capacitor (7.4.2):
     - CapacitorCordova
-  - CapacitorApp (7.0.1):
+  - CapacitorApp (7.0.2):
     - Capacitor
   - CapacitorCommunityFcm (7.1.1):
     - Capacitor
     - FirebaseMessaging
-  - CapacitorCordova (7.2.0)
-  - CapacitorNetwork (7.0.1):
+  - CapacitorCordova (7.4.2)
+  - CapacitorNetwork (7.0.2):
     - Capacitor
   - CapacitorPluginSafeArea (4.0.0):
     - Capacitor
-  - CapacitorPreferences (7.0.1):
+  - CapacitorPreferences (7.0.2):
     - Capacitor
-  - CapacitorPushNotifications (7.0.1):
+  - CapacitorPushNotifications (7.0.2):
     - Capacitor
   - FirebaseCore (11.0.0):
     - FirebaseCoreInternal (~> 11.0)
@@ -72,15 +72,15 @@ PODS:
   - PromisesObjC (2.4.0)
 
 DEPENDENCIES:
-  - "Capacitor (from `../../node_modules/.pnpm/@capacitor+ios@7.2.0_@capacitor+core@7.2.0/node_modules/@capacitor/ios`)"
-  - "CapacitorApp (from `../../node_modules/.pnpm/@capacitor+app@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/app`)"
-  - "CapacitorCommunityFcm (from `../../node_modules/.pnpm/@capacitor-community+fcm@7.1.1_@capacitor+core@7.2.0/node_modules/@capacitor-community/fcm`)"
-  - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@7.2.0_@capacitor+core@7.2.0/node_modules/@capacitor/ios`)"
-  - "CapacitorNetwork (from `../../node_modules/.pnpm/@capacitor+network@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/network`)"
-  - "CapacitorPluginSafeArea (from `../../node_modules/.pnpm/capacitor-plugin-safe-area@4.0.0_@capacitor+core@7.2.0/node_modules/capacitor-plugin-safe-area`)"
-  - "CapacitorPreferences (from `../../node_modules/.pnpm/@capacitor+preferences@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/preferences`)"
-  - "CapacitorPushNotifications (from `../../node_modules/.pnpm/@capacitor+push-notifications@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/push-notifications`)"
-  - "Outs1x2CapacitorLiveactivities (from `../../node_modules/.pnpm/@outs1x2+capacitor-liveactivities@0.2.6_@capacitor+core@7.2.0/node_modules/@outs1x2/capacitor-liveactivities`)"
+  - "Capacitor (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
+  - "CapacitorCommunityFcm (from `../../node_modules/@capacitor-community/fcm`)"
+  - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorNetwork (from `../../node_modules/@capacitor/network`)"
+  - CapacitorPluginSafeArea (from `../../node_modules/capacitor-plugin-safe-area`)
+  - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
+  - "CapacitorPushNotifications (from `../../node_modules/@capacitor/push-notifications`)"
+  - "Outs1x2CapacitorLiveactivities (from `../../node_modules/@outs1x2/capacitor-liveactivities`)"
 
 SPEC REPOS:
   trunk:
@@ -95,33 +95,33 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   Capacitor:
-    :path: "../../node_modules/.pnpm/@capacitor+ios@7.2.0_@capacitor+core@7.2.0/node_modules/@capacitor/ios"
+    :path: "../../node_modules/@capacitor/ios"
   CapacitorApp:
-    :path: "../../node_modules/.pnpm/@capacitor+app@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/app"
+    :path: "../../node_modules/@capacitor/app"
   CapacitorCommunityFcm:
-    :path: "../../node_modules/.pnpm/@capacitor-community+fcm@7.1.1_@capacitor+core@7.2.0/node_modules/@capacitor-community/fcm"
+    :path: "../../node_modules/@capacitor-community/fcm"
   CapacitorCordova:
-    :path: "../../node_modules/.pnpm/@capacitor+ios@7.2.0_@capacitor+core@7.2.0/node_modules/@capacitor/ios"
+    :path: "../../node_modules/@capacitor/ios"
   CapacitorNetwork:
-    :path: "../../node_modules/.pnpm/@capacitor+network@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/network"
+    :path: "../../node_modules/@capacitor/network"
   CapacitorPluginSafeArea:
-    :path: "../../node_modules/.pnpm/capacitor-plugin-safe-area@4.0.0_@capacitor+core@7.2.0/node_modules/capacitor-plugin-safe-area"
+    :path: "../../node_modules/capacitor-plugin-safe-area"
   CapacitorPreferences:
-    :path: "../../node_modules/.pnpm/@capacitor+preferences@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/preferences"
+    :path: "../../node_modules/@capacitor/preferences"
   CapacitorPushNotifications:
-    :path: "../../node_modules/.pnpm/@capacitor+push-notifications@7.0.1_@capacitor+core@7.2.0/node_modules/@capacitor/push-notifications"
+    :path: "../../node_modules/@capacitor/push-notifications"
   Outs1x2CapacitorLiveactivities:
-    :path: "../../node_modules/.pnpm/@outs1x2+capacitor-liveactivities@0.2.6_@capacitor+core@7.2.0/node_modules/@outs1x2/capacitor-liveactivities"
+    :path: "../../node_modules/@outs1x2/capacitor-liveactivities"
 
 SPEC CHECKSUMS:
-  Capacitor: 106e7a4205f4618d582b886a975657c61179138d
-  CapacitorApp: d63334c052278caf5d81585d80b21905c6f93f39
+  Capacitor: 156d98aba46ec01dde72c4bbb92fa626837cad29
+  CapacitorApp: efc1e9748a8ea5d3e789cd82a4f451341cc7ac93
   CapacitorCommunityFcm: 15b0b44dcb160adc28f120719dcf9fbf72e14e1d
-  CapacitorCordova: 5967b9ba03915ef1d585469d6e31f31dc49be96f
-  CapacitorNetwork: 07ec4c69c1bb696f41c23e00d31bda1bbb221bba
+  CapacitorCordova: 5e58d04631bc5094894ac106e2bf1da18a9e6151
+  CapacitorNetwork: 9b9eaeb417ec0ffa22e2bc33a4c71df10e1d6f06
   CapacitorPluginSafeArea: af80830df43015a915e504a56318a3027d3fc806
-  CapacitorPreferences: cbf154e5e5519b7f5ab33817a334dda1e98387f9
-  CapacitorPushNotifications: 0b653a3264d56daccf0e8769fff15d2f48306de6
+  CapacitorPreferences: b583b5deb74e564c35968189d25d32c0fd41200d
+  CapacitorPushNotifications: 6ffcf5df95f17d71a1b02893549bc4727f80540c
   FirebaseCore: 3cf438f431f18c12cdf2aaf64434648b63f7e383
   FirebaseCoreInternal: cac45dbc4824e152fe93cdd5dd46bd503c3fdffb
   FirebaseInstallations: 833536e8ff1dfadd4b5f80e8dfef69e8edbd071d
@@ -132,6 +132,6 @@ SPEC CHECKSUMS:
   Outs1x2CapacitorLiveactivities: 1305e140fbea2a76d9c12f9bce5568c16c3f378d
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
 
-PODFILE CHECKSUM: 3411e450010b3d7d9241f388e7351046e1cf12d4
+PODFILE CHECKSUM: 9aa70afc4a5f615f1a4db862935d92c6f5cebd5d
 
 COCOAPODS: 1.16.2
