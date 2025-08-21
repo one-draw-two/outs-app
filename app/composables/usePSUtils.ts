@@ -21,9 +21,11 @@ export interface PSWatchOptions {
   watchSource?: Ref<any> | ComputedRef<any>
 }
 
+const DEBUG = false
+
 export function usePSWatch<T extends WithPSChange>(sql: string, parameters: any[] = [], options?: PSWatchOptions) {
   if (sql.includes(' IN (') && parameters.length === 0) {
-    console.warn('Avoiding SQL error: IN clause with empty parameters array detected')
+    if (DEBUG) console.warn('Avoiding SQL error: IN clause with empty parameters array detected')
     return {
       data: ref<T[]>([]),
       isLoading: ref(false),
@@ -57,9 +59,7 @@ export function usePSWatch<T extends WithPSChange>(sql: string, parameters: any[
   const setChangeAsOld = (item: T) => item.$psChange && setTimeout(() => (item.$psChange!.isOld = true), highlightDuration)
 
   // Create watched query
-  const watchedQuery = $db.query({ sql, parameters }).differentialWatch({
-    rowComparator: { keyBy: (item: any) => item.id, compareBy: (item: any) => JSON.stringify(item) },
-  })
+  const watchedQuery = $db.query({ sql, parameters }).differentialWatch({ rowComparator: { keyBy: (item: any) => item.id, compareBy: (item: any) => JSON.stringify(item) } })
 
   // Register listener
   const dispose = watchedQuery.registerListener({

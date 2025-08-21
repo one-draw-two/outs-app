@@ -1,12 +1,12 @@
 PODS:
-  - Capacitor (7.4.2):
+  - Capacitor (7.4.3):
     - CapacitorCordova
   - CapacitorApp (7.0.2):
     - Capacitor
   - CapacitorCommunityFcm (7.1.1):
     - Capacitor
     - FirebaseMessaging
-  - CapacitorCordova (7.4.2)
+  - CapacitorCordova (7.4.3)
   - CapacitorNetwork (7.0.2):
     - Capacitor
   - CapacitorPluginSafeArea (4.0.0):
@@ -114,10 +114,10 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@outs1x2/capacitor-liveactivities"
 
 SPEC CHECKSUMS:
-  Capacitor: 156d98aba46ec01dde72c4bbb92fa626837cad29
+  Capacitor: b4741ca7affb32c1b70debd03df92cbf522d8a80
   CapacitorApp: efc1e9748a8ea5d3e789cd82a4f451341cc7ac93
   CapacitorCommunityFcm: 15b0b44dcb160adc28f120719dcf9fbf72e14e1d
-  CapacitorCordova: 5e58d04631bc5094894ac106e2bf1da18a9e6151
+  CapacitorCordova: 435121e81a2df4d0034f0fb11fcefab5104cfdb5
   CapacitorNetwork: 9b9eaeb417ec0ffa22e2bc33a4c71df10e1d6f06
   CapacitorPluginSafeArea: af80830df43015a915e504a56318a3027d3fc806
   CapacitorPreferences: b583b5deb74e564c35968189d25d32c0fd41200d

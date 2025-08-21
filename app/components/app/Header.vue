@@ -1,11 +1,13 @@
 <template>
-  <div class="absolute top-0 w-screen h-24 flex items-center" style="background: linear-gradient(to bottom, #ffffff 50%, #8ee59d00 50%)">
-    <!-- 
+  <div class="safe-area-padding-top">
+    <div class="relative top-0 w-screen h-24 flex items-center">
+      <div class="bg-gray-300 h-12 absolute w-full bottom-0"></div>
+      <!-- 
     <AppSeasonPicker>
       <NuxtLink :to="useSL('')" class="block"><img src="/outstanding.svg" class="h-3" alt="Logo" /></NuxtLink>
     </AppSeasonPicker>
     -->
-    <!-- 
+      <!-- 
     <div class="flex flex-col xitems-center relative">
       <NuxtLink :to="useSL('')" class="block"><img src="/outstanding.svg" class="absolute h-3 top-0.5" alt="Logo" /></NuxtLink>
       <img src="/Season26Label.png" class="h-12" alt="Logo" />
@@ -13,13 +15,14 @@
     
     <NuxtLink :to="useSL('')" class="block"><img src="/26Blank.png" class="h-18" alt="Logo" /></NuxtLink>
     -->
-    <div class="relative main-container flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <NuxtLink :to="useSL(`campaign/${season?.id}`)" class="z-1 block bg-white rounded-md py-2 px-4 shrink-0"><img src="/outstanding.svg" class="h-3" alt="Logo" /></NuxtLink>
-        <img v-if="false" src="/C3.png" class="h-8" alt="Season Label" />
-        <AppSeasonPicker v-if="true" class="opacity-0"></AppSeasonPicker>
+      <div class="relative main-container flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <NuxtLink :to="useSL(`campaign/${season?.id}`)" class="z-1 block bg-white rounded-md py-2 px-4 shrink-0"><img src="/outstanding.svg" class="h-3" alt="Logo" /></NuxtLink>
+          <img v-if="false" src="/C3.png" class="h-8" alt="Season Label" />
+          <AppSeasonPicker v-if="true" class="opacity-0"></AppSeasonPicker>
+        </div>
+        <AppUserButton />
       </div>
-      <AppUserButton />
     </div>
   </div>
 </template>

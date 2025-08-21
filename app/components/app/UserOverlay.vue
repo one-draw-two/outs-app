@@ -1,16 +1,17 @@
 <template>
   <Transition name="fade">
-    <div v-if="isUserOverlayOpen" class="fixed inset-0 z-40 bg-black/30 backdrop-blur-xsXXX" @click="isUserOverlayOpen = false"></div>
+    <div v-if="isUserOverlayOpen" class="fixed inset-0 z-40 bg-black/30 backdrop-blur-xs" @click="isUserOverlayOpen = false"></div>
   </Transition>
   <Transition name="slide-panel">
     <aside v-if="isUserOverlayOpen" class="fixed top-0 right-0 z-50 h-full w-[80vw] lg:max-w-1/2 bg-white" @click.stop>
-      <div class="safe-area-padding-top space-y-8">
-        <div class="flex items-center justify-between h-12 bg-gray-400 px-8">
+      <div class="safe-area-padding-top">
+        <div class="flex items-center justify-between h-24 bg-gray-400 px-8">
           <h1>{{ userName }}</h1>
         </div>
         <div class="px-8">
           <NetworkButton />
           <ClearButton />
+          <UserUiThemeSelector />
           <LogoutButton @clear-user="clearUser" />
         </div>
       </div>

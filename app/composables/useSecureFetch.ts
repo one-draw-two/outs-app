@@ -1,6 +1,6 @@
 type HttpMethod = 'get' | 'GET' | 'post' | 'POST' | 'put' | 'PUT' | 'delete' | 'DELETE' | 'patch' | 'PATCH' | 'head' | 'HEAD' | 'connect' | 'CONNECT' | 'options' | 'OPTIONS' | 'trace' | 'TRACE'
 
-type ServiceType = 'auth' | 'base' | 'token'
+type ServiceType = 'auth' | 'base' | 'token' | 'settings'
 
 export default function (url: string, service: ServiceType, method?: HttpMethod, body?: any, params?: any) {
   const config = useRuntimeConfig()
@@ -11,6 +11,7 @@ export default function (url: string, service: ServiceType, method?: HttpMethod,
       auth: config.public.authUrl,
       base: config.public.baseUrl,
       token: config.public.tokenUrl,
+      settings: config.public.settingsUrl,
     }
 
     return serviceMap[type]
