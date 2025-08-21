@@ -57,6 +57,18 @@ export const useAuthStorage = () => {
     }
   }
 
+  const updateStoredAuth = async (updateFn: (data: AuthResponseSuccess['data']) => void) => {
+    try {
+      const stored = await getStoredAuth()
+      if (stored) {
+        updateFn(stored)
+        await saveAuthAndRefreshToken({ success: true, data: stored })
+      }
+    } catch (error) {
+      console.error('Failed to update stored auth:', error)
+    }
+  }
+
   const clearAuth = async () => await Preferences.remove({ key: AUTH_KEY })
   const clearRefresh = async () => await Preferences.remove({ key: REFRESH_KEY })
 
@@ -66,5 +78,6 @@ export const useAuthStorage = () => {
     clearRefresh,
     getStoredAuth,
     getRefreshToken,
+    updateStoredAuth,
   }
 }

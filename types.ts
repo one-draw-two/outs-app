@@ -29,6 +29,11 @@ export interface BaseWithChange extends Base, WithPSChange {}
 // Non PS types
 export interface User extends Base {
   email: string
+  settings?: {
+    ui?: {
+      theme?: 'system' | 'light' | 'dark'
+    }
+  }
 }
 
 // Export combined types for all records

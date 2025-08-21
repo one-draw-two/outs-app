@@ -10,6 +10,12 @@ export default function (res: AuthResponseSuccess, navToPath?: string, isToSaveO
   useState<String>('accessToken').value = res.data.accessToken
   useState<String>('powerSyncToken').value = res.data.powerSyncToken
 
+  console.log('User initialized')
+
+  const theme = res.data.user?.settings?.ui?.theme || 'system'
+  console.log(`Setting theme to: ${theme}`)
+  useUiTheme().setTheme(theme)
+
   if (DEBUG) console.log('A')
 
   useDynamicPS(true) // Parameters will be carried by useState<powerSyncParams>

@@ -5,6 +5,9 @@
 @source inline("bg-{red,blue,green,yellow,purple,pink,indigo,gray,orange,teal,cyan,lime,amber,emerald,fuchsia,rose,sky,violet,stone,neutral,zinc,slate}-500/50");
 @source inline("bg-{red,blue,green,yellow,purple,pink,indigo,gray,orange,teal,cyan,lime,amber,emerald,fuchsia,rose,sky,violet,stone,neutral,zinc,slate}-500/20");
 
+/* Add dark mode variant */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
 body::-webkit-scrollbar {
   display: none;
 }

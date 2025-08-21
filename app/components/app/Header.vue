@@ -1,6 +1,6 @@
 <template>
   <div class="safe-area-padding-top">
-    <div class="relative top-0 w-screen h-24 flex items-center">
+    <div class="relative top-0 w-screen h-24 flex items-center bg-white dark:bg-gray-800">
       <div class="bg-gray-300 h-12 absolute w-full bottom-0"></div>
       <!-- 
     <AppSeasonPicker>

@@ -6,6 +6,10 @@ export default defineNuxtRouteMiddleware(async (to, _) => {
 
   try {
     const storedData = await authStorage.getStoredAuth() // Note: Clears auth in useAuthStorage if doesnt return successful
+
+    console.log('MAKSAT')
+    console.log(storedData)
+
     if (storedData) return useInitUser({ success: true, data: storedData })
 
     /*
