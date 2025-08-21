@@ -56,6 +56,7 @@ const calendar_seasons = new Table(
     _bpDomain: column.text,
     _currentRound: column.text,
     bgUrl: column.text,
+    color: column.text,
   },
   { indexes: {} }
 )

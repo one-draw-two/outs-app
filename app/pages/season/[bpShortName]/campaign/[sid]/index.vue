@@ -12,7 +12,7 @@ import type { _Season, _Stage, _Round, _BPTournamentRecord } from '~/../types'
 const sid = useRoute().params.sid as string
 
 const season = useState<any>('season')
-watch(toRef(sid), async (to) => !to || season.value?.id === to || (useState<any>('season').value = (await usePopulatedSeason(to)).data.value), { immediate: true })
+watch(toRef(sid), async (to) => useSeasonState().setSeason(to), { immediate: true })
 
 const { processedGroups } = await useGroupsWithUsers({ _refId: sid }, false)
 

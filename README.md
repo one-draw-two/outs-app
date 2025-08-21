@@ -106,3 +106,4 @@ nativeRoute.params.stid // Then use like this
 - Major: Adding tw elements with a large payload, but I am trying to make custom elements over the years so be it: 551.9kb
 - Wip: Package updates (powersync incremental queries) and then fixing and optimising watchers: 552.64kb
 - Feat: Initial user theme (system, light, dark) with settings backend configurations: 554.92kb
+- Wip: Season image and theme color moved into a composable: 554.95kb

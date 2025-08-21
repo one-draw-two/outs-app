@@ -23,7 +23,7 @@ if (!selectedStageId.value) selectedStageId.value = useRoute().params.stid
 
 const isInRouteContext = computed(() => /(round|stage|standings)/.test(useRoute().path))
 
-watch(selectedSeasonId, async (to) => !to || season.value?.id === to || (useState<any>('season').value = (await usePopulatedSeason(to)).data.value), { immediate: true })
+watch(selectedSeasonId, async (to) => await useSeasonState().setSeason(to), { immediate: true })
 
 watch(
   selectedStageId,
@@ -42,8 +42,8 @@ watch(
   { immediate: true }
 )
 
-const { data: seasons } = usePSWatch<any>('SELECT * FROM "calendar_seasons" ORDER BY name ASC', [], { abortController: new AbortController() })
-const { data: subscriptions } = usePSWatch<any>('SELECT * FROM "account_subscriptions"', [], { abortController: new AbortController() })
+const { data: seasons } = usePSWatch<any>('SELECT * FROM "calendar_seasons" ORDER BY name ASC', [])
+const { data: subscriptions } = usePSWatch<any>('SELECT * FROM "account_subscriptions"', [])
 
 const activeUserSubscriptionSeasons = computed(() => subscriptions.value.filter((sb: any) => sb.status === 'active').map((sb) => sb._season))
 
