@@ -1,7 +1,7 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js')
 
 // *** SINGLE VERSION PARAMETER TO CONTROL EVERYTHING ***
-const APP_VERSION = '1.2.0' // Update this when you need to invalidate caches
+const APP_VERSION = '1.2.1' // Update this when you need to invalidate caches
 const SW_VERSION = APP_VERSION
 const CACHE_SUFFIX = 'v' + APP_VERSION.split('.').join('')
 
