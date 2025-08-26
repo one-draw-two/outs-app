@@ -1,5 +1,7 @@
 export const useSeasonState = () => {
   const setSeason = async (seasonId: string) => {
+    console.log('SETTING SEASON TO', seasonId)
+
     const season = useState<any>('season')
     if (!seasonId || season.value?.id === seasonId) return false
 

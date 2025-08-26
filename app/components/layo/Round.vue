@@ -8,9 +8,9 @@
           </NuxtLink>
           <div class="flex items-center gap-2">
             <NuxtLink v-for="r of stage?.rounds" :key="r?.id" :to="getRoundLink(r?.id)" class="hover:underline">
-              <PrevTripleCrop :clip="'circle'" :title="`Round status: ${r?.status}`">
-                <div class="size-3" :class="r.id === round.id ? 'bg-orange-300' : `bg-${round.$statusColor}-500`" />
-              </PrevTripleCrop>
+              <div :title="`Round status: ${r?.status}`" class="rounded-full size-5 ring-2 flex-center" :class="`bg-${getRoundStatusColor(r)}-500`">
+                <div v-if="r.id === round.id" class="rounded-full size-2 bg-white ring-2"></div>
+              </div>
             </NuxtLink>
           </div>
         </div>
@@ -35,4 +35,10 @@ const round = useState<_P_Round>('round')
 
 const getRoundLink = (newRid: string) =>
   ['matches', 'challenges'].includes(useRoute().path.split('/').pop() ?? '') ? useSL(`round/${newRid}/${useRoute().path.split('/').pop()}`) : useSL(`round/${newRid}`)
+
+/*
+<PrevTripleCrop :clip="'circle'" :title="`Round status: ${r?.status}`">
+  <div class="size-3" :class="r.id === round.id ? 'bg-orange-300' : `bg-${round.$statusColor}-500`" />
+</PrevTripleCrop>
+*/
 </script>

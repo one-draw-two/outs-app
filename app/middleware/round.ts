@@ -49,19 +49,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
       })),
   ])
 
-  const roundStatusColor = computed(() => getRoundStatusColor(round.value))
-
-  const getRoundStatusColor = (r: any) => {
-    if (r?.status === 'current-published') return 'orange'
-    if (r?.status === 'current-points-getting-calculated') return 'yellow'
-    if (r?.status === 'current-points-calculated') return 'teal'
-    if (r?.status === 'current-live') return 'green'
-    if (r?.status === 'completed') return 'blue'
-    else return 'gray'
-  }
-
   // Reactively update the round for consumer pages and components
-  watch(round, (r: any) => (useState('round').value = { ...r, $statusColor: roundStatusColor.value }), { immediate: true })
+  watch(round, (r: any) => (useState('round').value = { ...r, $statusColor: getRoundStatusColor(round.value) }), { immediate: true })
 
   wecl(round, 'Round')
 
