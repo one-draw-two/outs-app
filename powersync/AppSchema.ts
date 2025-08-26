@@ -41,6 +41,7 @@ const blueprint_tournaments = new Table(
   {
     name: column.text,
     color: column.text,
+    order: column.integer,
     scopeConfig: column.text,
     snapshotConfig: column.text,
     displayConfig: column.text,

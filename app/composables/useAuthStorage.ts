@@ -60,9 +60,18 @@ export const useAuthStorage = () => {
   const updateStoredAuth = async (updateFn: (data: AuthResponseSuccess['data']) => void) => {
     try {
       const stored = await getStoredAuth()
-      if (stored) {
+      const refreshToken = await getRefreshToken()
+
+      if (stored && refreshToken) {
         updateFn(stored)
-        await saveAuthAndRefreshToken({ success: true, data: stored })
+
+        await saveAuthAndRefreshToken({
+          success: true,
+          data: {
+            ...stored,
+            refreshToken, // Dont forget to add the other components of stored auth here!
+          },
+        })
       }
     } catch (error) {
       console.error('Failed to update stored auth:', error)

@@ -4,7 +4,7 @@
 
     <div class="lg:flex max-lg:space-y-4">
       <div class="max-lg:w-[var(--container-width)] lg:w-72 aspect-3/1 shrink-0 mr-8 sticky left-[var(--twContPadding)] bg-gray-300 rounded-md">
-        <img :src="getSanityUrl(season.bgUrl, '1536x512')" class="w-full rounded-md" alt="Season Label" />
+        <img :src="getSanityUrl(season?.bgUrl, '1536x512')" class="w-full rounded-md" alt="Season Label" />
       </div>
 
       <div class="flex flex-1 z-1">

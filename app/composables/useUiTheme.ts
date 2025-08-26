@@ -1,6 +1,9 @@
-import type { User } from '~/../types'
-
 export const useUiTheme = () => {
+  const initTheme = () => {
+    const theme = localStorage.theme || 'system'
+    setTheme(theme)
+  }
+
   const setTheme = (theme: 'system' | 'light' | 'dark') => {
     // Remove existing theme
     document.documentElement.removeAttribute('data-theme')
@@ -25,13 +28,8 @@ export const useUiTheme = () => {
     }
   }
 
-  // Initialize theme on page load
-  onMounted(() => {
-    const theme = localStorage.theme || 'system'
-    setTheme(theme)
-  })
-
   return {
     setTheme,
+    initTheme,
   }
 }

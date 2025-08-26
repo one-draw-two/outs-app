@@ -17,4 +17,5 @@ const user = useState<User | null>('user')
 useKeyboard()
 useServiceWorker()
 useViewportDims()
+useUiTheme().setTheme(user.value?.settings?.ui?.theme || 'system')
 </script>

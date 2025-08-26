@@ -1,6 +1,6 @@
 <template>
   <LayoSeasonAndStage>
-    <div>
+    <div class="main-container">
       <div class="h-12 flex items-center gap-8 border-b border-gray-200 mb-8">
         <button
           v-for="(tournament, tournamentId) in tournamentGroupsMap"
@@ -35,19 +35,22 @@ const buildTournamentGroupsMap = async () => {
 
   await waitForData()
 
+  // Build map with groups and tournament info
   processedGroups.value.forEach((group) => {
     const tid = group._tournament
     if (!tid) return
-    map[tid] ??= { groups: [], parsedTournament: parseTournament(tournaments.value.find((t) => t.id === tid)!) }
+    const tournament = tournaments.value.find((t) => t.id === tid)!
+    const parsed = parseTournament(tournament)
+    map[tid] ??= { groups: [], parsedTournament: parsed }
     map[tid].groups.push(group)
   })
 
-  tournamentGroupsMap.value = map
+  // Sort by order from parsedTournament and update the ref
+  const sortedEntries = Object.entries(map).sort(([, a], [, b]) => a.parsedTournament.order - b.parsedTournament.order)
+  tournamentGroupsMap.value = Object.fromEntries(sortedEntries)
 }
 
 wecl(tournamentGroupsMap)
-
-const route = useRoute()
 
 const selectedTournamentType = ref<string | null>(null)
 
