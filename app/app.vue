@@ -15,7 +15,7 @@ import type { User } from '~/../types'
 const user = useState<User | null>('user')
 
 useKeyboard()
-useServiceWorker()
+// useServiceWorker()
 useViewportDims()
 useUiTheme().setTheme(user.value?.settings?.ui?.theme || 'system')
 </script>
