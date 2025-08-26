@@ -8,7 +8,15 @@ export const useSeasonState = () => {
     const newSeason = (await usePopulatedSeason(seasonId)).data.value
     season.value = newSeason
 
-    useHead({ meta: [{ name: 'theme-color', content: newSeason?.color || '#152038' }] })
+    useHead({
+      meta: [
+        {
+          name: 'theme-color',
+          content: newSeason?.color || '#152038',
+          key: 'theme-color', // Add key for proper updating
+        },
+      ],
+    })
 
     return true
   }
