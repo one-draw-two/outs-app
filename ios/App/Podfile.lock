@@ -3,7 +3,7 @@ PODS:
     - CapacitorCordova
   - CapacitorApp (7.0.2):
     - Capacitor
-  - CapacitorCommunityFcm (7.1.1):
+  - CapacitorCommunityFcm (7.1.3):
     - Capacitor
     - FirebaseMessaging
   - CapacitorCordova (7.4.3)
@@ -116,7 +116,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Capacitor: b4741ca7affb32c1b70debd03df92cbf522d8a80
   CapacitorApp: efc1e9748a8ea5d3e789cd82a4f451341cc7ac93
-  CapacitorCommunityFcm: 15b0b44dcb160adc28f120719dcf9fbf72e14e1d
+  CapacitorCommunityFcm: 8b6bd4c26c95643dd954aa886d18b0693280c29f
   CapacitorCordova: 435121e81a2df4d0034f0fb11fcefab5104cfdb5
   CapacitorNetwork: 9b9eaeb417ec0ffa22e2bc33a4c71df10e1d6f06
   CapacitorPluginSafeArea: af80830df43015a915e504a56318a3027d3fc806
