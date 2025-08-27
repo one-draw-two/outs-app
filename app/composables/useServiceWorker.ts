@@ -52,6 +52,23 @@ export const useServiceWorker = () => {
         window.location.reload()
       })
 
+      // Handle unhandled module errors that might be SW related
+      window.addEventListener('error', (event) => {
+        if (event.message && event.message.includes('Failed to load module script')) {
+          console.error('Module loading error detected, may be related to Service Worker:', event)
+
+          // Consider unregistering the SW if this is a recurring problem
+          if (window.sessionStorage.getItem('sw-module-errors')) {
+            console.log('Multiple module errors detected, unregistering service worker...')
+            navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((reg) => reg.unregister()))
+            window.sessionStorage.removeItem('sw-module-errors')
+            window.location.reload()
+          } else {
+            window.sessionStorage.setItem('sw-module-errors', '1')
+          }
+        }
+      })
+
       // Register service worker
       navigator.serviceWorker
         .register('/sw.js')

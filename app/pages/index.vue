@@ -10,9 +10,6 @@ definePageMeta({
       if (DEBUG) console.log('Index page: Checking subscriptions...')
       if (DEBUG) console.log(useState<Boolean>('subscriptionsLoaded').value)
 
-      // Added later
-      // useDynamicPS().updatePowerSyncParams({})
-
       if (to.meta.isPublic) return
       if (useState<Boolean>('subscriptionsLoaded').value) return
 
@@ -68,6 +65,17 @@ definePageMeta({
         }
       } catch (error) {
         console.error('Database query failed or timed out:', error)
+
+        // Check if it's a module loading error
+        if (error.message && error.message.includes('Failed to load module script')) {
+          console.error('Detected module loading error, attempting recovery...')
+
+          // Try to bypass service worker cache by adding a timestamp parameter
+          const currentUrl = window.location.pathname
+          const noCache = `?nocache=${Date.now()}`
+          window.location.href = currentUrl + noCache
+          return
+        }
 
         try {
           await useClearUser().clearPowersyncData()

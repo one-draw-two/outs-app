@@ -1,7 +1,7 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js')
 
 // *** SINGLE VERSION PARAMETER TO CONTROL EVERYTHING ***
-const APP_VERSION = '1.2.5' // Update this when you need to invalidate caches
+const APP_VERSION = '1.2.6' // Update this when you need to invalidate caches
 const SW_VERSION = APP_VERSION
 const CACHE_SUFFIX = 'v' + APP_VERSION.split('.').join('')
 
@@ -179,6 +179,32 @@ workbox.precaching.precacheAndRoute([
   // Add any other critical static assets
 ])
 
+// Add a specific handler for the root index route
+workbox.routing.registerRoute(
+  ({ url }) => url.pathname === '/' || url.pathname === '/index.html',
+  new workbox.strategies.NetworkFirst({
+    cacheName: 'index-cache-' + CACHE_SUFFIX,
+    plugins: [
+      new workbox.expiration.ExpirationPlugin({
+        maxEntries: 5,
+        maxAgeSeconds: 24 * 60 * 60, // 1 day
+      }),
+      {
+        handlerDidError: async () => {
+          const cachedResponse = await caches.match('/index.html')
+          if (cachedResponse) {
+            return new Response(await cachedResponse.text(), {
+              headers: {
+                'Content-Type': 'text/html',
+              },
+            })
+          }
+        },
+      },
+    ],
+  })
+)
+
 // Handle PowerSync chunk requests with highest priority
 workbox.routing.registerRoute(
   ({ url }) => {
@@ -194,11 +220,17 @@ workbox.routing.registerRoute(
         maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
       }),
       {
-        // Add error handling
+        // Improved error handling
         handlerDidError: async ({ request }) => {
           console.error(`[SW ${SW_VERSION}] Failed to load PowerSync chunk:`, request.url)
-          // Return undefined to trigger fetch error handling
-          return undefined
+
+          // Try to fetch from network as a fallback
+          try {
+            return await fetch(request)
+          } catch (e) {
+            console.error(`[SW ${SW_VERSION}] Network fallback also failed:`, e)
+            return undefined
+          }
         },
       },
     ],
@@ -221,7 +253,16 @@ workbox.routing.registerRoute(
           return new Request('/index.html')
         },
         handlerDidError: async () => {
-          return await caches.match('/index.html')
+          // Return the cached index.html but ensure it's properly served as HTML
+          const cachedResponse = await caches.match('/index.html')
+          if (cachedResponse) {
+            // Ensure correct content type
+            return new Response(await cachedResponse.text(), {
+              headers: {
+                'Content-Type': 'text/html',
+              },
+            })
+          }
         },
       },
     ],
@@ -233,6 +274,18 @@ workbox.routing.registerRoute(
   ({ request }) => request.destination === 'script' || request.destination === 'style',
   new workbox.strategies.StaleWhileRevalidate({
     cacheName: 'static-assets-' + CACHE_SUFFIX,
+    plugins: [
+      new workbox.expiration.ExpirationPlugin({
+        maxEntries: 100,
+        maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
+      }),
+      {
+        handlerDidError: async ({ request }) => {
+          console.error(`[SW ${SW_VERSION}] Failed to load static asset:`, request.url)
+          return fetch(request)
+        },
+      },
+    ],
   })
 )
 
