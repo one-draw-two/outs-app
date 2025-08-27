@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="relative py-8 space-y-8 bg-gray-200 bg-repeat-xXbg-[length:256px_auto]" :style="{ backgroundImage: season?.bgUrl ? `url(${getSanityUrl(season?.bgUrl)}xx)` : 'none' }">
+    <div class="relative py-8 space-y-8 bg-gray-200">
       <div class="space-y-4 relative z-10 overflow-x-auto hide-scroll w-full whitespace-nowrap" style="scroll-padding-left: 2rem; scroll-padding-right: 2rem">
         <SeasonHorizontalCalendar />
       </div>
@@ -26,4 +26,8 @@ const season = useState<_P_Season>('season')
 wecl(season)
 
 const tournaments = computed(() => season.value?.tournaments?.filter((t) => t.name !== 'Campaign'))
+
+// Using repeating tiled background snippet
+// bg-repeat-xXbg-[length:256px_auto]
+// :style="{ backgroundImage: season?.bgUrl ? `url(${getSanityUrl(season?.bgUrl)}xx)` : 'none' }"
 </script>

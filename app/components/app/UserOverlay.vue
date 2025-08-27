@@ -13,10 +13,7 @@
           <ClearButton />
           <UserUiThemeSelector />
           <LogoutButton @clear-user="clearUser" />
-          <div class="mt-4 text-xs text-gray-500">
-            App version: {{ appVersion }}
-            <template v-if="swVersion && swVersion !== appVersion"> (SW: {{ swVersion }}) </template>
-          </div>
+          <div class="mt-4 text-xs text-gray-500">App version: {{ appVersion }} (SW: {{ swVersion ?? 'Unknown' }})</div>
         </div>
       </div>
     </aside>
@@ -26,30 +23,12 @@
 <script setup lang="ts">
 import type { User } from '~/../types'
 
-// const { clearAuth, clearRefresh } = useAuthStorage()
-// const { $capacitor } = useNuxtApp()
+const { appVersion, swVersion } = useAppVersion()
 
 const isUserOverlayOpen = useState<boolean>('isUserOverlayOpen')
 const userName = useState<User>('user').value?.name
 
-// Get versions from global state
-const appVersion = useState('appVersion').value || 'AV:Unknown'
-const swVersion = useState('swVersion').value || 'SW:Unknown'
+// <template v-if="swVersion !== appVersion"> (SW: {{ swVersion ?? 'Unknown' }}) </template>
 
 const clearUser = async () => await useClearUser().logOutUser()
-
-/*
-const clearUser = async () => {
-  await useSecureFetch('logout', 'auth', 'post', { fcmToken: useState<string>('fcmToken').value })
-  useState('user').value = null
-  useState('accessToken').value = null
-  useState('powerSyncToken').value = null
-  useState('fcmToken').value = null
-  const unregresp = $capacitor.$platform !== 'web' ? await $capacitor.$pushNotifications.unregister() : null
-  console.log(unregresp) // Check if i need to do this?
-  clearAuth()
-  clearRefresh()
-  navigateTo('/access/login')
-}
-  */
 </script>

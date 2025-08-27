@@ -108,3 +108,4 @@ nativeRoute.params.stid // Then use like this
 - Feat: Initial user theme (system, light, dark) with settings backend configurations: 554.92kb
 - Wip: Season image and theme color moved into a composable: 554.95kb
 - Wip: Front-end fixes and service workers tests: 555.12kb
+- Feat: Global version control for app and sw: 555.97kb
