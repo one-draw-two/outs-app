@@ -17,9 +17,9 @@
         "@outs1x2/capacitor-liveactivities": "^0.2.6",
         "@powersync/web": "^1.25.1",
         "@tailwindcss/vite": "^4.1.12",
-        "@tailwindplus/elements": "^1.0.9",
+        "@tailwindplus/elements": "^1.0.10",
         "capacitor-plugin-safe-area": "^4.0.0",
-        "dayjs": "^1.11.13",
+        "dayjs": "^1.11.14",
         "jwt-decode": "^4.0.0",
         "nuxt": "^4.0.3",
         "tailwindcss": "^4.1.12",
@@ -28,7 +28,7 @@
       },
       "devDependencies": {
         "@capacitor/cli": "^7.4.3",
-        "concurrently": "^9.2.0",
+        "concurrently": "^9.2.1",
         "localtunnel": "^2.0.2",
         "typescript": "^5.9.2",
         "vite-plugin-top-level-await": "^1.6.0",
@@ -531,7 +531,7 @@
 
     "@tailwindcss/vite": ["@tailwindcss/vite@4.1.12", "", { "dependencies": { "@tailwindcss/node": "4.1.12", "@tailwindcss/oxide": "4.1.12", "tailwindcss": "4.1.12" }, "peerDependencies": { "vite": "^5.2.0 || ^6 || ^7" } }, "sha512-4pt0AMFDx7gzIrAOIYgYP0KCBuKWqyW8ayrdiLEjoJTT4pKTjrzG/e4uzWtTLDziC+66R9wbUqZBccJalSE5vQ=="],
 
-    "@tailwindplus/elements": ["@tailwindplus/elements@1.0.9", "", {}, "sha512-QRJ/GdkHnMArYaM3/zFcB913xL/QMaP32Odg8GWKzeolcL5uFH4xvZ/DHQwTLRHJyZn44xmaNXBx7l0OM8VHQg=="],
+    "@tailwindplus/elements": ["@tailwindplus/elements@1.0.10", "", {}, "sha512-XiaBG7BHIz2i2nJ1EBTzMlGyQJTIqUBqSnsvEKWHgUSlL32dB8HStUf3mCFIIuVQ1RdOo9sfkXSutg5wrduU9A=="],
 
     "@tybys/wasm-util": ["@tybys/wasm-util@0.10.0", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-VyyPYFlOMNylG45GoAe0xDoLwWuowvf92F9kySqzYh8vmYm7D2u4iUJKa1tOUpS70Ku13ASrOkS4ScXFsTaCNQ=="],
 
@@ -811,7 +811,7 @@
 
     "data-uri-to-buffer": ["data-uri-to-buffer@4.0.1", "", {}, "sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A=="],
 
-    "dayjs": ["dayjs@1.11.13", "", {}, "sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg=="],
+    "dayjs": ["dayjs@1.11.14", "", {}, "sha512-E8fIdSxUlyqSA8XYGnNa3IkIzxtEmFjI+JU/6ic0P1zmSqyL6HyG5jHnpPjRguDNiaHLpfvHKWFiohNsJLqcJQ=="],
 
     "db0": ["db0@0.3.2", "", { "peerDependencies": { "@electric-sql/pglite": "*", "@libsql/client": "*", "better-sqlite3": "*", "drizzle-orm": "*", "mysql2": "*", "sqlite3": "*" }, "optionalPeers": ["@electric-sql/pglite", "@libsql/client", "better-sqlite3", "drizzle-orm", "mysql2", "sqlite3"] }, "sha512-xzWNQ6jk/+NtdfLyXEipbX55dmDSeteLFt/ayF+wZUU5bzKgmrDOxmInUTbyVRp46YwnJdkDA1KhB7WIXFofJw=="],
 

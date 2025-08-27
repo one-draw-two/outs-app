@@ -107,3 +107,4 @@ nativeRoute.params.stid // Then use like this
 - Wip: Package updates (powersync incremental queries) and then fixing and optimising watchers: 552.64kb
 - Feat: Initial user theme (system, light, dark) with settings backend configurations: 554.92kb
 - Wip: Season image and theme color moved into a composable: 554.95kb
+- Wip: Front-end fixes and service workers tests: 555.12kb
