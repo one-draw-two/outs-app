@@ -1,6 +1,10 @@
+// import { APP_VERSION } from '~/constants/version'
+
 export const useServiceWorker = () => {
   // Get runtime config to check environment
   const config = useRuntimeConfig()
+
+  const { appVersion } = useAppVersion()
 
   onMounted(() => {
     // Skip service worker in development mode
@@ -49,6 +53,7 @@ export const useServiceWorker = () => {
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         if (refreshing) return
         refreshing = true
+        console.log('New service worker is controlling the page, reloading...')
         window.location.reload()
       })
 
@@ -69,31 +74,54 @@ export const useServiceWorker = () => {
         }
       })
 
+      // Check if there's a waiting service worker and offer to update
+      const checkForWaitingServiceWorker = (registration) => {
+        // If there's a waiting SW, it means an update is available
+        if (registration.waiting) {
+          console.log('New service worker is waiting to activate')
+
+          // Ask the user if they want to update (or auto-update)
+          if (confirm('A new version of the app is available. Update now?')) {
+            registration.waiting.postMessage({ type: 'SKIP_WAITING' })
+          }
+
+          // Alternatively, for silent updates, uncomment:
+          // registration.waiting.postMessage({ type: 'SKIP_WAITING' })
+        }
+      }
+
       // Register service worker
       navigator.serviceWorker
-        .register('/sw.js')
+        // .register(`/sw.js?appVersion=${APP_VERSION}`)
+        .register(`/sw.js?appVersion=${appVersion.value}`)
         .then((registration) => {
           console.log('Service Worker registered:', registration.scope)
+
+          // Check if there's a waiting service worker
+          checkForWaitingServiceWorker(registration)
 
           // Check for updates immediately
           registration.update()
 
-          // Check for updates periodically
+          // Check for updates periodically (every 15 minutes instead of every hour)
           setInterval(() => {
             registration.update()
             console.log('Checking for Service Worker updates...')
-          }, 60 * 60 * 1000) // Check every hour
+          }, 15 * 60 * 1000) // Check every 15 minutes
 
           // Handle updates
           registration.addEventListener('updatefound', () => {
             const newWorker = registration.installing
+            console.log('New service worker update found, installing...')
 
             newWorker?.addEventListener('statechange', () => {
+              console.log(`Service worker state changed: ${newWorker.state}`)
+
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                 // New version available
                 console.log('New service worker version installed, ready to activate')
 
-                // Force activation
+                // Force activation immediately
                 newWorker.postMessage({ type: 'SKIP_WAITING' })
               }
             })

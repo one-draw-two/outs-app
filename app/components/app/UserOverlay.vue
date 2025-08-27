@@ -13,6 +13,10 @@
           <ClearButton />
           <UserUiThemeSelector />
           <LogoutButton @clear-user="clearUser" />
+          <div class="mt-4 text-xs text-gray-500">
+            App version: {{ appVersion }}
+            <template v-if="swVersion && swVersion !== appVersion"> (SW: {{ swVersion }}) </template>
+          </div>
         </div>
       </div>
     </aside>
@@ -26,8 +30,11 @@ import type { User } from '~/../types'
 // const { $capacitor } = useNuxtApp()
 
 const isUserOverlayOpen = useState<boolean>('isUserOverlayOpen')
-
 const userName = useState<User>('user').value?.name
+
+// Get versions from global state
+const appVersion = useState('appVersion').value || 'AV:Unknown'
+const swVersion = useState('swVersion').value || 'SW:Unknown'
 
 const clearUser = async () => await useClearUser().logOutUser()
 

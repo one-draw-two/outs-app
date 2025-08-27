@@ -1,7 +1,7 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js')
 
-// *** SINGLE VERSION PARAMETER TO CONTROL EVERYTHING ***
-const APP_VERSION = '1.2.6' // Update this when you need to invalidate caches
+// Import version from query parameter or use default
+const APP_VERSION = self.location.search.match(/appVersion=([^&]+)/)?.[1] || '1.2.6'
 const SW_VERSION = APP_VERSION
 const CACHE_SUFFIX = 'v' + APP_VERSION.split('.').join('')
 
@@ -11,6 +11,31 @@ console.log(`[SW ${SW_VERSION}] Service worker initializing with Workbox (cache 
 workbox.core.setCacheNameDetails({
   prefix: 'outstanding-offline',
   suffix: CACHE_SUFFIX,
+})
+
+self.addEventListener('install', (event) => {
+  // Force waiting service worker to become active
+  self.skipWaiting()
+})
+
+self.addEventListener('activate', (event) => {
+  // Take control of all clients immediately
+  event.waitUntil(clients.claim())
+
+  // Force new cache version
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          // If the cache name doesn't include our current cache suffix
+          if (cacheName.includes('outstanding-offline') && !cacheName.includes(CACHE_SUFFIX)) {
+            console.log(`[SW] Deleting old cache: ${cacheName}`)
+            return caches.delete(cacheName)
+          }
+        })
+      )
+    })
+  )
 })
 
 // Load the client manifest dynamically
@@ -328,5 +353,8 @@ workbox.routing.setDefaultHandler(
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting()
+  } else if (event.data && event.data.type === 'GET_VERSION') {
+    // Reply with version info
+    event.ports[0].postMessage({ version: SW_VERSION })
   }
 })

@@ -15,7 +15,9 @@ import type { User } from '~/../types'
 const user = useState<User | null>('user')
 
 useKeyboard()
-useServiceWorker() // Temporarily disabled during points calculations
+useServiceWorker()
 useViewportDims()
 useUiTheme().setTheme(user.value?.settings?.ui?.theme || 'system')
+
+onMounted(() => useAppVersion().checkSwVersion())
 </script>
