@@ -52,3 +52,7 @@ h1 {
 .text-stroke {
   text-shadow: -0.6px -0.6px 0 #000, 0.6px -0.6px 0 #000, -0.6px 0.6px 0 #000, 0.6px 0.6px 0 #000;
 }
+
+.font-mini {
+  font-size: 0.5rem;
+}

@@ -7,10 +7,11 @@
             <h1>{{ stage?.name }}</h1>
           </NuxtLink>
           <div class="flex items-center gap-2">
-            <NuxtLink v-for="r of stage?.rounds" :key="r?.id" :to="getRoundLink(r?.id)" class="hover:underline">
+            <NuxtLink v-for="r of stage?.rounds" :key="r?.id" :to="getRoundLink(r?.id)" class="relative hover:underline w-5 flex-center">
               <div :title="`Round status: ${r?.status}`" class="rounded-full size-5 ring-2 flex-center" :class="`bg-${getRoundStatusColor(r)}-500`">
                 <div v-if="r.id === round.id" class="rounded-full size-2 bg-white ring-2"></div>
               </div>
+              <div v-if="r.id === currentRoundId" class="absolute -bottom-4 text-xs font-black font-mini text-center">CUR</div>
             </NuxtLink>
           </div>
         </div>
@@ -32,6 +33,7 @@ import type { _P_Season, _P_Round } from '~/../types'
 const season = useState<_P_Season>('season')
 const stage = computed(() => season.value?.stages?.find((s: any) => s.id === round.value?._stage))
 const round = useState<_P_Round>('round')
+const currentRoundId = computed(() => season?.value?._currentRound)
 
 const getRoundLink = (newRid: string) =>
   ['matches', 'challenges'].includes(useRoute().path.split('/').pop() ?? '') ? useSL(`round/${newRid}/${useRoute().path.split('/').pop()}`) : useSL(`round/${newRid}`)
