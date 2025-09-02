@@ -403,9 +403,9 @@
 
     "@poppinss/exception": ["@poppinss/exception@1.2.2", "", {}, "sha512-m7bpKCD4QMlFCjA/nKTs23fuvoVFoA83brRKmObCUNmi/9tVu8Ve3w4YQAnJu4q3Tjf5fr685HYIC/IA2zHRSg=="],
 
-    "@powersync/common": ["@powersync/common@1.36.0", "", { "dependencies": { "js-logger": "^1.6.1" } }, "sha512-obyxaMDfQY3xFs2eus9WGP3+aVa4XThs09BPFsgftgJVNz1/+KbBbZDPFnfEEdDUnbO203c6VdGLNKyw2etLpg=="],
+    "@powersync/common": ["@powersync/common@1.37.0", "", { "dependencies": { "js-logger": "^1.6.1" } }, "sha512-F+ifI0Ilq9ddMi7ec9v9ZFwOIFsWPLeORejfHobHlID0r40Mhv1J+1DnKwUVYTUEfin7q8KZjZDeOcSHechOlQ=="],
 
-    "@powersync/web": ["@powersync/web@1.25.1", "", { "dependencies": { "@powersync/common": "1.36.0", "async-mutex": "^0.4.0", "bson": "^6.6.0", "comlink": "^4.4.2", "commander": "^12.1.0" }, "peerDependencies": { "@journeyapps/wa-sqlite": "^1.2.6" }, "bin": { "powersync-web": "bin/powersync.js" } }, "sha512-ol7aIim1xKbFjdQGlMiYzTwA6dY89C2UzxlTUlxpcWEKemPRAjVL84fl8ZvpCIMYBldqZfOxTn7MYFVwUhRJKw=="],
+    "@powersync/web": ["@powersync/web@1.26.0", "", { "dependencies": { "@powersync/common": "1.37.0", "async-mutex": "^0.4.0", "bson": "^6.6.0", "comlink": "^4.4.2", "commander": "^12.1.0" }, "peerDependencies": { "@journeyapps/wa-sqlite": "^1.3.0" }, "bin": { "powersync-web": "bin/powersync.js" } }, "sha512-pjBsMTwvvVKAkm29BLz1UjlszL6ba9qxnkuZj+kqVP918wDBzdkqGS4NefxGNfqZFqLCkOPNbJ4/4b6r6q1pLA=="],
 
     "@rolldown/pluginutils": ["@rolldown/pluginutils@1.0.0-beta.29", "", {}, "sha512-NIJgOsMjbxAXvoGq/X0gD7VPMQ8j9g0BiDaNjVNVjvl+iKXxL3Jre0v31RmBYeLEmkbj2s02v8vFTbUXi5XS2Q=="],
 
@@ -531,7 +531,7 @@
 
     "@tailwindcss/vite": ["@tailwindcss/vite@4.1.12", "", { "dependencies": { "@tailwindcss/node": "4.1.12", "@tailwindcss/oxide": "4.1.12", "tailwindcss": "4.1.12" }, "peerDependencies": { "vite": "^5.2.0 || ^6 || ^7" } }, "sha512-4pt0AMFDx7gzIrAOIYgYP0KCBuKWqyW8ayrdiLEjoJTT4pKTjrzG/e4uzWtTLDziC+66R9wbUqZBccJalSE5vQ=="],
 
-    "@tailwindplus/elements": ["@tailwindplus/elements@1.0.10", "", {}, "sha512-XiaBG7BHIz2i2nJ1EBTzMlGyQJTIqUBqSnsvEKWHgUSlL32dB8HStUf3mCFIIuVQ1RdOo9sfkXSutg5wrduU9A=="],
+    "@tailwindplus/elements": ["@tailwindplus/elements@1.0.12", "", {}, "sha512-zmcvi9LK3gKPg1gj1Gqva7qSzO7RvgUxSGD/azuku1q/AW5i9N2sPlINVO/pa9m5acLgSjBprwp0iCy2gwRQHw=="],
 
     "@tybys/wasm-util": ["@tybys/wasm-util@0.10.0", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-VyyPYFlOMNylG45GoAe0xDoLwWuowvf92F9kySqzYh8vmYm7D2u4iUJKa1tOUpS70Ku13ASrOkS4ScXFsTaCNQ=="],
 
@@ -811,7 +811,7 @@
 
     "data-uri-to-buffer": ["data-uri-to-buffer@4.0.1", "", {}, "sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A=="],
 
-    "dayjs": ["dayjs@1.11.14", "", {}, "sha512-E8fIdSxUlyqSA8XYGnNa3IkIzxtEmFjI+JU/6ic0P1zmSqyL6HyG5jHnpPjRguDNiaHLpfvHKWFiohNsJLqcJQ=="],
+    "dayjs": ["dayjs@1.11.18", "", {}, "sha512-zFBQ7WFRvVRhKcWoUh+ZA1g2HVgUbsZm9sbddh8EC5iv93sui8DVVz1Npvz+r6meo9VKfa8NyLWBsQK1VvIKPA=="],
 
     "db0": ["db0@0.3.2", "", { "peerDependencies": { "@electric-sql/pglite": "*", "@libsql/client": "*", "better-sqlite3": "*", "drizzle-orm": "*", "mysql2": "*", "sqlite3": "*" }, "optionalPeers": ["@electric-sql/pglite", "@libsql/client", "better-sqlite3", "drizzle-orm", "mysql2", "sqlite3"] }, "sha512-xzWNQ6jk/+NtdfLyXEipbX55dmDSeteLFt/ayF+wZUU5bzKgmrDOxmInUTbyVRp46YwnJdkDA1KhB7WIXFofJw=="],
 
