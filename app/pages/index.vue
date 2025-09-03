@@ -1,8 +1,4 @@
-<template>
-  <div class="size-screen flex-center bg-yellow-500">
-    <h1 class="text-blue-700">Welcome to the Index Page</h1>
-  </div>
-</template>
+<template></template>
 
 <script setup lang="ts">
 definePageMeta({
@@ -67,7 +63,7 @@ definePageMeta({
 
           return navigateTo(destination, { replace: true })
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Database query failed or timed out:', error)
 
         // Check if it's a module loading error

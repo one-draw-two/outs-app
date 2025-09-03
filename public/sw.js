@@ -1,7 +1,9 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js')
 
+import { createCachingStrategy, tryDirectHtmlParsing } from './sw/helpers.js'
+
 // Import version from query parameter or use default
-const APP_VERSION = self.location.search.match(/appVersion=([^&]+)/)?.[1] || '1.2.6'
+const APP_VERSION = self.location.search.match(/appVersion=([^&]+)/)?.[1] || 'NA'
 const SW_VERSION = APP_VERSION
 const CACHE_SUFFIX = 'v' + APP_VERSION.split('.').join('')
 
@@ -127,13 +129,13 @@ self.addEventListener('install', (event) => {
             console.log(`[SW ${SW_VERSION}] No PowerSync chunks found in manifest`)
 
             // Fallback to direct HTML parsing if no chunks found in manifest
-            await tryDirectHtmlParsing(cache)
+            await tryDirectHtmlParsing(SW_VERSION, cache)
           }
         } else {
           console.log(`[SW ${SW_VERSION}] Could not load client manifest from any location`)
 
           // Fallback to direct HTML parsing
-          await tryDirectHtmlParsing(cache)
+          await tryDirectHtmlParsing(SW_VERSION, cache)
         }
       } catch (error) {
         console.error(`[SW ${SW_VERSION}] Error in service worker install:`, error)
@@ -144,53 +146,6 @@ self.addEventListener('install', (event) => {
 })
 
 // Fallback function to parse HTML directly
-async function tryDirectHtmlParsing(cache) {
-  console.log(`[SW ${SW_VERSION}] Attempting direct chunk detection`)
-
-  // Look for chunks directly by naming pattern (works in production)
-  const chunkPatterns = ['powersync', 'wa-sqlite']
-
-  try {
-    // Fetch the HTML to extract script references
-    const htmlResponse = await fetch('/')
-    if (htmlResponse.ok) {
-      const html = await htmlResponse.text()
-
-      // Extract script src values
-      const scriptRegex = /<script[^>]+src=["']([^"']+)["'][^>]*>/g
-      let match
-      const scriptSrcs = []
-
-      while ((match = scriptRegex.exec(html)) !== null) {
-        scriptSrcs.push(match[1])
-      }
-
-      // Filter for PowerSync chunks
-      const powerSyncScripts = scriptSrcs.filter((src) => chunkPatterns.some((pattern) => src.includes(pattern)))
-
-      console.log(`[SW ${SW_VERSION}] Found PowerSync scripts in HTML:`, powerSyncScripts)
-
-      // Cache these scripts
-      if (powerSyncScripts.length > 0) {
-        await Promise.allSettled(
-          powerSyncScripts.map((src) => {
-            console.log(`[SW ${SW_VERSION}] Attempting to cache: ${src}`)
-            return fetch(src).then((response) => {
-              if (response.ok) {
-                console.log(`[SW ${SW_VERSION}] Successfully cached: ${src}`)
-                return cache.put(src, response)
-              } else {
-                console.warn(`[SW ${SW_VERSION}] Failed to cache: ${src} (${response.status})`)
-              }
-            })
-          })
-        )
-      }
-    }
-  } catch (error) {
-    console.error(`[SW ${SW_VERSION}] Error in direct HTML parsing:`, error)
-  }
-}
 
 // The rest of your service worker remains the same...
 
@@ -204,252 +159,155 @@ workbox.precaching.precacheAndRoute([
   // Add any other critical static assets
 ])
 
-// Add a specific handler for the root index route
-workbox.routing.registerRoute(
-  ({ url }) => url.pathname === '/' || url.pathname === '/index.html',
-  new workbox.strategies.NetworkFirst({
-    cacheName: 'index-cache-' + CACHE_SUFFIX,
-    plugins: [
-      new workbox.expiration.ExpirationPlugin({
-        maxEntries: 5,
-        maxAgeSeconds: 24 * 60 * 60, // 1 day
-      }),
-      {
-        handlerDidError: async () => {
-          const cachedResponse = await caches.match('/index.html')
-          if (cachedResponse) {
-            return new Response(await cachedResponse.text(), {
-              headers: {
-                'Content-Type': 'text/html',
-              },
-            })
-          }
-        },
-      },
-    ],
-  })
-)
-
-// Handle PowerSync chunk requests with highest priority
-// Handle PowerSync chunk requests with highest priority
-workbox.routing.registerRoute(
-  ({ url }) => {
-    // More specific matching for PowerSync files
-    const isPowerSync = url.pathname.includes('powersync') || url.pathname.includes('wa-sqlite') || url.pathname.includes('WASQLiteDB')
-    const isJsFile = url.pathname.endsWith('.js')
-    return isPowerSync && isJsFile
-  },
-  new workbox.strategies.CacheFirst({
-    cacheName: 'powersync-chunks-' + CACHE_SUFFIX,
-    plugins: [
-      new workbox.expiration.ExpirationPlugin({
-        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
-      }),
-      {
-        // Ensure correct content type for PowerSync files
-        cacheWillUpdate: async ({ response }) => {
-          // Ensure JavaScript MIME type
-          const headers = new Headers(response.headers)
-          headers.set('Content-Type', 'application/javascript')
-
-          return new Response(await response.clone().text(), {
-            status: response.status,
-            statusText: response.statusText,
-            headers: headers,
-          })
-        },
-        // Improved error handling
-        handlerDidError: async ({ request }) => {
-          console.error(`[SW ${SW_VERSION}] Failed to load PowerSync chunk:`, request.url)
-
-          // Try to fetch from network with proper MIME type
-          try {
-            const networkResponse = await fetch(request)
-            if (networkResponse.ok) {
-              const headers = new Headers(networkResponse.headers)
-              headers.set('Content-Type', 'application/javascript')
-
-              return new Response(await networkResponse.text(), {
-                status: networkResponse.status,
-                statusText: networkResponse.statusText,
-                headers: headers,
+// Define route configurations
+const routes = [
+  // Root index route
+  {
+    match: ({ url }) => url.pathname === '/' || url.pathname === '/index.html',
+    strategy: 'NetworkFirst',
+    cacheName: 'index-cache',
+    options: {
+      maxEntries: 5,
+      maxAgeDays: 1,
+      plugins: [
+        {
+          handlerDidError: async () => {
+            const cachedResponse = await caches.match('/index.html')
+            if (cachedResponse) {
+              return new Response(await cachedResponse.text(), {
+                headers: {
+                  'Content-Type': 'text/html',
+                },
               })
             }
-            return networkResponse
-          } catch (error) {
-            console.error(`[SW ${SW_VERSION}] Network fallback also failed:`, error)
-            return Response.error()
-          }
+          },
         },
-      },
-    ],
-  })
-)
-
-// Handle SPA navigation requests - this works with dynamic Nuxt routes
-workbox.routing.registerRoute(
-  ({ request }) => request.mode === 'navigate',
-  new workbox.strategies.NetworkFirst({
-    cacheName: 'pages-cache-' + CACHE_SUFFIX,
-    plugins: [
-      new workbox.expiration.ExpirationPlugin({
-        maxEntries: 50,
-        maxAgeSeconds: 24 * 60 * 60, // 1 day
-      }),
-      // This plugin returns index.html for navigation requests that fail
-      {
-        cacheKeyWillBeUsed: async () => {
-          return new Request('/index.html')
-        },
-        handlerDidError: async () => {
-          // Return the cached index.html but ensure it's properly served as HTML
-          const cachedResponse = await caches.match('/index.html')
-          if (cachedResponse) {
-            // Ensure correct content type
-            return new Response(await cachedResponse.text(), {
-              headers: {
-                'Content-Type': 'text/html',
-              },
-            })
-          }
-        },
-      },
-    ],
-  })
-)
-
-// Add this to your sw.js file before the static assets handler
-
-// Special handler for Web Worker scripts
-workbox.routing.registerRoute(
-  ({ request, url }) => {
-    // Explicitly match known worker patterns
-    const isWorker = url.pathname.includes('.worker.js') || url.pathname.includes('WASQLiteDB.worker') || url.pathname.includes('wa-sqlite') || request.destination === 'worker'
-
-    return isWorker
+      ],
+    },
   },
-  new workbox.strategies.CacheFirst({
-    cacheName: 'workers-cache-' + CACHE_SUFFIX,
-    plugins: [
-      new workbox.expiration.ExpirationPlugin({
-        maxEntries: 10,
-        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
-      }),
-      {
-        // Add cache response plugin to ensure proper headers
-        cacheWillUpdate: async ({ response }) => {
-          // Clone the response to modify it
-          const newResponse = response.clone()
 
-          // Ensure JavaScript MIME type for workers
-          const headers = new Headers(newResponse.headers)
-          headers.set('Content-Type', 'application/javascript')
-
-          return new Response(await newResponse.text(), {
-            status: newResponse.status,
-            statusText: newResponse.statusText,
-            headers: headers,
-          })
-        },
-        handlerDidError: async ({ request }) => {
-          console.error(`[SW ${SW_VERSION}] Failed to load worker script:`, request.url)
-
-          // Network fallback with correct headers
-          try {
-            const networkResponse = await fetch(request)
-            if (networkResponse.ok) {
-              const headers = new Headers(networkResponse.headers)
-              headers.set('Content-Type', 'application/javascript')
-
-              return new Response(await networkResponse.text(), {
-                status: networkResponse.status,
-                statusText: networkResponse.statusText,
-                headers: headers,
+  // SPA navigation requests
+  {
+    match: ({ request }) => request.mode === 'navigate',
+    strategy: 'NetworkFirst',
+    cacheName: 'pages-cache',
+    options: {
+      maxEntries: 50,
+      maxAgeDays: 1,
+      plugins: [
+        {
+          cacheKeyWillBeUsed: async () => {
+            return new Request('/index.html')
+          },
+          handlerDidError: async () => {
+            const cachedResponse = await caches.match('/index.html')
+            if (cachedResponse) {
+              return new Response(await cachedResponse.text(), {
+                headers: {
+                  'Content-Type': 'text/html',
+                },
               })
             }
-            return networkResponse
-          } catch (error) {
-            console.error(`[SW ${SW_VERSION}] Network fallback for worker failed:`, error)
-            return Response.error()
-          }
+          },
         },
-      },
-    ],
-  })
-)
-
-// Static assets (JS, CSS, etc.)
-workbox.routing.registerRoute(
-  ({ request }) => request.destination === 'script' || request.destination === 'style',
-  new workbox.strategies.StaleWhileRevalidate({
-    cacheName: 'static-assets-' + CACHE_SUFFIX,
-    plugins: [
-      new workbox.expiration.ExpirationPlugin({
-        maxEntries: 100,
-        maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
-      }),
-      {
-        handlerDidError: async ({ request }) => {
-          console.error(`[SW ${SW_VERSION}] Failed to load static asset:`, request.url)
-          return fetch(request)
-        },
-      },
-    ],
-  })
-)
-
-// Images
-workbox.routing.registerRoute(
-  ({ request }) => request.destination === 'image',
-  new workbox.strategies.CacheFirst({
-    cacheName: 'images-' + CACHE_SUFFIX,
-    plugins: [
-      new workbox.expiration.ExpirationPlugin({
-        maxEntries: 60,
-        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
-      }),
-    ],
-  })
-)
-
-// PowerSync API/data requests
-workbox.routing.registerRoute(
-  ({ url }) => url.pathname.includes('/powersync') || url.pathname.includes('/api'),
-  new workbox.strategies.NetworkFirst({
-    cacheName: 'api-cache-' + CACHE_SUFFIX,
-    plugins: [
-      new workbox.expiration.ExpirationPlugin({
-        maxEntries: 100,
-        maxAgeSeconds: 24 * 60 * 60, // 1 day
-      }),
-    ],
-  })
-)
-
-// Debug middleware to log problematic responses
-workbox.routing.registerRoute(
-  ({ url }) => url.pathname.includes('WASQLite') || url.pathname.includes('wa-sqlite'),
-  async ({ event }) => {
-    const response = await fetch(event.request.clone())
-    console.log(`[SW ${SW_VERSION}] Debug - Content type for ${event.request.url}:`, response.headers.get('Content-Type'))
-    return response
+      ],
+    },
   },
-  'debug'
-)
 
-// Catch-all for any other requests
-workbox.routing.setDefaultHandler(
-  new workbox.strategies.NetworkFirst({
-    cacheName: 'default-cache-' + CACHE_SUFFIX,
-  })
-)
+  // Static assets (JS, CSS, etc.)
+  {
+    match: ({ request }) => request.destination === 'script' || request.destination === 'style',
+    strategy: 'StaleWhileRevalidate',
+    cacheName: 'static-assets',
+    options: {
+      maxEntries: 100,
+      maxAgeDays: 7,
+      plugins: [
+        {
+          handlerDidError: async ({ request }) => {
+            console.error(`[SW ${SW_VERSION}] Failed to load static asset:`, request.url)
+            return fetch(request)
+          },
+        },
+      ],
+    },
+  },
 
-// Skip waiting to force update when new version is available
+  // Images
+  {
+    match: ({ request }) => request.destination === 'image',
+    strategy: 'CacheFirst',
+    cacheName: 'images',
+    options: {
+      maxEntries: 60,
+      maxAgeDays: 30,
+    },
+  },
+
+  // API requests
+  {
+    match: ({ url }) => url.pathname.includes('/api'),
+    strategy: 'NetworkFirst',
+    cacheName: 'api-cache',
+    options: {
+      maxEntries: 100,
+      maxAgeDays: 1,
+    },
+  },
+]
+
+// Register all routes
+routes.forEach((route) => {
+  workbox.routing.registerRoute(route.match, createCachingStrategy(route.strategy, route.cacheName, route.options))
+})
+
+// PowerSync related functionality (kept separate as requested)
+if (false) {
+  // Wrapper to make it easier to enable/disable
+  // PowerSync chunks
+  workbox.routing.registerRoute(
+    ({ url }) => {
+      // Simplified match for PowerSync files
+      return url.pathname.includes('powersync') || url.pathname.includes('wa-sqlite')
+    },
+    createCachingStrategy('CacheFirst', 'powersync-chunks', {
+      maxAgeDays: 30,
+      plugins: [
+        {
+          handlerDidError: async ({ request }) => {
+            console.error(`[SW ${SW_VERSION}] Failed to load PowerSync chunk:`, request.url)
+            try {
+              return await fetch(request)
+            } catch (e) {
+              console.error(`[SW ${SW_VERSION}] Network fallback also failed:`, e)
+              return undefined
+            }
+          },
+        },
+      ],
+    })
+  )
+
+  // PowerSync API requests
+  workbox.routing.registerRoute(
+    ({ url }) => url.pathname.includes('/powersync'),
+    createCachingStrategy('NetworkFirst', 'powersync-api', {
+      maxAgeDays: 1,
+    })
+  )
+}
+
+// Set default handler
+workbox.routing.setDefaultHandler(createCachingStrategy('NetworkFirst', 'default-cache'))
+
+// Message handling
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting()
-  } else if (event.data && event.data.type === 'GET_VERSION') {
-    // Reply with version info
-    event.ports[0].postMessage({ version: SW_VERSION })
+  const messageHandlers = {
+    SKIP_WAITING: () => self.skipWaiting(),
+    GET_VERSION: () => event.ports[0].postMessage({ version: SW_VERSION }),
+  }
+
+  if (event.data && event.data.type && messageHandlers[event.data.type]) {
+    messageHandlers[event.data.type]()
   }
 })
