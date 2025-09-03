@@ -109,3 +109,4 @@ nativeRoute.params.stid // Then use like this
 - Wip: Season image and theme color moved into a composable: 554.95kb
 - Wip: Front-end fixes and service workers tests: 555.12kb
 - Feat: Global version control for app and sw: 555.97kb
+- Chore: Package update (nuxt 4.1.0): 558.02kb

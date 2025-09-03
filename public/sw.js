@@ -231,10 +231,11 @@ workbox.routing.registerRoute(
 )
 
 // Handle PowerSync chunk requests with highest priority
+// Handle PowerSync chunk requests with highest priority
 workbox.routing.registerRoute(
   ({ url }) => {
     // More specific matching for PowerSync files
-    const isPowerSync = url.pathname.includes('powersync') || url.pathname.includes('wa-sqlite')
+    const isPowerSync = url.pathname.includes('powersync') || url.pathname.includes('wa-sqlite') || url.pathname.includes('WASQLiteDB')
     const isJsFile = url.pathname.endsWith('.js')
     return isPowerSync && isJsFile
   },
@@ -245,16 +246,39 @@ workbox.routing.registerRoute(
         maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
       }),
       {
+        // Ensure correct content type for PowerSync files
+        cacheWillUpdate: async ({ response }) => {
+          // Ensure JavaScript MIME type
+          const headers = new Headers(response.headers)
+          headers.set('Content-Type', 'application/javascript')
+
+          return new Response(await response.clone().text(), {
+            status: response.status,
+            statusText: response.statusText,
+            headers: headers,
+          })
+        },
         // Improved error handling
         handlerDidError: async ({ request }) => {
           console.error(`[SW ${SW_VERSION}] Failed to load PowerSync chunk:`, request.url)
 
-          // Try to fetch from network as a fallback
+          // Try to fetch from network with proper MIME type
           try {
-            return await fetch(request)
-          } catch (e) {
-            console.error(`[SW ${SW_VERSION}] Network fallback also failed:`, e)
-            return undefined
+            const networkResponse = await fetch(request)
+            if (networkResponse.ok) {
+              const headers = new Headers(networkResponse.headers)
+              headers.set('Content-Type', 'application/javascript')
+
+              return new Response(await networkResponse.text(), {
+                status: networkResponse.status,
+                statusText: networkResponse.statusText,
+                headers: headers,
+              })
+            }
+            return networkResponse
+          } catch (error) {
+            console.error(`[SW ${SW_VERSION}] Network fallback also failed:`, error)
+            return Response.error()
           }
         },
       },
@@ -287,6 +311,66 @@ workbox.routing.registerRoute(
                 'Content-Type': 'text/html',
               },
             })
+          }
+        },
+      },
+    ],
+  })
+)
+
+// Add this to your sw.js file before the static assets handler
+
+// Special handler for Web Worker scripts
+workbox.routing.registerRoute(
+  ({ request, url }) => {
+    // Explicitly match known worker patterns
+    const isWorker = url.pathname.includes('.worker.js') || url.pathname.includes('WASQLiteDB.worker') || url.pathname.includes('wa-sqlite') || request.destination === 'worker'
+
+    return isWorker
+  },
+  new workbox.strategies.CacheFirst({
+    cacheName: 'workers-cache-' + CACHE_SUFFIX,
+    plugins: [
+      new workbox.expiration.ExpirationPlugin({
+        maxEntries: 10,
+        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+      }),
+      {
+        // Add cache response plugin to ensure proper headers
+        cacheWillUpdate: async ({ response }) => {
+          // Clone the response to modify it
+          const newResponse = response.clone()
+
+          // Ensure JavaScript MIME type for workers
+          const headers = new Headers(newResponse.headers)
+          headers.set('Content-Type', 'application/javascript')
+
+          return new Response(await newResponse.text(), {
+            status: newResponse.status,
+            statusText: newResponse.statusText,
+            headers: headers,
+          })
+        },
+        handlerDidError: async ({ request }) => {
+          console.error(`[SW ${SW_VERSION}] Failed to load worker script:`, request.url)
+
+          // Network fallback with correct headers
+          try {
+            const networkResponse = await fetch(request)
+            if (networkResponse.ok) {
+              const headers = new Headers(networkResponse.headers)
+              headers.set('Content-Type', 'application/javascript')
+
+              return new Response(await networkResponse.text(), {
+                status: networkResponse.status,
+                statusText: networkResponse.statusText,
+                headers: headers,
+              })
+            }
+            return networkResponse
+          } catch (error) {
+            console.error(`[SW ${SW_VERSION}] Network fallback for worker failed:`, error)
+            return Response.error()
           }
         },
       },
@@ -340,6 +424,17 @@ workbox.routing.registerRoute(
       }),
     ],
   })
+)
+
+// Debug middleware to log problematic responses
+workbox.routing.registerRoute(
+  ({ url }) => url.pathname.includes('WASQLite') || url.pathname.includes('wa-sqlite'),
+  async ({ event }) => {
+    const response = await fetch(event.request.clone())
+    console.log(`[SW ${SW_VERSION}] Debug - Content type for ${event.request.url}:`, response.headers.get('Content-Type'))
+    return response
+  },
+  'debug'
 )
 
 // Catch-all for any other requests

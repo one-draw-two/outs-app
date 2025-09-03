@@ -1,4 +1,8 @@
-<template></template>
+<template>
+  <div class="size-screen flex-center bg-yellow-500">
+    <h1 class="text-blue-700">Welcome to the Index Page</h1>
+  </div>
+</template>
 
 <script setup lang="ts">
 definePageMeta({
