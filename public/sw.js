@@ -1,6 +1,5 @@
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js')
-
-import { createCachingStrategy, tryDirectHtmlParsing } from './sw/helpers.js'
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js', './sw/helpers.js')
+// import { createCachingStrategy, tryDirectHtmlParsing } from './sw/helpers.js'
 
 // Import version from query parameter or use default
 const APP_VERSION = self.location.search.match(/appVersion=([^&]+)/)?.[1] || 'NA'

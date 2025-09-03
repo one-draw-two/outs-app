@@ -1,4 +1,5 @@
-export async function tryDirectHtmlParsing(SW_VERSION, cache) {
+// Don't use export keywords
+async function tryDirectHtmlParsing(SW_VERSION, cache) {
   console.log(`[SW ${SW_VERSION}] Attempting direct chunk detection`)
 
   // Look for chunks directly by naming pattern (works in production)
@@ -47,10 +48,15 @@ export async function tryDirectHtmlParsing(SW_VERSION, cache) {
 }
 
 // Helper function for creating expiration plugins
-const createExpirationPlugin = (maxEntries = 50, maxAgeDays = 7) => new workbox.expiration.ExpirationPlugin({ maxEntries, maxAgeSeconds: maxAgeDays * 24 * 60 * 60 })
+function createExpirationPlugin(maxEntries = 50, maxAgeDays = 7) {
+  return new workbox.expiration.ExpirationPlugin({
+    maxEntries,
+    maxAgeSeconds: maxAgeDays * 24 * 60 * 60,
+  })
+}
 
 // Helper function for creating common caching strategies
-export const createCachingStrategy = (strategyType, cacheName, options = {}) => {
+function createCachingStrategy(strategyType, cacheName, options = {}) {
   const { maxEntries = 50, maxAgeDays = 7, plugins = [] } = options
 
   const defaultPlugins = [createExpirationPlugin(maxEntries, maxAgeDays)]
@@ -80,3 +86,5 @@ export const createCachingStrategy = (strategyType, cacheName, options = {}) => 
       })
   }
 }
+
+// Notice: no exports, these functions will be available in the global scope
