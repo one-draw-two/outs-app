@@ -14,29 +14,44 @@ workbox.core.setCacheNameDetails({
   suffix: CACHE_SUFFIX,
 })
 
+// In the install event handler, ensure skipWaiting is properly awaited
 self.addEventListener('install', (event) => {
+  console.log(`[SW ${SW_VERSION}] Installing new service worker version`)
   // Force waiting service worker to become active
-  self.skipWaiting()
+  event.waitUntil(self.skipWaiting())
 })
 
 self.addEventListener('activate', (event) => {
+  console.log(`[SW ${SW_VERSION}] Service worker activated`)
   // Take control of all clients immediately
-  event.waitUntil(clients.claim())
-
-  // Force new cache version
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          // If the cache name doesn't include our current cache suffix
-          if (cacheName.includes('outstanding-offline') && !cacheName.includes(CACHE_SUFFIX)) {
-            console.log(`[SW] Deleting old cache: ${cacheName}`)
-            return caches.delete(cacheName)
-          }
-        })
-      )
-    })
+    Promise.all([
+      clients.claim(),
+      // Clear old caches
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            // If the cache name doesn't include our current cache suffix
+            if (cacheName.includes('outstanding-offline') && !cacheName.includes(CACHE_SUFFIX)) {
+              console.log(`[SW ${SW_VERSION}] Deleting old cache: ${cacheName}`)
+              return caches.delete(cacheName)
+            }
+            return Promise.resolve()
+          })
+        )
+      }),
+    ])
   )
+
+  // Notify all clients about the update
+  self.clients.matchAll().then((clients) => {
+    clients.forEach((client) => {
+      client.postMessage({
+        type: 'SW_UPDATED',
+        version: SW_VERSION,
+      })
+    })
+  })
 })
 
 // Load the client manifest dynamically
@@ -256,9 +271,7 @@ const routes = [
 ]
 
 // Register all routes
-routes.forEach((route) => {
-  workbox.routing.registerRoute(route.match, createCachingStrategy(route.strategy, route.cacheName, route.options))
-})
+routes.forEach((route) => workbox.routing.registerRoute(route.match, createCachingStrategy(route.strategy, route.cacheName, route.options)))
 
 // PowerSync related functionality (kept separate as requested)
 if (false) {
