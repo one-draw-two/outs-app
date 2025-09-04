@@ -12,7 +12,7 @@
       </div>
       <div class="update-message">
         <strong>Update Available</strong>
-        <p>A new version ({{ swVersion }}) is available</p>
+        <p>A new version ({{ swVersion !== 'Unknown' ? swVersion : '' }}) is ready to install</p>
       </div>
       <button @click="applyUpdate" class="update-button">Update Now</button>
     </div>

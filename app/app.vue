@@ -21,11 +21,22 @@ useKeyboard()
 useServiceWorker()
 useViewportDims()
 useUiTheme().setTheme(user.value?.settings?.ui?.theme || 'system')
-// useNetworkPerformance()
 
 usePerformanceDebug().startTimer('app-init')
 
-onMounted(() => {
+onMounted(async () => {
+  // Immediately check for and prevent default service worker update behavior
+  if (process.client && 'serviceWorker' in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.getRegistration()
+      if (registration && registration.waiting) {
+        registration.waiting.postMessage({ type: 'PREVENT_DEFAULT_REFRESH' })
+      }
+    } catch (e) {
+      console.error('Error preventing default SW update behavior:', e)
+    }
+  }
+
   useAppVersion().checkSwVersion()
   usePerformanceDebug().endTimer('app-init')
 })

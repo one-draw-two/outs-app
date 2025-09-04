@@ -14,15 +14,19 @@ workbox.core.setCacheNameDetails({
   suffix: CACHE_SUFFIX,
 })
 
-// In the install event handler, ensure skipWaiting is properly awaited
+// Modify your 'install' event handler - don't automatically skipWaiting
+
 self.addEventListener('install', (event) => {
-  console.log(`[SW ${SW_VERSION}] Installing new service worker version`)
-  // Force waiting service worker to become active
-  event.waitUntil(self.skipWaiting())
+  console.log(`[SW ${SW_VERSION}] New service worker installed (waiting for activation)`)
+  // Don't call skipWaiting() here - we'll do this on user action
 })
+
+// The activate handler stays mostly the same, but we'll add a flag for tracking if this is a user-activated update
+let isUserActivatedUpdate = false
 
 self.addEventListener('activate', (event) => {
   console.log(`[SW ${SW_VERSION}] Service worker activated`)
+
   // Take control of all clients immediately
   event.waitUntil(
     Promise.all([
@@ -43,121 +47,158 @@ self.addEventListener('activate', (event) => {
     ])
   )
 
-  // Notify all clients about the update
-  self.clients.matchAll().then((clients) => {
-    clients.forEach((client) => {
-      client.postMessage({
-        type: 'SW_UPDATED',
-        version: SW_VERSION,
+  // Only notify if this wasn't a user-triggered update (otherwise the page is already reloading)
+  if (!isUserActivatedUpdate) {
+    // Notify all clients about the available update
+    self.clients.matchAll().then((clients) => {
+      clients.forEach((client) => {
+        client.postMessage({
+          type: 'SW_UPDATED',
+          version: SW_VERSION,
+        })
       })
     })
-  })
+  }
+})
+
+// Enhance message handling to include update activation
+self.addEventListener('message', (event) => {
+  const messageHandlers = {
+    SKIP_WAITING: () => {
+      console.log(`[SW ${SW_VERSION}] User activated update - applying immediately`)
+      isUserActivatedUpdate = true
+      self.skipWaiting()
+    },
+    GET_VERSION: () => {
+      if (event.ports && event.ports[0]) {
+        event.ports[0].postMessage({ version: SW_VERSION })
+      }
+    },
+    CHECK_UPDATE: () => {
+      // Just respond with current version - main thread will compare with app version
+      if (event.ports && event.ports[0]) {
+        event.ports[0].postMessage({
+          version: SW_VERSION,
+          hasWaiting: self.registration && self.registration.waiting ? true : false,
+        })
+      }
+    },
+    // Add a new message handler for preventing default refresh
+    PREVENT_DEFAULT_REFRESH: () => {
+      isUserActivatedUpdate = true // Set flag to prevent automatic refresh
+    },
+  }
+
+  if (event.data && event.data.type && messageHandlers[event.data.type]) {
+    messageHandlers[event.data.type]()
+  }
 })
 
 // Load the client manifest dynamically
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open('powersync-chunks-' + CACHE_SUFFIX).then(async (cache) => {
-      try {
-        // First, try to fetch the client manifest
-        const manifestLocations = ['/_nuxt/client.manifest.mjs', '/_nuxt/builds/latest.json', '/.output/server/chunks/build/client.manifest.mjs']
+if (false)
+  self.addEventListener('install', (event) => {
+    event.waitUntil(
+      caches.open('powersync-chunks-' + CACHE_SUFFIX).then(async (cache) => {
+        try {
+          // First, try to fetch the client manifest
+          const manifestLocations = ['/_nuxt/client.manifest.mjs', '/_nuxt/builds/latest.json', '/.output/server/chunks/build/client.manifest.mjs']
 
-        let clientManifest = null
-        let manifestLocation = null
+          let clientManifest = null
+          let manifestLocation = null
 
-        // Try each possible location until we find the manifest
-        for (const location of manifestLocations) {
-          try {
-            console.log(`[SW ${SW_VERSION}] Trying to fetch manifest from: ${location}`)
-            const response = await fetch(location)
-            if (response.ok) {
-              const text = await response.text()
+          // Try each possible location until we find the manifest
+          for (const location of manifestLocations) {
+            try {
+              console.log(`[SW ${SW_VERSION}] Trying to fetch manifest from: ${location}`)
+              const response = await fetch(location)
+              if (response.ok) {
+                const text = await response.text()
 
-              // Try to extract the manifest object - handling both JSON and JS/TS module formats
-              try {
-                if (text.includes('export default') || text.includes('export const client_manifest')) {
-                  // Handle JS module format by creating a function from the text
-                  const extractManifest = new Function('exports', text + '; return exports.default || exports.client_manifest;')
-                  clientManifest = extractManifest({})
-                } else {
-                  // Try JSON format
-                  clientManifest = JSON.parse(text)
-                }
-
-                if (clientManifest) {
-                  console.log(`[SW ${SW_VERSION}] Successfully loaded manifest from ${location}`)
-                  manifestLocation = location
-                  break
-                }
-              } catch (parseError) {
-                console.log(`[SW ${SW_VERSION}] Failed to parse manifest at ${location}:`, parseError)
-              }
-            }
-          } catch (fetchError) {
-            console.log(`[SW ${SW_VERSION}] Failed to fetch manifest at ${location}:`, fetchError)
-          }
-        }
-
-        // If we found a manifest, extract PowerSync chunks
-        if (clientManifest) {
-          // Extract PowerSync and wa-sqlite related files from the manifest
-          const powerSyncChunks = []
-
-          // Process the manifest entries
-          for (const [key, entry] of Object.entries(clientManifest)) {
-            // Look for PowerSync and wa-sqlite related files
-            if (key.includes('powersync') || key.includes('wa-sqlite') || (entry.name && (entry.name.includes('powersync') || entry.name.includes('wa-sqlite')))) {
-              if (entry.file) {
-                const url = `/_nuxt/${entry.file}`
-                powerSyncChunks.push(url)
-              }
-
-              // Also include any assets from PowerSync entries
-              if (entry.assets) {
-                entry.assets.forEach((asset) => {
-                  const assetUrl = `/_nuxt/${asset}`
-                  powerSyncChunks.push(assetUrl)
-                })
-              }
-            }
-          }
-
-          // Cache all PowerSync chunks
-          if (powerSyncChunks.length > 0) {
-            console.log(`[SW ${SW_VERSION}] Found PowerSync chunks in manifest:`, powerSyncChunks)
-
-            await Promise.allSettled(
-              powerSyncChunks.map((url) => {
-                console.log(`[SW ${SW_VERSION}] Attempting to cache: ${url}`)
-                return fetch(url).then((response) => {
-                  if (response.ok) {
-                    console.log(`[SW ${SW_VERSION}] Successfully cached: ${url}`)
-                    return cache.put(url, response)
+                // Try to extract the manifest object - handling both JSON and JS/TS module formats
+                try {
+                  if (text.includes('export default') || text.includes('export const client_manifest')) {
+                    // Handle JS module format by creating a function from the text
+                    const extractManifest = new Function('exports', text + '; return exports.default || exports.client_manifest;')
+                    clientManifest = extractManifest({})
                   } else {
-                    console.warn(`[SW ${SW_VERSION}] Failed to cache: ${url} (${response.status})`)
+                    // Try JSON format
+                    clientManifest = JSON.parse(text)
                   }
-                })
-              })
-            )
-          } else {
-            console.log(`[SW ${SW_VERSION}] No PowerSync chunks found in manifest`)
 
-            // Fallback to direct HTML parsing if no chunks found in manifest
+                  if (clientManifest) {
+                    console.log(`[SW ${SW_VERSION}] Successfully loaded manifest from ${location}`)
+                    manifestLocation = location
+                    break
+                  }
+                } catch (parseError) {
+                  console.log(`[SW ${SW_VERSION}] Failed to parse manifest at ${location}:`, parseError)
+                }
+              }
+            } catch (fetchError) {
+              console.log(`[SW ${SW_VERSION}] Failed to fetch manifest at ${location}:`, fetchError)
+            }
+          }
+
+          // If we found a manifest, extract PowerSync chunks
+          if (clientManifest) {
+            // Extract PowerSync and wa-sqlite related files from the manifest
+            const powerSyncChunks = []
+
+            // Process the manifest entries
+            for (const [key, entry] of Object.entries(clientManifest)) {
+              // Look for PowerSync and wa-sqlite related files
+              if (key.includes('powersync') || key.includes('wa-sqlite') || (entry.name && (entry.name.includes('powersync') || entry.name.includes('wa-sqlite')))) {
+                if (entry.file) {
+                  const url = `/_nuxt/${entry.file}`
+                  powerSyncChunks.push(url)
+                }
+
+                // Also include any assets from PowerSync entries
+                if (entry.assets) {
+                  entry.assets.forEach((asset) => {
+                    const assetUrl = `/_nuxt/${asset}`
+                    powerSyncChunks.push(assetUrl)
+                  })
+                }
+              }
+            }
+
+            // Cache all PowerSync chunks
+            if (powerSyncChunks.length > 0) {
+              console.log(`[SW ${SW_VERSION}] Found PowerSync chunks in manifest:`, powerSyncChunks)
+
+              await Promise.allSettled(
+                powerSyncChunks.map((url) => {
+                  console.log(`[SW ${SW_VERSION}] Attempting to cache: ${url}`)
+                  return fetch(url).then((response) => {
+                    if (response.ok) {
+                      console.log(`[SW ${SW_VERSION}] Successfully cached: ${url}`)
+                      return cache.put(url, response)
+                    } else {
+                      console.warn(`[SW ${SW_VERSION}] Failed to cache: ${url} (${response.status})`)
+                    }
+                  })
+                })
+              )
+            } else {
+              console.log(`[SW ${SW_VERSION}] No PowerSync chunks found in manifest`)
+
+              // Fallback to direct HTML parsing if no chunks found in manifest
+              await tryDirectHtmlParsing(SW_VERSION, cache)
+            }
+          } else {
+            console.log(`[SW ${SW_VERSION}] Could not load client manifest from any location`)
+
+            // Fallback to direct HTML parsing
             await tryDirectHtmlParsing(SW_VERSION, cache)
           }
-        } else {
-          console.log(`[SW ${SW_VERSION}] Could not load client manifest from any location`)
-
-          // Fallback to direct HTML parsing
-          await tryDirectHtmlParsing(SW_VERSION, cache)
+        } catch (error) {
+          console.error(`[SW ${SW_VERSION}] Error in service worker install:`, error)
+          // Continue with service worker installation even if caching fails
         }
-      } catch (error) {
-        console.error(`[SW ${SW_VERSION}] Error in service worker install:`, error)
-        // Continue with service worker installation even if caching fails
-      }
-    })
-  )
-})
+      })
+    )
+  })
 
 // Fallback function to parse HTML directly
 
@@ -311,15 +352,3 @@ if (false) {
 
 // Set default handler
 workbox.routing.setDefaultHandler(createCachingStrategy('NetworkFirst', 'default-cache'))
-
-// Message handling
-self.addEventListener('message', (event) => {
-  const messageHandlers = {
-    SKIP_WAITING: () => self.skipWaiting(),
-    GET_VERSION: () => event.ports[0].postMessage({ version: SW_VERSION }),
-  }
-
-  if (event.data && event.data.type && messageHandlers[event.data.type]) {
-    messageHandlers[event.data.type]()
-  }
-})
