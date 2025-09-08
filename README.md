@@ -110,3 +110,4 @@ nativeRoute.params.stid // Then use like this
 - Wip: Front-end fixes and service workers tests: 555.12kb
 - Feat: Global version control for app and sw: 555.97kb
 - Chore: Package update (nuxt 4.1.0): 558.02kb
+- Restore: Removed performance logging statements: 557.9kb

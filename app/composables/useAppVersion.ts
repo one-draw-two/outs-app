@@ -11,13 +11,8 @@ export const useAppVersion = () => {
   // Check if SW version matches app version
   const checkSwVersion = async (registration?: ServiceWorkerRegistration) => {
     if (!process.client) return
-    const { startTimer, endTimer } = usePerformanceDebug()
-    startTimer('sw-version-check')
 
-    if (!('serviceWorker' in navigator)) {
-      endTimer('sw-version-check')
-      return
-    }
+    if (!('serviceWorker' in navigator)) return
 
     try {
       // Use the provided registration or get one
@@ -49,7 +44,6 @@ export const useAppVersion = () => {
     }
 
     lastChecked.value = new Date()
-    endTimer('sw-version-check')
   }
 
   // Helper function to get version from a service worker

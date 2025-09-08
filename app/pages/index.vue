@@ -6,12 +6,11 @@ definePageMeta({
     async function (to) {
       const DEBUG = false
       const TIMEOUT = 2000
-      usePerformanceDebug().startTimer('index-middleware')
 
       if (DEBUG) console.log('Index page: Checking subscriptions...')
       if (DEBUG) console.log(useState<Boolean>('subscriptionsLoaded').value)
 
-      if (to.meta.isPublic || useState<Boolean>('subscriptionsLoaded').value) return usePerformanceDebug().endTimer('index-middleware')
+      if (to.meta.isPublic || useState<Boolean>('subscriptionsLoaded').value) return
 
       if (DEBUG) console.log('Continue with db fetch')
       if (DEBUG) console.log(`DB initialized: ${useState<Boolean>('dbInitialized').value}`)
@@ -36,13 +35,11 @@ definePageMeta({
 
       try {
         // First database query with timeout
-        usePerformanceDebug().startTimer('db-subscriptions-query')
 
         const queryPromise = $db.execute('SELECT * FROM "account_subscriptions" ORDER BY "_updatedAt" DESC', [])
         const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Database query timeout')), TIMEOUT))
 
         const subscriptionsQuery = await Promise.race([queryPromise, timeoutPromise])
-        usePerformanceDebug().endTimer('db-subscriptions-query')
 
         if (DEBUG) console.log(subscriptionsQuery)
 
@@ -53,14 +50,10 @@ definePageMeta({
           useState<Boolean>('subscriptionsLoaded').value = true
           if (DEBUG) console.log('Tomas')
 
-          // Second database query with timeout
-          usePerformanceDebug().startTimer('db-season-query')
-
           const seasonQueryPromise = $db.execute('SELECT * FROM "calendar_seasons" WHERE id = ?', [mostRecentSubscription._season])
           const seasonTimeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Season query timeout')), TIMEOUT))
 
           const seasonQuery = await Promise.race([seasonQueryPromise, seasonTimeoutPromise])
-          usePerformanceDebug().endTimer('db-season-query')
 
           if (DEBUG) console.log(seasonQuery)
 
@@ -69,13 +62,9 @@ definePageMeta({
           const destination = toBeRoutedSeason?._currentRound ? useSL(`round/${toBeRoutedSeason?._currentRound}`) : useSL(`campaign/${mostRecentSubscription?._season}`)
           // const destination = useSL(`campaign/SE2514E0B013`)
 
-          usePerformanceDebug().endTimer('index-middleware')
-
           return navigateTo(destination, { replace: true })
         }
       } catch (error: any) {
-        usePerformanceDebug().endTimer('index-middleware')
-
         console.error('Database query failed or timed out:', error)
 
         // Check if it's a module loading error
