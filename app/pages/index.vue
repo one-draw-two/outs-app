@@ -11,14 +11,7 @@ definePageMeta({
       if (DEBUG) console.log('Index page: Checking subscriptions...')
       if (DEBUG) console.log(useState<Boolean>('subscriptionsLoaded').value)
 
-      if (to.meta.isPublic) {
-        usePerformanceDebug().endTimer('index-middleware')
-        return
-      }
-      if (useState<Boolean>('subscriptionsLoaded').value) {
-        usePerformanceDebug().endTimer('index-middleware')
-        return
-      }
+      if (to.meta.isPublic || useState<Boolean>('subscriptionsLoaded').value) return usePerformanceDebug().endTimer('index-middleware')
 
       if (DEBUG) console.log('Continue with db fetch')
       if (DEBUG) console.log(`DB initialized: ${useState<Boolean>('dbInitialized').value}`)
