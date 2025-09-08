@@ -1,28 +1,29 @@
-// import { APP_VERSION } from '~/constants/version'
+import { ref } from 'vue'
 
 export const useServiceWorker = () => {
   // Get runtime config to check environment
   const config = useRuntimeConfig()
 
-  const { appVersion } = useAppVersion()
+  // Service worker state
+  const serviceWorkerRegistration = ref<ServiceWorkerRegistration | null>(null)
+  const isRefreshing = ref(false)
 
-  onMounted(() => {
+  // Initialize the service worker
+  const init = () => {
+    if (!process.client) return
+
     // Skip service worker in development mode
     if (config.public.dev) {
       console.log('Development mode: Service Worker registration skipped')
-
-      // Unregister any existing service workers in dev mode
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then((registrations) => {
-          for (const registration of registrations) {
-            registration.unregister()
-            console.log('Development mode: Unregistered service worker')
-          }
-        })
-      }
+      unregisterServiceWorkers()
       return
     }
 
+    checkServiceWorkerFileAvailability()
+  }
+
+  // Check if the service worker file exists
+  const checkServiceWorkerFileAvailability = () => {
     console.log('Checking service worker file availability...')
     fetch('/sw.js')
       .then((response) => {
@@ -42,92 +43,127 @@ export const useServiceWorker = () => {
       .catch((error) => {
         console.error('Service worker file not accessible:', error)
       })
-  })
+  }
 
-  // Extracted registration logic to a separate function
+  // Unregister all service workers
+  const unregisterServiceWorkers = () => {
+    if (!process.client || !('serviceWorker' in navigator)) return
+
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (const registration of registrations) {
+        registration.unregister()
+        console.log('Unregistered service worker')
+      }
+    })
+  }
+
+  // Register the service worker
   const registerServiceWorker = () => {
-    if ('serviceWorker' in navigator) {
-      let refreshing = false
+    if (!process.client || !('serviceWorker' in navigator)) return
 
-      // Handle service worker updates
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (refreshing) return
-        refreshing = true
-        console.log('New service worker is controlling the page, reloading...')
-        window.location.reload()
-      })
+    // Handle service worker updates
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (isRefreshing.value) return
+      isRefreshing.value = true
+      console.log('New service worker is controlling the page, reloading...')
+      window.location.reload()
+    })
 
-      // Handle unhandled module errors that might be SW related
-      window.addEventListener('error', (event) => {
-        if (event.message && event.message.includes('Failed to load module script')) {
-          console.error('Module loading error detected, may be related to Service Worker:', event)
+    // Handle unhandled module errors that might be SW related
+    window.addEventListener('error', (event) => {
+      if (event.message?.includes('Failed to load module script')) {
+        console.error('Module loading error detected, may be related to Service Worker:', event)
 
-          // Consider unregistering the SW if this is a recurring problem
-          if (window.sessionStorage.getItem('sw-module-errors')) {
-            console.log('Multiple module errors detected, unregistering service worker...')
-            navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((reg) => reg.unregister()))
-            window.sessionStorage.removeItem('sw-module-errors')
-            window.location.reload()
-          } else {
-            window.sessionStorage.setItem('sw-module-errors', '1')
-          }
-        }
-      })
-
-      // Check if there's a waiting service worker and offer to update
-      const checkForWaitingServiceWorker = (registration) => {
-        // If there's a waiting SW, it means an update is available
-        if (registration.waiting) {
-          console.log('New service worker is waiting to activate')
-
-          // Ask the user if they want to update (or auto-update)
-          if (confirm('A new version of the app is available. Update now?')) {
-            registration.waiting.postMessage({ type: 'SKIP_WAITING' })
-          }
-
-          // Alternatively, for silent updates, uncomment:
-          // registration.waiting.postMessage({ type: 'SKIP_WAITING' })
+        // Consider unregistering the SW if this is a recurring problem
+        if (window.sessionStorage.getItem('sw-module-errors')) {
+          console.log('Multiple module errors detected, unregistering service worker...')
+          unregisterServiceWorkers()
+          window.sessionStorage.removeItem('sw-module-errors')
+          window.location.reload()
+        } else {
+          window.sessionStorage.setItem('sw-module-errors', '1')
         }
       }
+    })
 
-      // Register service worker
-      navigator.serviceWorker
-        // .register(`/sw.js?appVersion=${APP_VERSION}`)
-        .register(`/sw.js?appVersion=${appVersion.value}`)
-        .then((registration) => {
-          console.log('Service Worker registered:', registration.scope)
+    // Get app version from useAppVersion
+    const { appVersion } = useAppVersion()
 
-          // Check if there's a waiting service worker
-          checkForWaitingServiceWorker(registration)
+    // Register service worker
+    navigator.serviceWorker
+      .register(`/sw.js?appVersion=${appVersion.value}`)
+      .then((registration) => {
+        console.log('Service Worker registered:', registration.scope)
+        serviceWorkerRegistration.value = registration
 
-          // Check for updates immediately
-          registration.update()
+        // Tell the version management to check for updates
+        notifyVersionManager(registration)
 
-          // Check for updates periodically (every 15 minutes instead of every hour)
-          setInterval(() => {
-            registration.update()
-            console.log('Checking for Service Worker updates...')
-          }, 15 * 60 * 1000) // Check every 15 minutes
+        // Set up update detection
+        setupUpdateDetection(registration)
+      })
+      .catch((error) => console.error('Service Worker registration failed:', error))
+  }
 
-          // Handle updates
-          registration.addEventListener('updatefound', () => {
-            const newWorker = registration.installing
-            console.log('New service worker update found, installing...')
+  // Notify the version manager about the service worker
+  const notifyVersionManager = (registration: ServiceWorkerRegistration) => {
+    const { checkSwVersion } = useAppVersion()
 
-            newWorker?.addEventListener('statechange', () => {
-              console.log(`Service worker state changed: ${newWorker.state}`)
+    // Initial check
+    checkSwVersion(registration)
 
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                // New version available
-                console.log('New service worker version installed, ready to activate')
+    // Periodic checks
+    setInterval(() => {
+      registration.update().then(() => {
+        console.log('Checking for Service Worker updates...')
+        checkSwVersion(registration)
+      })
+    }, 15 * 60 * 1000) // Check every 15 minutes
+  }
 
-                // Force activation immediately
-                newWorker.postMessage({ type: 'SKIP_WAITING' })
-              }
-            })
-          })
-        })
-        .catch((error) => console.error('Service Worker registration failed:', error))
+  // Set up detection for service worker updates
+  const setupUpdateDetection = (registration: ServiceWorkerRegistration) => {
+    // Prevent default browser refresh for any waiting service worker
+    if (registration.waiting) {
+      registration.waiting.postMessage({ type: 'PREVENT_DEFAULT_REFRESH' })
     }
+
+    // Listen for new service workers
+    registration.addEventListener('updatefound', () => {
+      const newWorker = registration.installing
+
+      if (newWorker) {
+        console.log('New service worker update found, installing...')
+
+        // Immediately prevent default refresh
+        newWorker.postMessage({ type: 'PREVENT_DEFAULT_REFRESH' })
+
+        newWorker.addEventListener('statechange', () => {
+          console.log(`Service worker state changed: ${newWorker.state}`)
+
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            console.log('New service worker installed and waiting')
+
+            // Prevent default browser refresh
+            newWorker.postMessage({ type: 'PREVENT_DEFAULT_REFRESH' })
+
+            // Notify version manager about the update
+            const { checkSwVersion } = useAppVersion()
+            checkSwVersion(registration)
+          }
+        })
+      }
+    })
+  }
+
+  // Initialize on component mount
+  onMounted(() => {
+    init()
+  })
+
+  // Return the service worker registration for external use
+  return {
+    serviceWorkerRegistration,
+    unregisterServiceWorkers,
   }
 }

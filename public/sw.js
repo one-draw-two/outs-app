@@ -1,10 +1,12 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js', './sw/helpers.js')
-// import { createCachingStrategy, tryDirectHtmlParsing } from './sw/helpers.js'
 
 // Import version from query parameter or use default
 const APP_VERSION = self.location.search.match(/appVersion=([^&]+)/)?.[1] || 'NA'
 const SW_VERSION = APP_VERSION
 const CACHE_SUFFIX = 'v' + APP_VERSION.split('.').join('')
+
+// The activate handler stays mostly the same, but we'll add a flag for tracking if this is a user-activated update
+let isUserActivatedUpdate = false
 
 console.log(`[SW ${SW_VERSION}] Service worker initializing with Workbox (cache suffix: ${CACHE_SUFFIX})`)
 
@@ -15,14 +17,10 @@ workbox.core.setCacheNameDetails({
 })
 
 // Modify your 'install' event handler - don't automatically skipWaiting
-
 self.addEventListener('install', (event) => {
   console.log(`[SW ${SW_VERSION}] New service worker installed (waiting for activation)`)
   // Don't call skipWaiting() here - we'll do this on user action
 })
-
-// The activate handler stays mostly the same, but we'll add a flag for tracking if this is a user-activated update
-let isUserActivatedUpdate = false
 
 self.addEventListener('activate', (event) => {
   console.log(`[SW ${SW_VERSION}] Service worker activated`)
@@ -61,8 +59,15 @@ self.addEventListener('activate', (event) => {
   }
 })
 
-// Enhance message handling to include update activation
 self.addEventListener('message', (event) => {
+  // Move the isUserActivatedUpdate flag outside of any specific handler
+  if (event.data && event.data.type === 'PREVENT_DEFAULT_REFRESH') {
+    console.log(`[SW ${SW_VERSION}] Preventing default refresh behavior`)
+    isUserActivatedUpdate = true // Set the flag to prevent automatic refresh
+    return // Important: Return early to ensure this happens first
+  }
+
+  // Rest of your message handlers...
   const messageHandlers = {
     SKIP_WAITING: () => {
       console.log(`[SW ${SW_VERSION}] User activated update - applying immediately`)
@@ -83,126 +88,12 @@ self.addEventListener('message', (event) => {
         })
       }
     },
-    // Add a new message handler for preventing default refresh
-    PREVENT_DEFAULT_REFRESH: () => {
-      isUserActivatedUpdate = true // Set flag to prevent automatic refresh
-    },
   }
 
   if (event.data && event.data.type && messageHandlers[event.data.type]) {
     messageHandlers[event.data.type]()
   }
 })
-
-// Load the client manifest dynamically
-if (false)
-  self.addEventListener('install', (event) => {
-    event.waitUntil(
-      caches.open('powersync-chunks-' + CACHE_SUFFIX).then(async (cache) => {
-        try {
-          // First, try to fetch the client manifest
-          const manifestLocations = ['/_nuxt/client.manifest.mjs', '/_nuxt/builds/latest.json', '/.output/server/chunks/build/client.manifest.mjs']
-
-          let clientManifest = null
-          let manifestLocation = null
-
-          // Try each possible location until we find the manifest
-          for (const location of manifestLocations) {
-            try {
-              console.log(`[SW ${SW_VERSION}] Trying to fetch manifest from: ${location}`)
-              const response = await fetch(location)
-              if (response.ok) {
-                const text = await response.text()
-
-                // Try to extract the manifest object - handling both JSON and JS/TS module formats
-                try {
-                  if (text.includes('export default') || text.includes('export const client_manifest')) {
-                    // Handle JS module format by creating a function from the text
-                    const extractManifest = new Function('exports', text + '; return exports.default || exports.client_manifest;')
-                    clientManifest = extractManifest({})
-                  } else {
-                    // Try JSON format
-                    clientManifest = JSON.parse(text)
-                  }
-
-                  if (clientManifest) {
-                    console.log(`[SW ${SW_VERSION}] Successfully loaded manifest from ${location}`)
-                    manifestLocation = location
-                    break
-                  }
-                } catch (parseError) {
-                  console.log(`[SW ${SW_VERSION}] Failed to parse manifest at ${location}:`, parseError)
-                }
-              }
-            } catch (fetchError) {
-              console.log(`[SW ${SW_VERSION}] Failed to fetch manifest at ${location}:`, fetchError)
-            }
-          }
-
-          // If we found a manifest, extract PowerSync chunks
-          if (clientManifest) {
-            // Extract PowerSync and wa-sqlite related files from the manifest
-            const powerSyncChunks = []
-
-            // Process the manifest entries
-            for (const [key, entry] of Object.entries(clientManifest)) {
-              // Look for PowerSync and wa-sqlite related files
-              if (key.includes('powersync') || key.includes('wa-sqlite') || (entry.name && (entry.name.includes('powersync') || entry.name.includes('wa-sqlite')))) {
-                if (entry.file) {
-                  const url = `/_nuxt/${entry.file}`
-                  powerSyncChunks.push(url)
-                }
-
-                // Also include any assets from PowerSync entries
-                if (entry.assets) {
-                  entry.assets.forEach((asset) => {
-                    const assetUrl = `/_nuxt/${asset}`
-                    powerSyncChunks.push(assetUrl)
-                  })
-                }
-              }
-            }
-
-            // Cache all PowerSync chunks
-            if (powerSyncChunks.length > 0) {
-              console.log(`[SW ${SW_VERSION}] Found PowerSync chunks in manifest:`, powerSyncChunks)
-
-              await Promise.allSettled(
-                powerSyncChunks.map((url) => {
-                  console.log(`[SW ${SW_VERSION}] Attempting to cache: ${url}`)
-                  return fetch(url).then((response) => {
-                    if (response.ok) {
-                      console.log(`[SW ${SW_VERSION}] Successfully cached: ${url}`)
-                      return cache.put(url, response)
-                    } else {
-                      console.warn(`[SW ${SW_VERSION}] Failed to cache: ${url} (${response.status})`)
-                    }
-                  })
-                })
-              )
-            } else {
-              console.log(`[SW ${SW_VERSION}] No PowerSync chunks found in manifest`)
-
-              // Fallback to direct HTML parsing if no chunks found in manifest
-              await tryDirectHtmlParsing(SW_VERSION, cache)
-            }
-          } else {
-            console.log(`[SW ${SW_VERSION}] Could not load client manifest from any location`)
-
-            // Fallback to direct HTML parsing
-            await tryDirectHtmlParsing(SW_VERSION, cache)
-          }
-        } catch (error) {
-          console.error(`[SW ${SW_VERSION}] Error in service worker install:`, error)
-          // Continue with service worker installation even if caching fails
-        }
-      })
-    )
-  })
-
-// Fallback function to parse HTML directly
-
-// The rest of your service worker remains the same...
 
 // Precache critical assets
 workbox.precaching.precacheAndRoute([
@@ -313,42 +204,6 @@ const routes = [
 
 // Register all routes
 routes.forEach((route) => workbox.routing.registerRoute(route.match, createCachingStrategy(route.strategy, route.cacheName, route.options)))
-
-// PowerSync related functionality (kept separate as requested)
-if (false) {
-  // Wrapper to make it easier to enable/disable
-  // PowerSync chunks
-  workbox.routing.registerRoute(
-    ({ url }) => {
-      // Simplified match for PowerSync files
-      return url.pathname.includes('powersync') || url.pathname.includes('wa-sqlite')
-    },
-    createCachingStrategy('CacheFirst', 'powersync-chunks', {
-      maxAgeDays: 30,
-      plugins: [
-        {
-          handlerDidError: async ({ request }) => {
-            console.error(`[SW ${SW_VERSION}] Failed to load PowerSync chunk:`, request.url)
-            try {
-              return await fetch(request)
-            } catch (e) {
-              console.error(`[SW ${SW_VERSION}] Network fallback also failed:`, e)
-              return undefined
-            }
-          },
-        },
-      ],
-    })
-  )
-
-  // PowerSync API requests
-  workbox.routing.registerRoute(
-    ({ url }) => url.pathname.includes('/powersync'),
-    createCachingStrategy('NetworkFirst', 'powersync-api', {
-      maxAgeDays: 1,
-    })
-  )
-}
 
 // Set default handler
 workbox.routing.setDefaultHandler(createCachingStrategy('NetworkFirst', 'default-cache'))
