@@ -1,8 +1,9 @@
-import { APP_VERSION } from '~/constants/version'
+import { APP_VERSION, FORCE_UPDATE } from '~/constants/version'
 
 export const useAppVersion = () => {
   // Make app version available globally
   const appVersion = useState<string>('appVersion', () => APP_VERSION)
+  const forceUpdate = useState<boolean>('forceUpdate', () => FORCE_UPDATE)
   const swVersion = useState<string | null>('swVersion', () => null)
   const updateAvailable = useState<boolean>('updateAvailable', () => false)
   const hasWaitingSW = useState<boolean>('hasWaitingSW', () => false)
@@ -10,7 +11,7 @@ export const useAppVersion = () => {
 
   // Check if SW version matches app version
   const checkSwVersion = async (registration?: ServiceWorkerRegistration) => {
-    if (!process.client) return
+    if (!import.meta.client) return
 
     if (!('serviceWorker' in navigator)) return
 
@@ -89,7 +90,7 @@ export const useAppVersion = () => {
 
   // Set up listeners for service worker messages about updates
   const setupUpdateListener = () => {
-    if (!process.client || !('serviceWorker' in navigator)) return
+    if (!import.meta.client || !('serviceWorker' in navigator)) return
 
     // Listen for messages from service worker
     navigator.serviceWorker.addEventListener('message', (event) => {
@@ -104,7 +105,7 @@ export const useAppVersion = () => {
 
   // Force the waiting service worker to activate and reload the page
   const applyUpdate = async () => {
-    if (!process.client) return
+    if (!import.meta.client) return
 
     try {
       const registration = await navigator.serviceWorker.getRegistration()
@@ -134,12 +135,13 @@ export const useAppVersion = () => {
   }
 
   // Set up initial listeners
-  if (process.client) {
+  if (import.meta.client) {
     setupUpdateListener()
   }
 
   return {
     appVersion,
+    forceUpdate,
     swVersion,
     updateAvailable,
     hasWaitingSW,

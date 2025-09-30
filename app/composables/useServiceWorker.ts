@@ -1,5 +1,3 @@
-import { ref } from 'vue'
-
 export const useServiceWorker = () => {
   // Get runtime config to check environment
   const config = useRuntimeConfig()
@@ -10,7 +8,7 @@ export const useServiceWorker = () => {
 
   // Initialize the service worker
   const init = () => {
-    if (!process.client) return
+    if (!import.meta.client) return
 
     // Skip service worker in development mode
     if (config.public.dev) {
@@ -47,7 +45,7 @@ export const useServiceWorker = () => {
 
   // Unregister all service workers
   const unregisterServiceWorkers = () => {
-    if (!process.client || !('serviceWorker' in navigator)) return
+    if (!import.meta.client || !('serviceWorker' in navigator)) return
 
     navigator.serviceWorker.getRegistrations().then((registrations) => {
       for (const registration of registrations) {
@@ -59,7 +57,7 @@ export const useServiceWorker = () => {
 
   // Register the service worker
   const registerServiceWorker = () => {
-    if (!process.client || !('serviceWorker' in navigator)) return
+    if (!import.meta.client || !('serviceWorker' in navigator)) return
 
     // Handle service worker updates
     navigator.serviceWorker.addEventListener('controllerchange', () => {
@@ -86,12 +84,12 @@ export const useServiceWorker = () => {
       }
     })
 
-    // Get app version from useAppVersion
-    const { appVersion } = useAppVersion()
+    // Get app version and force update from useAppVersion
+    const { appVersion, forceUpdate } = useAppVersion()
 
     // Register service worker
     navigator.serviceWorker
-      .register(`/sw.js?appVersion=${appVersion.value}`)
+      .register(`/sw.js?appVersion=${appVersion.value}&forceUpdate=${forceUpdate.value}`)
       .then((registration) => {
         console.log('Service Worker registered:', registration.scope)
         serviceWorkerRegistration.value = registration

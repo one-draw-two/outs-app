@@ -2,13 +2,14 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox
 
 // Import version from query parameter or use default
 const APP_VERSION = self.location.search.match(/appVersion=([^&]+)/)?.[1] || 'NA'
+const FORCE_UPDATE = self.location.search.match(/forceUpdate=([^&]+)/)?.[1] === 'true'
 const SW_VERSION = APP_VERSION
 const CACHE_SUFFIX = 'v' + APP_VERSION.split('.').join('')
 
 // The activate handler stays mostly the same, but we'll add a flag for tracking if this is a user-activated update
 let isUserActivatedUpdate = false
 
-console.log(`[SW ${SW_VERSION}] Service worker initializing with Workbox (cache suffix: ${CACHE_SUFFIX})`)
+console.log(`[SW ${SW_VERSION}] Service worker initializing with Workbox (cache suffix: ${CACHE_SUFFIX}, force update: ${FORCE_UPDATE})`)
 
 // Use cache name with dynamically generated suffix
 workbox.core.setCacheNameDetails({
@@ -20,6 +21,12 @@ workbox.core.setCacheNameDetails({
 self.addEventListener('install', (event) => {
   console.log(`[SW ${SW_VERSION}] New service worker installed (waiting for activation)`)
   // Don't call skipWaiting() here - we'll do this on user action
+
+  // If force update is enabled, skip waiting immediately
+  if (FORCE_UPDATE) {
+    console.log(`[SW ${SW_VERSION}] Force update enabled - skipping waiting`)
+    self.skipWaiting()
+  }
 })
 
 self.addEventListener('activate', (event) => {
@@ -132,9 +139,30 @@ const routes = [
     },
   },
 
-  // SPA navigation requests
+  // Module scripts - CRITICAL: Handle these separately to prevent MIME type issues
   {
-    match: ({ request }) => request.mode === 'navigate',
+    match: ({ request, url }) => {
+      return request.destination === 'script' && (url.pathname.includes('.js') || url.pathname.includes('/_nuxt/'))
+    },
+    strategy: 'NetworkOnly', // Always go to network for module scripts
+    options: {
+      plugins: [
+        {
+          handlerDidError: async ({ request }) => {
+            console.error(`[SW ${SW_VERSION}] Failed to load module script:`, request.url)
+            // Don't cache failed module requests, let them fail naturally
+            throw new Error(`Module script failed to load: ${request.url}`)
+          },
+        },
+      ],
+    },
+  },
+
+  // SPA navigation requests - but exclude module scripts
+  {
+    match: ({ request, url }) => {
+      return request.mode === 'navigate' && !url.pathname.includes('.js') && !url.pathname.includes('/_nuxt/')
+    },
     strategy: 'NetworkFirst',
     cacheName: 'pages-cache',
     options: {
@@ -160,9 +188,11 @@ const routes = [
     },
   },
 
-  // Static assets (JS, CSS, etc.)
+  // Static assets (CSS and other non-module scripts)
   {
-    match: ({ request }) => request.destination === 'script' || request.destination === 'style',
+    match: ({ request, url }) => {
+      return request.destination === 'style' || (request.destination === 'script' && !url.pathname.includes('/_nuxt/'))
+    },
     strategy: 'StaleWhileRevalidate',
     cacheName: 'static-assets',
     options: {
