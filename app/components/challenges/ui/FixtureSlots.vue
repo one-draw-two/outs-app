@@ -1,6 +1,8 @@
 <template>
   <div class="">
-    <h1>{{ realFixture?.name }}</h1>
+    <h1>
+      {{ realFixture?.name }} <span class="text-gray-500 italic font-normal text-sm">{{ realFixture?.id }}</span>
+    </h1>
 
     <div class="flex gap-4">
       <div class="flex-1">
