@@ -29,16 +29,16 @@
     "@capacitor/network": "^7.0.2",
     "@capacitor/preferences": "^7.0.2",
     "@capacitor/push-notifications": "^7.0.3",
-    "@hugeicons/core-free-icons": "^1.0.16",
+    "@hugeicons/core-free-icons": "^1.1.0",
     "@hugeicons/vue": "^1.0.3",
     "@outs1x2/capacitor-liveactivities": "^0.2.6",
-    "@powersync/web": "^1.26.1",
+    "@powersync/web": "^1.27.0",
     "@tailwindcss/vite": "^4.1.13",
-    "@tailwindplus/elements": "^1.0.12",
+    "@tailwindplus/elements": "^1.0.15",
     "capacitor-plugin-safe-area": "^4.0.0",
     "dayjs": "^1.11.18",
     "jwt-decode": "^4.0.0",
-    "nuxt": "^4.1.1",
+    "nuxt": "^4.1.2",
     "tailwindcss": "^4.1.13",
     "vue": "latest",
     "vue-router": "latest"
@@ -50,5 +50,11 @@
     "typescript": "^5.9.2",
     "vite-plugin-top-level-await": "^1.6.0",
     "vite-plugin-wasm": "^3.5.0"
-  }
+  },
+  "trustedDependencies": [
+    "@journeyapps/wa-sqlite",
+    "@parcel/watcher",
+    "@swc/core",
+    "@tailwindcss/oxide"
+  ]
 }

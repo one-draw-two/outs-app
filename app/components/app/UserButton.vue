@@ -1,6 +1,7 @@
 <template>
   <button
-    class="absolute z-60 right-[var(--twContPadding)] size-8 rounded-full bg-white borderXborder-black/50 flex-center font-black font-posterama cursor-pointer"
+    class="absolute z-60 right-[var(--twContPadding)] size-8 rounded-full borderXborder-black/50 flex-center font-black font-posterama cursor-pointer"
+    :class="connectionColorClass"
     @click="isUserOverlayOpen = !isUserOverlayOpen"
   >
     <Transition name="flip" mode="out-in">
@@ -18,6 +19,7 @@ import { User03Icon } from '@hugeicons/core-free-icons'
 import type { User } from '~/../types'
 
 const isUserOverlayOpen = useState<boolean>('isUserOverlayOpen')
+const connectionColorClass = useState<string>('network:connectionColorClass')
 
 const userInitials = computed(
   () =>
