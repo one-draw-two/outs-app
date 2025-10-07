@@ -1,14 +1,15 @@
+// Main (original) Service Worker file with Workbox integration and custom caching strategies
+
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.3.0/workbox-sw.js', './sw/helpers.js')
 
-// Import version from query parameter or use default
+const DEBUG = false
 const VERSION = self.location.search.match(/appVersion=([^&]+)/)?.[1] || 'NA'
-const FORCE_UPDATE = self.location.search.match(/forceUpdate=([^&]+)/)?.[1] === 'true'
 
-setupSWLogger(VERSION)
+setupSWLogger(VERSION, 'MAIN', DEBUG)
 
 const CACHE_SUFFIX = 'v' + VERSION.split('.').join('')
 
-console.log(`Service worker initializing with Workbox (cache suffix: ${CACHE_SUFFIX}, force update: ${FORCE_UPDATE})`)
+console.log(`Service worker initializing with Workbox (cache suffix: ${CACHE_SUFFIX})`)
 
 // Use cache name with dynamically generated suffix
 workbox.core.setCacheNameDetails({
@@ -17,21 +18,13 @@ workbox.core.setCacheNameDetails({
 })
 
 // Modify your 'install' event handler - don't automatically skipWaiting
-self.addEventListener('install', (event) => {
-  console.log(`New service worker installed (waiting for activation)`)
-  // Don't call skipWaiting() here - we'll do this on user action
-
-  // If force update is enabled, skip waiting immediately
-  if (FORCE_UPDATE) {
-    console.log(`Force update enabled - skipping waiting`)
-    self.skipWaiting()
-  }
-})
+self.addEventListener('install', (event) => console.log(`New service worker installed (waiting for activation)`))
 
 self.addEventListener('activate', (event) => {
   console.log(`Service worker activated`)
 
   // Take control of all clients immediately
+  /*
   event.waitUntil(
     Promise.all([
       clients.claim(),
@@ -50,6 +43,7 @@ self.addEventListener('activate', (event) => {
       }),
     ])
   )
+  */
 
   self.clients.matchAll().then((clients) => clients.forEach((client) => client.postMessage({ type: 'SW_UPDATED', version: VERSION })))
 })

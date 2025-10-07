@@ -13,7 +13,9 @@
           <ClearButton />
           <UserUiThemeSelector />
           <LogoutButton @clear-user="clearUser" />
-          <div class="mt-4 text-xs text-gray-500">App version: {{ appVersion }} (stored: {{ storedVersion }}) {{ updateAvailable }}</div>
+          <div class="mt-4 text-xs text-gray-500">
+            App version: {{ appVersion }} <span v-if="updateAvailable"> (stored: {{ storedVersion }}) {{ updateAvailable }} </span>
+          </div>
         </div>
       </div>
     </aside>

@@ -1,10 +1,9 @@
-import { APP_VERSION, FORCE_UPDATE } from '~/constants/version'
+import { APP_VERSION } from '~/constants/version'
 
-const DEBUG = true
+const DEBUG = false
 
 export const useAppVersion = () => {
   const appVersion = useState<string>('appVersion', () => APP_VERSION)
-  const forceUpdate = useState<boolean>('forceUpdate', () => FORCE_UPDATE)
 
   const updateAvailable = useState<boolean>('versionUpdateAvailable', () => false)
   const storedVersion = useState<string | null>('storedAppVersion', () => null)
@@ -21,14 +20,11 @@ export const useAppVersion = () => {
     if (DEBUG) console.log(`Setting LS Version like this: ${storedVersion.value} → ${appVersion.value}`)
     localStorage.setItem('app-last-version', appVersion.value)
     updateAvailable.value = false
-
-    // Maybe also reload the page to ensure everything is fresh (with a timeout?)
-    // window.location.reload()
+    setTimeout(() => window.location.reload(), 2000)
   }
 
   return {
     appVersion,
-    forceUpdate,
     updateAvailable,
     storedVersion,
     checkForUpdate,

@@ -4,8 +4,7 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-function setupSWLogger(version) {
-  const swType = self.location.pathname.includes('reset') ? 'RESET' : 'MAIN'
+function setupSWLogger(version, swType = 'MAIN', debug = true) {
   const prefix = `[SW ${version} | ${swType}]`
 
   // Store original console methods
@@ -17,20 +16,22 @@ function setupSWLogger(version) {
   }
 
   // Override console methods to include SW version and type
+  // or make them no-ops if debug is false
   console.log = function (...args) {
-    originalConsole.log.apply(console, [`${prefix}`, ...args])
+    if (debug) originalConsole.log.apply(console, [`${prefix}`, ...args])
   }
 
   console.warn = function (...args) {
-    originalConsole.warn.apply(console, [`${prefix}`, ...args])
+    if (debug) originalConsole.warn.apply(console, [`${prefix}`, ...args])
   }
 
   console.error = function (...args) {
+    // Always show errors regardless of debug setting
     originalConsole.error.apply(console, [`${prefix}`, ...args])
   }
 
   console.info = function (...args) {
-    originalConsole.info.apply(console, [`${prefix}`, ...args])
+    if (debug) originalConsole.info.apply(console, [`${prefix}`, ...args])
   }
 
   // Return logger in case direct usage is needed
