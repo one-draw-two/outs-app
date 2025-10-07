@@ -8,9 +8,6 @@ setupSWLogger(VERSION)
 
 const CACHE_SUFFIX = 'v' + VERSION.split('.').join('')
 
-// The activate handler stays mostly the same, but we'll add a flag for tracking if this is a user-activated update
-let isUserActivatedUpdate = false
-
 console.log(`Service worker initializing with Workbox (cache suffix: ${CACHE_SUFFIX}, force update: ${FORCE_UPDATE})`)
 
 // Use cache name with dynamically generated suffix
@@ -58,51 +55,13 @@ self.addEventListener('activate', (event) => {
 })
 
 self.addEventListener('message', (event) => {
-  console.log('SW ')
+  console.log('SW')
   console.log(event)
   if (event.data?.type === 'SKIP_WAITING') {
     console.log('Skip waiting message received, activating immediately')
     self.skipWaiting()
   }
 })
-
-/*
-self.addEventListener('message', (event) => {
-  // Move the isUserActivatedUpdate flag outside of any specific handler
-  if (event.data && event.data.type === 'PREVENT_DEFAULT_REFRESH') {
-    console.log(`[SW ${SW_VERSION}] Preventing default refresh behavior`)
-    isUserActivatedUpdate = true // Set the flag to prevent automatic refresh
-    return // Important: Return early to ensure this happens first
-  }
-
-  // Rest of your message handlers...
-  const messageHandlers = {
-    SKIP_WAITING: () => {
-      console.log(`[SW ${SW_VERSION}] User activated update - applying immediately`)
-      isUserActivatedUpdate = true
-      self.skipWaiting()
-    },
-    GET_VERSION: () => {
-      if (event.ports && event.ports[0]) {
-        event.ports[0].postMessage({ version: SW_VERSION })
-      }
-    },
-    CHECK_UPDATE: () => {
-      // Just respond with current version - main thread will compare with app version
-      if (event.ports && event.ports[0]) {
-        event.ports[0].postMessage({
-          version: SW_VERSION,
-          hasWaiting: self.registration && self.registration.waiting ? true : false,
-        })
-      }
-    },
-  }
-
-  if (event.data && event.data.type && messageHandlers[event.data.type]) {
-    messageHandlers[event.data.type]()
-  }
-})
-*/
 
 // Precache critical assets
 workbox.precaching.precacheAndRoute([

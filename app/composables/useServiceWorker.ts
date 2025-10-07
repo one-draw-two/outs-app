@@ -1,5 +1,5 @@
 export const useServiceWorker = () => {
-  const DEBUG = false
+  const DEBUG = true
 
   // Get runtime config to check environment
   const config = useRuntimeConfig()
@@ -11,13 +11,6 @@ export const useServiceWorker = () => {
   const serviceWorkerRegistration = ref<ServiceWorkerRegistration | null>(null)
 
   const isInitialized = ref(false)
-  const isRefreshing = ref(false)
-
-  // Version and update states - moved from useAppVersion
-  const swVersion = useState<string | null>('swVersion', () => null)
-  const updateAvailable = useState<boolean>('updateAvailable', () => false)
-  const hasWaitingSW = useState<boolean>('hasWaitingSW', () => false)
-  const lastChecked = ref<Date | null>(null)
 
   // Initialize the service worker
   const init = async () => {
@@ -60,11 +53,6 @@ export const useServiceWorker = () => {
 
         // Now set up listeners AFTER successful registration
         // setupServiceWorkerListeners(registration)
-
-        // Check for updates
-        // checkSwVersion(registration)
-        // Set up update detection
-        // setupUpdateDetection(registration)
       })
       .catch((error) => console.error('Service Worker registration failed:', error))
   }
@@ -88,38 +76,9 @@ export const useServiceWorker = () => {
     // if (!DEBUG) return
     console.log('🔔 SW Message received:', event.data)
     console.log(event)
-
-    console.log('The received controller is:')
     console.log(navigator.serviceWorker)
-    console.log(navigator.serviceWorker.controller)
 
     if (event.data?.type === 'SW_UPDATED') applyVersionUpdateLocalStorage()
-
-    /*
-    if (event.data?.type === 'SW_UPDATED') {
-      swVersion.value = event.data.version
-      updateAvailable.value = true
-      hasWaitingSW.value = true
-      console.log(`Service worker update available: ${event.data.version}`)
-    }
-
-    if (event.data?.type === 'RELOAD_PAGE') {
-      console.log(`Received reload request from service worker v${event.data.version}`)
-
-      let countdown = 5
-      console.log(`Page will reload in ${countdown} seconds...`)
-
-      const countdownInterval = setInterval(() => {
-        countdown--
-        console.log(`Page will reload in ${countdown} seconds...`)
-
-        if (countdown <= 0) {
-          clearInterval(countdownInterval)
-          window.location.reload()
-        }
-      }, 1000)
-    }
-    */
   }
 
   /*
@@ -164,95 +123,6 @@ export const useServiceWorker = () => {
     })
   }
 
-  // Check if SW version matches app version - moved from useAppVersion
-  const checkSwVersion = async (registration?: ServiceWorkerRegistration) => {
-    if (!import.meta.client) return
-
-    if (!('serviceWorker' in navigator)) return
-
-    try {
-      // Use the provided registration or get one
-      const reg = registration || (await navigator.serviceWorker.getRegistration())
-
-      if (reg) {
-        // If there's a waiting service worker, we have an update
-        if (reg.waiting) {
-          // Prevent default refresh behavior
-          reg.waiting.postMessage({ type: 'PREVENT_DEFAULT_REFRESH' })
-
-          hasWaitingSW.value = true
-          updateAvailable.value = true
-
-          // Get version from waiting service worker
-          await getVersionFromSW(reg.waiting)
-        }
-        // Otherwise check with the active service worker
-        else if (navigator.serviceWorker.controller) {
-          await getVersionFromSW(navigator.serviceWorker.controller)
-        } else {
-          console.log('Service worker controller not yet active')
-          swVersion.value = 'Initializing'
-        }
-      }
-    } catch (err) {
-      console.error('Error checking service worker version:', err)
-      swVersion.value = 'Error'
-    }
-
-    lastChecked.value = new Date()
-
-    // Periodic checks
-    setTimeout(() => {
-      if (registration) {
-        registration.update().then(() => {
-          console.log('Checking for Service Worker updates...')
-          checkSwVersion(registration)
-        })
-      }
-    }, 15 * 60 * 1000) // Check every 15 minutes
-  }
-
-  // Helper function to get version from a service worker - moved from useAppVersion
-  const getVersionFromSW = async (targetSW: ServiceWorker) => {
-    // Create a message channel
-    const messageChannel = new MessageChannel()
-
-    // Set up a promise to receive the version
-    const versionPromise = new Promise((resolve) => {
-      messageChannel.port1.onmessage = (event) => {
-        if (event.data) {
-          resolve(event.data)
-        }
-      }
-    })
-
-    // Send message to service worker
-    targetSW.postMessage({ type: 'CHECK_UPDATE' }, [messageChannel.port2])
-
-    // Wait for response with timeout
-    const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve({ version: 'Unknown' }), 1000))
-
-    const data = (await Promise.race([versionPromise, timeoutPromise])) as any
-    swVersion.value = data.version
-
-    // If we have version information, check if it's different from app version
-    if (swVersion.value && swVersion.value !== 'Unknown' && swVersion.value !== 'Initializing') {
-      updateAvailable.value = swVersion.value !== appVersion.value
-
-      // Log if there's an update
-      if (updateAvailable.value) {
-        console.log(`Update available: APP ${appVersion.value} vs SW ${swVersion.value}`)
-      }
-    }
-
-    // Update the waiting status if provided
-    if (data.hasWaiting !== undefined) {
-      hasWaitingSW.value = data.hasWaiting
-    }
-
-    return data
-  }
-
   // Force the waiting service worker to activate and reload the page - moved from useAppVersion
   const applySWUpdate = async () => {
     if (!import.meta.client) return
@@ -289,50 +159,10 @@ export const useServiceWorker = () => {
     }
   }
 
-  /*
-  // Set up detection for service worker updates
-  const setupUpdateDetection = (registration: ServiceWorkerRegistration) => {
-    // Prevent default browser refresh for any waiting service worker
-    if (registration.waiting) {
-      registration.waiting.postMessage({ type: 'PREVENT_DEFAULT_REFRESH' })
-    }
-
-    // Listen for new service workers
-    registration.addEventListener('updatefound', () => {
-      const newWorker = registration.installing
-
-      if (newWorker) {
-        console.log('New service worker update found, installing...')
-
-        // Immediately prevent default refresh
-        newWorker.postMessage({ type: 'PREVENT_DEFAULT_REFRESH' })
-
-        newWorker.addEventListener('statechange', () => {
-          console.log(`Service worker state changed: ${newWorker.state}`)
-
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            console.log('New service worker installed and waiting')
-
-            // Prevent default browser refresh
-            newWorker.postMessage({ type: 'PREVENT_DEFAULT_REFRESH' })
-
-            // Check for updates with the new service worker
-            checkSwVersion(registration)
-          }
-        })
-      }
-    })
-  }
-  */
-
   // Return the service worker registration and update functions for external use
   return {
     init,
     unregisterServiceWorkers,
-    swVersion,
-    updateAvailable,
-    hasWaitingSW,
-    lastChecked,
     applySWUpdate,
   }
 }

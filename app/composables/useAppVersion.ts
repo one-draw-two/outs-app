@@ -22,7 +22,7 @@ export const useAppVersion = () => {
     localStorage.setItem('app-last-version', appVersion.value)
     updateAvailable.value = false
 
-    // Maybe also reload the page to ensure everything is fresh
+    // Maybe also reload the page to ensure everything is fresh (with a timeout?)
     // window.location.reload()
   }
 
