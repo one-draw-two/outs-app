@@ -1,15 +1,17 @@
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js', './sw/helpers.js')
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.3.0/workbox-sw.js', './sw/helpers.js')
 
 // Import version from query parameter or use default
-const APP_VERSION = self.location.search.match(/appVersion=([^&]+)/)?.[1] || 'NA'
+const VERSION = self.location.search.match(/appVersion=([^&]+)/)?.[1] || 'NA'
 const FORCE_UPDATE = self.location.search.match(/forceUpdate=([^&]+)/)?.[1] === 'true'
-const SW_VERSION = APP_VERSION
-const CACHE_SUFFIX = 'v' + APP_VERSION.split('.').join('')
+
+setupSWLogger(VERSION)
+
+const CACHE_SUFFIX = 'v' + VERSION.split('.').join('')
 
 // The activate handler stays mostly the same, but we'll add a flag for tracking if this is a user-activated update
 let isUserActivatedUpdate = false
 
-console.log(`[SW ${SW_VERSION}] Service worker initializing with Workbox (cache suffix: ${CACHE_SUFFIX}, force update: ${FORCE_UPDATE})`)
+console.log(`Service worker initializing with Workbox (cache suffix: ${CACHE_SUFFIX}, force update: ${FORCE_UPDATE})`)
 
 // Use cache name with dynamically generated suffix
 workbox.core.setCacheNameDetails({
@@ -19,18 +21,18 @@ workbox.core.setCacheNameDetails({
 
 // Modify your 'install' event handler - don't automatically skipWaiting
 self.addEventListener('install', (event) => {
-  console.log(`[SW ${SW_VERSION}] New service worker installed (waiting for activation)`)
+  console.log(`New service worker installed (waiting for activation)`)
   // Don't call skipWaiting() here - we'll do this on user action
 
   // If force update is enabled, skip waiting immediately
   if (FORCE_UPDATE) {
-    console.log(`[SW ${SW_VERSION}] Force update enabled - skipping waiting`)
+    console.log(`Force update enabled - skipping waiting`)
     self.skipWaiting()
   }
 })
 
 self.addEventListener('activate', (event) => {
-  console.log(`[SW ${SW_VERSION}] Service worker activated`)
+  console.log(`Service worker activated`)
 
   // Take control of all clients immediately
   event.waitUntil(
@@ -42,7 +44,7 @@ self.addEventListener('activate', (event) => {
           cacheNames.map((cacheName) => {
             // If the cache name doesn't include our current cache suffix
             if (cacheName.includes('outstanding-offline') && !cacheName.includes(CACHE_SUFFIX)) {
-              console.log(`[SW ${SW_VERSION}] Deleting old cache: ${cacheName}`)
+              console.log(`Deleting old cache: ${cacheName}`)
               return caches.delete(cacheName)
             }
             return Promise.resolve()
@@ -52,20 +54,19 @@ self.addEventListener('activate', (event) => {
     ])
   )
 
-  // Only notify if this wasn't a user-triggered update (otherwise the page is already reloading)
-  if (!isUserActivatedUpdate) {
-    // Notify all clients about the available update
-    self.clients.matchAll().then((clients) => {
-      clients.forEach((client) => {
-        client.postMessage({
-          type: 'SW_UPDATED',
-          version: SW_VERSION,
-        })
-      })
-    })
+  self.clients.matchAll().then((clients) => clients.forEach((client) => client.postMessage({ type: 'SW_UPDATED', version: VERSION })))
+})
+
+self.addEventListener('message', (event) => {
+  console.log('SW ')
+  console.log(event)
+  if (event.data?.type === 'SKIP_WAITING') {
+    console.log('Skip waiting message received, activating immediately')
+    self.skipWaiting()
   }
 })
 
+/*
 self.addEventListener('message', (event) => {
   // Move the isUserActivatedUpdate flag outside of any specific handler
   if (event.data && event.data.type === 'PREVENT_DEFAULT_REFRESH') {
@@ -101,14 +102,15 @@ self.addEventListener('message', (event) => {
     messageHandlers[event.data.type]()
   }
 })
+*/
 
 // Precache critical assets
 workbox.precaching.precacheAndRoute([
-  { url: '/', revision: APP_VERSION },
-  { url: '/index.html', revision: APP_VERSION },
-  { url: '/manifest.json', revision: APP_VERSION },
-  { url: '/icons/512.png', revision: APP_VERSION },
-  { url: '/favicon.ico', revision: APP_VERSION },
+  { url: '/', revision: VERSION },
+  { url: '/index.html', revision: VERSION },
+  { url: '/manifest.json', revision: VERSION },
+  { url: '/icons/512.png', revision: VERSION },
+  { url: '/favicon.ico', revision: VERSION },
   // Add any other critical static assets
 ])
 
@@ -149,7 +151,7 @@ const routes = [
       plugins: [
         {
           handlerDidError: async ({ request }) => {
-            console.error(`[SW ${SW_VERSION}] Failed to load module script:`, request.url)
+            console.error(`Failed to load module script:`, request.url)
             // Don't cache failed module requests, let them fail naturally
             throw new Error(`Module script failed to load: ${request.url}`)
           },
@@ -201,7 +203,7 @@ const routes = [
       plugins: [
         {
           handlerDidError: async ({ request }) => {
-            console.error(`[SW ${SW_VERSION}] Failed to load static asset:`, request.url)
+            console.error(`Failed to load static asset:`, request.url)
             return fetch(request)
           },
         },

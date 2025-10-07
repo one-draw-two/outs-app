@@ -17,7 +17,11 @@ import type { User } from '~/../types'
 const user = useState<User | null>('user')
 
 useKeyboard()
-useServiceWorker()
 useViewportDims()
 useUiTheme().setTheme(user.value?.settings?.ui?.theme || 'system')
+
+onMounted(async () => {
+  useAppVersion().checkForUpdate()
+  await useServiceWorker().init()
+})
 </script>

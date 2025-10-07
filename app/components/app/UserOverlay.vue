@@ -13,7 +13,7 @@
           <ClearButton />
           <UserUiThemeSelector />
           <LogoutButton @clear-user="clearUser" />
-          <div class="mt-4 text-xs text-gray-500">App version: {{ appVersion }} (SW: {{ swVersion ?? 'Unknown' }})</div>
+          <div class="mt-4 text-xs text-gray-500">App version: {{ appVersion }} (stored: {{ storedVersion }}) {{ updateAvailable }}</div>
         </div>
       </div>
     </aside>
@@ -23,12 +23,10 @@
 <script setup lang="ts">
 import type { User } from '~/../types'
 
-const { appVersion, swVersion } = useAppVersion()
+const { appVersion, storedVersion, updateAvailable } = useAppVersion()
 
 const isUserOverlayOpen = useState<boolean>('isUserOverlayOpen')
 const userName = useState<User>('user').value?.name
-
-// <template v-if="swVersion !== appVersion"> (SW: {{ swVersion ?? 'Unknown' }}) </template>
 
 const clearUser = async () => await useClearUser().logOutUser()
 </script>

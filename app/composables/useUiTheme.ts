@@ -21,11 +21,8 @@ export const useUiTheme = () => {
     }
 
     // Store preference
-    if (theme === 'system') {
-      localStorage.removeItem('theme')
-    } else {
-      localStorage.theme = theme
-    }
+    if (theme === 'system') localStorage.removeItem('theme')
+    else localStorage.theme = theme
   }
 
   return {

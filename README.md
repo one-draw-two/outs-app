@@ -113,3 +113,4 @@ nativeRoute.params.stid // Then use like this
 - Restore: Removed performance logging statements: 557.9kb
 - Post: Augsburger move: 559.79kb
 - Chore: Package updates: 560.1kb
+- Wip: SW update fixes with app version control: 559.35kb

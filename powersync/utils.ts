@@ -47,9 +47,7 @@ export const purgeVFS = async (db: any) => {
   // Clear localStorage items related to PowerSync
   try {
     Object.keys(localStorage).forEach((key) => {
-      if (key.includes('powersync') || key.includes('ps-') || key.includes('.db')) {
-        localStorage.removeItem(key)
-      }
+      if (key.includes('powersync') || key.includes('ps-') || key.includes('.db')) localStorage.removeItem(key)
     })
   } catch (e) {
     console.log('localStorage cleanup error (continuing):', e)

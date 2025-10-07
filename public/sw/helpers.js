@@ -1,4 +1,47 @@
 // Don't use export keywords
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function setupSWLogger(version) {
+  const swType = self.location.pathname.includes('reset') ? 'RESET' : 'MAIN'
+  const prefix = `[SW ${version} | ${swType}]`
+
+  // Store original console methods
+  const originalConsole = {
+    log: console.log,
+    warn: console.warn,
+    error: console.error,
+    info: console.info,
+  }
+
+  // Override console methods to include SW version and type
+  console.log = function (...args) {
+    originalConsole.log.apply(console, [`${prefix}`, ...args])
+  }
+
+  console.warn = function (...args) {
+    originalConsole.warn.apply(console, [`${prefix}`, ...args])
+  }
+
+  console.error = function (...args) {
+    originalConsole.error.apply(console, [`${prefix}`, ...args])
+  }
+
+  console.info = function (...args) {
+    originalConsole.info.apply(console, [`${prefix}`, ...args])
+  }
+
+  // Return logger in case direct usage is needed
+  return {
+    log: console.log,
+    warn: console.warn,
+    error: console.error,
+    info: console.info,
+  }
+}
+
 async function tryDirectHtmlParsing(SW_VERSION, cache) {
   console.log(`[SW ${SW_VERSION}] Attempting direct chunk detection`)
 
@@ -60,7 +103,6 @@ function createCachingStrategy(strategyType, cacheName, options = {}) {
   const { maxEntries = 50, maxAgeDays = 7, plugins = [] } = options
 
   const defaultPlugins = [createExpirationPlugin(maxEntries, maxAgeDays)]
-
   const allPlugins = [...defaultPlugins, ...plugins]
 
   switch (strategyType) {
@@ -76,6 +118,15 @@ function createCachingStrategy(strategyType, cacheName, options = {}) {
       })
     case 'StaleWhileRevalidate':
       return new workbox.strategies.StaleWhileRevalidate({
+        cacheName: cacheName + '-' + CACHE_SUFFIX,
+        plugins: allPlugins,
+      })
+    case 'NetworkOnly':
+      return new workbox.strategies.NetworkOnly({
+        plugins: allPlugins,
+      })
+    case 'CacheOnly':
+      return new workbox.strategies.CacheOnly({
         cacheName: cacheName + '-' + CACHE_SUFFIX,
         plugins: allPlugins,
       })
