@@ -114,3 +114,4 @@ nativeRoute.params.stid // Then use like this
 - Post: Augsburger move: 559.79kb
 - Chore: Package updates: 560.1kb
 - Wip: SW update fixes with app version control: 559.35kb
+- Refactor: localStorage replaced with Capacitor.Preferences to support devices, imported by usePreferences: 559.49kb

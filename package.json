@@ -1,6 +1,7 @@
 {
   "name": "outs-app",
   "private": true,
+  "version": "1.2.79",
   "type": "module",
   "scripts": {
     "build": "nuxt build",

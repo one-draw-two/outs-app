@@ -1,11 +1,11 @@
-import { Preferences } from '@capacitor/preferences'
 import { jwtDecode } from 'jwt-decode'
 import type { AuthResponseSuccess } from '~/../types'
 
-const AUTH_KEY = 'outs-auth'
-const REFRESH_KEY = 'outs-refresh'
-
 export const useAuthStorage = () => {
+  const Preferences = usePreferences()
+  const AUTH_KEY = 'outs-auth'
+  const REFRESH_KEY = 'outs-refresh'
+
   const getTokenExpiration = (token: string): number => {
     try {
       return jwtDecode<{ exp: number }>(token).exp * 1000 // Convert to milliseconds

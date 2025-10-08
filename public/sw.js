@@ -4,6 +4,7 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.3.0/workbox
 
 const DEBUG = false
 const VERSION = self.location.search.match(/appVersion=([^&]+)/)?.[1] || 'NA'
+const POWERSYNC_WASM_VERSION = self.location.search.match(/psVersion=([^&]+)/)?.[1] || '1.0.0'
 
 setupSWLogger(VERSION, 'MAIN', DEBUG)
 
@@ -21,18 +22,25 @@ workbox.core.setCacheNameDetails({
 self.addEventListener('install', (event) => console.log(`New service worker installed (waiting for activation)`))
 
 self.addEventListener('activate', (event) => {
-  console.log(`Service worker activated`)
+  console.log(`Service worker activated with version: ${VERSION}`)
 
-  // Take control of all clients immediately
-  /*
+  // Take control of all clients immediately and clean up caches
   event.waitUntil(
     Promise.all([
+      // Force claim clients - important!
       clients.claim(),
+
       // Clear old caches
       caches.keys().then((cacheNames) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
-            // If the cache name doesn't include our current cache suffix
+            // Clean up PowerSync WASM caches
+            if (cacheName.includes('powersync-wasm-') && !cacheName.includes(`powersync-wasm-${POWERSYNC_WASM_VERSION}`)) {
+              console.log(`Deleting old cache: ${cacheName}`)
+              return caches.delete(cacheName)
+            }
+
+            // Clean up general app caches
             if (cacheName.includes('outstanding-offline') && !cacheName.includes(CACHE_SUFFIX)) {
               console.log(`Deleting old cache: ${cacheName}`)
               return caches.delete(cacheName)
@@ -43,7 +51,6 @@ self.addEventListener('activate', (event) => {
       }),
     ])
   )
-  */
 
   self.clients.matchAll().then((clients) => clients.forEach((client) => client.postMessage({ type: 'SW_UPDATED', version: VERSION })))
 })
@@ -88,6 +95,30 @@ const routes = [
                 },
               })
             }
+          },
+        },
+      ],
+    },
+  },
+
+  {
+    match: ({ request, url }) => (request.destination === 'webassembly' || url.pathname.endsWith('.wasm')) && url.pathname.includes('sqlite'),
+    strategy: 'CacheFirst',
+    cacheName: `powersync-wasm-${POWERSYNC_WASM_VERSION}`,
+    options: {
+      maxEntries: 10,
+      maxAgeDays: 365, // Long-term caching
+      plugins: [
+        {
+          cacheDidUpdate: async ({ cacheName, request, response }) => {
+            console.log(`Cached PowerSync WASM file: ${request.url} in ${cacheName}`)
+          },
+          handlerDidError: async ({ request }) => {
+            console.error(`Failed to load PowerSync WASM file:`, request.url)
+            // Try to return from cache if available
+            const cache = await caches.open(`powersync-wasm-${POWERSYNC_WASM_VERSION}`)
+            const cachedResponse = await cache.match(request)
+            if (cachedResponse) return cachedResponse
           },
         },
       ],

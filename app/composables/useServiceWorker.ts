@@ -6,7 +6,7 @@ export const useServiceWorker = () => {
   const config = useRuntimeConfig()
 
   // Get app version from useAppVersion (single source of truth)
-  const { appVersion, applyVersionUpdateLocalStorage } = useAppVersion()
+  const { appVersion, psVersion, applyVersionUpdate } = useAppVersion()
 
   // Service worker state
   const serviceWorkerRegistration = ref<ServiceWorkerRegistration | null>(null)
@@ -42,15 +42,9 @@ export const useServiceWorker = () => {
 
   // Register the service worker
   const registerServiceWorker = (swPath: string) => {
-    if (!('serviceWorker' in navigator)) return
-
-    // Register service worker
     navigator.serviceWorker
-      .register(`${swPath}?appVersion=${appVersion.value}`)
-      .then((registration) => {
-        if (DEBUG) console.log('useServiceWorker: Service Worker registered:', registration.scope)
-        serviceWorkerRegistration.value = registration
-      })
+      .register(`${swPath}?appVersion=${appVersion.value}&psVersion=${psVersion.value}`)
+      .then((registration) => (serviceWorkerRegistration.value = registration))
       .catch((error) => console.error('Service Worker registration failed:', error))
   }
 
@@ -69,13 +63,16 @@ export const useServiceWorker = () => {
   }
 
   const handleServiceWorkerMessage = (event: any) => {
-    if (DEBUG) {
-      console.log('useServiceWorker: 🔔 SW Message received:', event.data)
+    console.log('useServiceWorker: 🔔 SW Message received:', event.data)
+    /*
+    console.log(appVersion.value)
+    if (DEBUG || true) {
       console.log(event)
       console.log(navigator.serviceWorker)
     }
+    */
 
-    if (event.data?.type === 'SW_UPDATED') applyVersionUpdateLocalStorage()
+    if (event.data?.type === 'SW_UPDATED') applyVersionUpdate(appVersion.value)
   }
 
   const applySWUpdate = async () => {

@@ -21,7 +21,7 @@ const currentTheme = computed(() => user.value?.settings?.ui?.theme || 'system')
 
 const setTheme = async (theme: Theme) => {
   // Update UI immediately
-  useUiTheme().setTheme(theme)
+  await useUiTheme().setTheme(theme)
 
   // Update local state
   if (user.value && user.value.settings) user.value = { ...user.value, settings: { ...user.value.settings, ui: { ...user.value.settings.ui, theme } } }

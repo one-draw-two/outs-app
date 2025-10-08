@@ -18,10 +18,11 @@ const user = useState<User | null>('user')
 
 useKeyboard()
 useViewportDims()
-useUiTheme().setTheme(user.value?.settings?.ui?.theme || 'system')
+
+await useUiTheme().setTheme(user.value?.settings?.ui?.theme || 'system')
 
 onMounted(async () => {
-  useAppVersion().checkForUpdate()
+  await useAppVersion().checkForUpdate()
   await useServiceWorker().init()
 })
 </script>
