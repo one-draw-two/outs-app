@@ -5,3 +5,10 @@ export const wecl = (item: any, pre?: string) => watchEffect(() => ((v) => v && 
 export const getSanityUrl = (key: string, resString?: string) => (key ? `https://cdn.sanity.io/images/z39cg3sc/production/${key}-${resString ?? '1024x1024'}.png` : '')
 
 export const getNestedValue = (obj: any, path: string): any => path.split('.').reduce((current, key) => (current && current[key] !== undefined ? current[key] : undefined), obj)
+
+export const haveObjectsChanged = (newObj: Record<string, any> | null | undefined, prevObj: Record<string, any>) =>
+  !newObj
+    ? Object.keys(prevObj).length > 0
+    : ((newKeys) => ((prevKeys) => newKeys.length !== prevKeys.length || newKeys.some((k) => prevObj[k] !== newObj[k]) || prevKeys.some((k) => !(k in newObj)))(Object.keys(prevObj)))(
+        Object.keys(newObj)
+      )

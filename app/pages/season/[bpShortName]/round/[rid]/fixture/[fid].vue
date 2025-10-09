@@ -55,14 +55,14 @@ const cursor = ref<any>(null)
 
 // Only fetch cursor if it doesn't already exist in round data
 if (!existingCursor.value) {
-  useDynamicPS().updatePowerSyncParams({ selected_fixture: fid })
+  useDynamicPS().updatepsParams({ selected_fixture: fid })
   const { data: fetchedCursor } = await usePopulatedGroupCursor(fid as string)
   cursor.value = fetchedCursor
 } else {
   cursor.value = existingCursor
 }
 
-// useDynamicPS().updatePowerSyncParams({ selected_fixture: fid })
+// useDynamicPS().updatepsParams({ selected_fixture: fid })
 // const { data: cursor }: { data: any } = await usePopulatedGroupCursor(fid as string)
 
 const betsAddedSnapshots = computed(() =>

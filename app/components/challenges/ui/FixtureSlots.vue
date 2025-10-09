@@ -31,7 +31,7 @@ const props = defineProps<{
   fixtureSlot?: any
 }>()
 
-useDynamicPS().updatePowerSyncParams({ selected_rf: props.rf.id })
+useDynamicPS().updatepsParams({ selected_rf: props.rf.id })
 const { data: realFixture } = await usePopulatedRealFixture(props.rf.id as string)
 
 const timeSortedEvents = computed(() => realFixture.value?._events?.sort((a: any, b: any) => a.time - b.time))

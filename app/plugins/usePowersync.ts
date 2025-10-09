@@ -11,7 +11,19 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   // An example from PS on how to use conditional db type: https://github.com/powersync-ja/powersync-js/blob/main/demos/example-capacitor/src/components/providers/SystemProvider.tsx
 
   const isUseIndexDB = Capacitor.getPlatform() === 'android'
-  const baseFlags = { broadcastLogs: true, enableMultiTabs: true } // Where to display these? Asked on Discord
+  const isSharedWorkerAvailable = typeof SharedWorker !== 'undefined'
+
+  // Base flags - don't enable multi-tabs by default
+  const baseFlags = { broadcastLogs: true }
+
+  // Add enableMultiTabs only if SharedWorker is available
+  const dbFlags = isSharedWorkerAvailable ? { ...baseFlags, enableMultiTabs: true } : baseFlags
+
+  if (DEBUG) {
+    console.log(`Platform: ${Capacitor.getPlatform()}, Using IndexDB: ${isUseIndexDB}`)
+    console.log(`SharedWorker available: ${isSharedWorkerAvailable}`)
+    console.log(`PowerSync flags:`, dbFlags)
+  }
 
   useState('dbInitialized').value = false
 
@@ -19,7 +31,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     const db = new PowerSyncDatabase({
       schema: AppSchema,
       database: isUseIndexDB ? { dbFilename: 'outs-ps-idb.db' } : new WASQLiteOpenFactory({ dbFilename: 'outs-ps-opfs.db', vfs: WASQLiteVFS.OPFSCoopSyncVFS }),
-      flags: isUseIndexDB ? Object.assign({}, baseFlags, { enableMultiTabs: typeof SharedWorker !== 'undefined' }) : baseFlags,
+      flags: dbFlags,
     })
 
     await db.waitForReady()

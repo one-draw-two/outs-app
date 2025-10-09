@@ -31,7 +31,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   useState<any>('pickerSeasonId').value = round.value?._season
   useState<any>('pickerStageId').value = round.value?._stage
-  useDynamicPS().updatePowerSyncParams({ selected_round: rid })
+  useDynamicPS().updatepsParams({ selected_round: rid })
 
   const sKey = 'realFixture'
   const getOrder = (t: ParsedBPTournament, key: string) => t.snapshotConfig?.find((c) => c.name === sKey)?.order || 0

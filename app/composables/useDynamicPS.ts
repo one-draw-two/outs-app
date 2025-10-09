@@ -1,10 +1,11 @@
 import type { SyncStatus } from '@powersync/web'
 import { Connector } from '~/../powersync/Connector'
 
+const DEBUG = false
+const THROTTLE = 100
+
 let watchersInitialized = false
 let errorCount = 0
-
-const DEBUG = true
 
 export default function (initialize?: boolean) {
   const { $db }: any = useNuxtApp()
@@ -15,34 +16,18 @@ export default function (initialize?: boolean) {
   const lastSyncedTime = useState<string | null>('network:ps:lastSyncedTime', () => null)
   const lastSyncedDate = useState<Date | null>('network:ps:lastSyncedDate', () => null)
 
-  const THROTTLE = 0
-
   const lastConnectionTime = ref(0)
   const pendingConnectionTimeout = ref<NodeJS.Timeout | null>(null)
   const lastParams = ref<Record<string, any>>({})
 
-  const updatePowerSyncParams = (newParams: Record<string, any>) => {
-    const currentParams = useState<Record<string, any>>('powerSyncParams').value || {}
-    const mergedParams = { ...currentParams, ...newParams }
-    useState<Record<string, any>>('powerSyncParams').value = mergedParams
-  }
+  const updatepsParams = (newParams: Record<string, any>) => (useState<Record<string, any>>('psParams').value = { ...(useState<Record<string, any>>('psParams').value || {}), ...newParams })
 
-  const forceReconnect = () => {
-    if (powerSyncToken.value) {
-      const params = useState<Record<string, any>>('powerSyncParams').value || {}
+  const forceReconnect = () => powerSyncToken.value && connectWithThrottle(useState<Record<string, any>>('psParams').value || {}, true)
 
-      console.log('Connecting with token:')
-      console.log(powerSyncToken.value)
-
-      connectWithThrottle(params, true)
-    }
-  }
-
-  const haveParamsChanged = (newParams: Record<string, any> | null | undefined) => {
-    if (!newParams) return Object.keys(lastParams.value).length > 0
-    const newKeys = Object.keys(newParams)
-    const lastKeys = Object.keys(lastParams.value)
-    return newKeys.length !== lastKeys.length || newKeys.some((key) => lastParams.value[key] !== newParams[key]) || lastKeys.some((key) => !(key in newParams))
+  const refreshPowerSyncToken = async () => {
+    const res = await useAuthRefresh()
+    res?.success && res?.data?.powerSyncToken && (powerSyncToken.value = res.data.powerSyncToken)
+    return res
   }
 
   const connectWithThrottle = (params: any, forceConnect = false) => {
@@ -56,7 +41,7 @@ export default function (initialize?: boolean) {
       const isFirstConnectionAttempt = lastConnectionTime.value === 0
 
       // Force connection on first attempt or if params changed or if explicitly forced
-      if (isFirstConnectionAttempt || forceConnect || haveParamsChanged(rawParams)) {
+      if (isFirstConnectionAttempt || forceConnect || haveObjectsChanged(rawParams, lastParams.value)) {
         if (DEBUG) {
           console.log(isFirstConnectionAttempt ? 'CONNECTING TO PS (First connection after page load)...' : 'CONNECTING TO PS (Network Request)...')
           console.log(powerSyncToken)
@@ -73,27 +58,23 @@ export default function (initialize?: boolean) {
     }, THROTTLE)
   }
 
+  /*
   async function refreshPowerSyncToken() {
-    if (DEBUG) console.log('Refreshing PowerSync token... (New kemal yes kemal)')
-
+    if (DEBUG) console.log('Refreshing PowerSync token...')
     const res = await useAuthRefresh()
-    console.log(res)
     if (res.success && res.data?.powerSyncToken) {
-      console.log('SET FROM RES')
-      console.log(res.data.powerSyncToken)
       powerSyncToken.value = res.data.powerSyncToken
       return res
     }
   }
+    */
 
   if (!watchersInitialized) {
     watchersInitialized = true
 
     watch(
-      () => useState<any>('powerSyncParams').value,
-      (to) => {
-        if (to !== undefined && powerSyncToken.value) connectWithThrottle(to)
-      },
+      () => useState<any>('psParams').value,
+      (to) => to !== undefined && powerSyncToken.value && connectWithThrottle(to),
       { immediate: true }
     )
 
@@ -109,14 +90,16 @@ export default function (initialize?: boolean) {
         }
 
         const errorMsg = status.dataFlowStatus?.downloadError
-
         if (errorMsg?.message.includes('JWT')) {
           errorCount++
 
           if (errorCount < 3) {
-            console.log(`JWT error detected in PowerSync connection! Count: ${errorCount}`)
-            console.log(errorMsg?.message)
-            console.log(status)
+            if (DEBUG) {
+              console.log(`PS: JWT error detected in PowerSync connection! Count: ${errorCount}`)
+              console.log(errorMsg?.message)
+              console.log(status)
+            }
+            await sleep(300)
             await refreshPowerSyncToken()
             await forceReconnect()
           }
@@ -126,12 +109,12 @@ export default function (initialize?: boolean) {
   }
 
   // If initialize flag is true and we have a token but no params yet
-  if (initialize && powerSyncToken.value && !useState<any>('powerSyncParams').value && Date.now() - lastConnectionTime.value > THROTTLE) {
+  if (initialize && powerSyncToken.value && !useState<any>('psParams').value && Date.now() - lastConnectionTime.value > THROTTLE) {
     if (DEBUG) console.log('useDynamicPS: Initializing PowerSync connection with empty params...')
 
     // For a new session, force the connection
     const isFirstConnection = lastConnectionTime.value === 0
-    useState<any>('powerSyncParams').value = {}
+    useState<any>('psParams').value = {}
     // Directly trigger a forced connection for new users
     if (isFirstConnection) connectWithThrottle({}, true)
   }
@@ -139,7 +122,7 @@ export default function (initialize?: boolean) {
   if (!useState<Boolean>('isPSConsoledOnce').value && powerSyncToken.value) useState<Boolean>('isPSConsoledOnce').value = true
 
   return {
-    updatePowerSyncParams,
+    updatepsParams,
     forceReconnect,
     refreshPowerSyncToken,
   }
