@@ -11,7 +11,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   // An example from PS on how to use conditional db type: https://github.com/powersync-ja/powersync-js/blob/main/demos/example-capacitor/src/components/providers/SystemProvider.tsx
 
   const isUseIndexDB = Capacitor.getPlatform() === 'android'
-  const baseFlags = { broadcastLogs: true, enableMultiTabs: false } // Where to display these? Asked on Discord
+  const baseFlags = { broadcastLogs: true, enableMultiTabs: true } // Where to display these? Asked on Discord
 
   useState('dbInitialized').value = false
 

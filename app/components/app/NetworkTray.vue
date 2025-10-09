@@ -24,17 +24,17 @@
 </template>
 
 <script setup lang="ts">
-import { SyncStatus } from '@powersync/web'
-
-const { $db, $capacitor, vueApp } = useNuxtApp()
+const { $capacitor, vueApp } = useNuxtApp()
 const $network = $capacitor.$network
 const $day = vueApp.config.globalProperties.$day
 
-const connected = useState<boolean>('network:powerSyncConnected', () => false)
 const isOnline = useState<boolean>('network:networkOnline', () => true) // Default to true until checked
-const connectionType = useState<string>('network:connectionType', () => 'unknown')
-const lastSyncedTime = useState<string | null>('network:lastSyncedTime', () => null)
-const lastSyncedDate = useState<Date | null>('network:lastSyncedDate', () => null)
+
+const connected = useState<boolean>('network:ps:powerSyncConnected', () => false)
+const connectionType = useState<string>('network:ps:connectionType', () => 'unknown')
+const lastSyncedTime = useState<string | null>('network:ps:lastSyncedTime', () => null)
+const lastSyncedDate = useState<Date | null>('network:ps:lastSyncedDate', () => null)
+
 const isForcedVisible = useState<boolean>('network:networkTrayForced', () => false)
 const connectionStatus = useState<string>('network:connectionStatus', () => 'offline')
 const connectionColorClass = useState<string>('network:connectionColorClass', () => 'bg-red-500')
@@ -136,6 +136,7 @@ watch(
   }
 )
 
+/*
 const unregisterPowerSync = $db.registerListener({
   statusChanged: (status: SyncStatus) => {
     connected.value = status.connected
@@ -146,6 +147,7 @@ const unregisterPowerSync = $db.registerListener({
     }
   },
 })
+*/
 
 onMounted(async () => {
   await initNetwork()
@@ -164,7 +166,7 @@ onUnmounted(async () => {
     window.removeEventListener('offline', handleBrowserNetworkChange)
   }
 
-  unregisterPowerSync()
+  // unregisterPowerSync()
   stopTimer()
 
   if (hideTimer.value !== null) window.clearTimeout(hideTimer.value)

@@ -3,8 +3,8 @@ import type { User, AuthResponseSuccess } from '~/../types'
 const DEBUG = false
 const TOKENS = true
 
-export default function (res: AuthResponseSuccess, navToPath?: string, isToSaveOffline?: boolean) {
-  if (DEBUG) console.log('Initializing user with response...')
+export default function (res: AuthResponseSuccess, options?: { navToPath?: string; isToSaveOffline?: boolean; isUsingOfflineAuth?: boolean }) {
+  if (DEBUG || TOKENS) console.log(`Initializing user with ${options?.isUsingOfflineAuth ? 'offline' : 'online'} response...`)
   if (DEBUG || TOKENS) console.log(res)
   useState<User>('user').value = res.data.user
   useState<String>('accessToken').value = res.data.accessToken
@@ -12,7 +12,7 @@ export default function (res: AuthResponseSuccess, navToPath?: string, isToSaveO
 
   if (DEBUG) console.log('A')
 
-  useDynamicPS(true) // Parameters will be carried by useState<powerSyncParams>
+  useDynamicPS(true)
 
   if (DEBUG) console.log('B')
 
@@ -22,12 +22,12 @@ export default function (res: AuthResponseSuccess, navToPath?: string, isToSaveO
   useTabVisibility()
 
   if (DEBUG) console.log('D')
-  if (DEBUG) console.log(isToSaveOffline)
+  if (DEBUG) console.log(options?.isToSaveOffline)
 
-  if (isToSaveOffline) useAuthStorage().saveAuthAndRefreshToken(res)
+  if (options?.isToSaveOffline) useAuthStorage().saveAuthAndRefreshToken(res)
 
   if (DEBUG) console.log('E')
-  if (DEBUG) console.log(navToPath)
+  if (DEBUG) console.log(options?.navToPath)
 
-  if (navigateTo) navigateTo(navToPath, { replace: true })
+  if (options?.navToPath) navigateTo(options.navToPath, { replace: true })
 }

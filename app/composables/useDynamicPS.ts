@@ -1,14 +1,21 @@
+import type { SyncStatus } from '@powersync/web'
 import { Connector } from '~/../powersync/Connector'
 
-let watcherInitialized = false
+let watchersInitialized = false
+let errorCount = 0
 
-const DEBUG = false
+const DEBUG = true
 
 export default function (initialize?: boolean) {
   const { $db }: any = useNuxtApp()
-  const powerSyncToken = useState<String>('powerSyncToken').value
+  const powerSyncToken = useState<String>('powerSyncToken')
 
-  const THROTTLE = 300
+  const connected = useState<boolean>('network:ps:powerSyncConnected', () => false)
+  // const connectionType = useState<string>('network:ps:connectionType', () => 'unknown')
+  const lastSyncedTime = useState<string | null>('network:ps:lastSyncedTime', () => null)
+  const lastSyncedDate = useState<Date | null>('network:ps:lastSyncedDate', () => null)
+
+  const THROTTLE = 0
 
   const lastConnectionTime = ref(0)
   const pendingConnectionTimeout = ref<NodeJS.Timeout | null>(null)
@@ -21,8 +28,12 @@ export default function (initialize?: boolean) {
   }
 
   const forceReconnect = () => {
-    if (powerSyncToken) {
+    if (powerSyncToken.value) {
       const params = useState<Record<string, any>>('powerSyncParams').value || {}
+
+      console.log('Connecting with token:')
+      console.log(powerSyncToken.value)
+
       connectWithThrottle(params, true)
     }
   }
@@ -48,9 +59,10 @@ export default function (initialize?: boolean) {
       if (isFirstConnectionAttempt || forceConnect || haveParamsChanged(rawParams)) {
         if (DEBUG) {
           console.log(isFirstConnectionAttempt ? 'CONNECTING TO PS (First connection after page load)...' : 'CONNECTING TO PS (Network Request)...')
+          console.log(powerSyncToken)
           console.log(rawParams)
         }
-        $db.connect(new Connector(powerSyncToken as string), hasParams ? { params: rawParams } : {})
+        $db.connect(new Connector(powerSyncToken.value as string), hasParams ? { params: rawParams } : {})
         lastParams.value = rawParams ? { ...rawParams } : {}
       } else {
         if (DEBUG) console.log('Skipping PowerSync connection - params unchanged')
@@ -61,19 +73,62 @@ export default function (initialize?: boolean) {
     }, THROTTLE)
   }
 
-  if (!watcherInitialized) {
-    watcherInitialized = true
+  async function refreshPowerSyncToken() {
+    if (DEBUG) console.log('Refreshing PowerSync token... (New kemal yes kemal)')
+
+    const res = await useAuthRefresh()
+    console.log(res)
+    if (res.success && res.data?.powerSyncToken) {
+      console.log('SET FROM RES')
+      console.log(res.data.powerSyncToken)
+      powerSyncToken.value = res.data.powerSyncToken
+      return res
+    }
+  }
+
+  if (!watchersInitialized) {
+    watchersInitialized = true
+
     watch(
       () => useState<any>('powerSyncParams').value,
       (to) => {
-        if (to !== undefined && powerSyncToken) connectWithThrottle(to)
+        if (to !== undefined && powerSyncToken.value) connectWithThrottle(to)
       },
       { immediate: true }
     )
+
+    $db.registerListener({
+      statusChanged: async (status: SyncStatus) => {
+        // console.log('PowerSync status changed:')
+        // console.log(status)
+        connected.value = status.connected
+        if (status.lastSyncedAt) {
+          lastSyncedDate.value = new Date(status.lastSyncedAt)
+          lastSyncedTime.value = lastSyncedDate.value.toLocaleString()
+          // if (!isOnline.value || isForcedVisible.value) updateTimeSinceLastSync()
+        }
+
+        const errorMsg = status.dataFlowStatus?.downloadError
+
+        if (errorMsg?.message.includes('JWT')) {
+          errorCount++
+
+          if (errorCount < 3) {
+            console.log(`JWT error detected in PowerSync connection! Count: ${errorCount}`)
+            console.log(errorMsg?.message)
+            console.log(status)
+            await refreshPowerSyncToken()
+            await forceReconnect()
+          }
+        }
+      },
+    })
   }
 
   // If initialize flag is true and we have a token but no params yet
-  if (initialize && powerSyncToken && !useState<any>('powerSyncParams').value && Date.now() - lastConnectionTime.value > THROTTLE) {
+  if (initialize && powerSyncToken.value && !useState<any>('powerSyncParams').value && Date.now() - lastConnectionTime.value > THROTTLE) {
+    if (DEBUG) console.log('useDynamicPS: Initializing PowerSync connection with empty params...')
+
     // For a new session, force the connection
     const isFirstConnection = lastConnectionTime.value === 0
     useState<any>('powerSyncParams').value = {}
@@ -81,10 +136,11 @@ export default function (initialize?: boolean) {
     if (isFirstConnection) connectWithThrottle({}, true)
   }
 
-  if (!useState<Boolean>('isPSConsoledOnce').value && powerSyncToken) useState<Boolean>('isPSConsoledOnce').value = true
+  if (!useState<Boolean>('isPSConsoledOnce').value && powerSyncToken.value) useState<Boolean>('isPSConsoledOnce').value = true
 
   return {
     updatePowerSyncParams,
     forceReconnect,
+    refreshPowerSyncToken,
   }
 }
