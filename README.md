@@ -116,3 +116,4 @@ nativeRoute.params.stid // Then use like this
 - Wip: SW update fixes with app version control: 559.35kb
 - Refactor: localStorage replaced with Capacitor.Preferences to support devices, imported by usePreferences: 559.49kb
 - Fixes on PS Auth and SW: Parking for now with 1.3.0 version (Note Android Chorem doesnt support PS enableMultiTabs now, see notes): 559.75kb
+- Package updates (after a long break): 561.12kb
