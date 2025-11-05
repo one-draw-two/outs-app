@@ -1,0 +1,225 @@
+// Main (original) Service Worker file with Workbox integration and custom caching strategies
+
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.3.0/workbox-sw.js', './sw/helpers.js')
+
+const DEBUG = false
+const VERSION = self.location.search.match(/appVersion=([^&]+)/)?.[1] || 'NA'
+const POWERSYNC_WASM_VERSION = self.location.search.match(/psVersion=([^&]+)/)?.[1] || '1.0.0'
+
+setupSWLogger(VERSION, 'MAIN', DEBUG)
+
+const CACHE_SUFFIX = 'v' + VERSION.split('.').join('')
+
+console.log(`Service worker initializing with Workbox (cache suffix: ${CACHE_SUFFIX})`)
+
+// Use cache name with dynamically generated suffix
+workbox.core.setCacheNameDetails({
+  prefix: 'outstanding-offline',
+  suffix: CACHE_SUFFIX,
+})
+
+// Modify your 'install' event handler - don't automatically skipWaiting
+self.addEventListener('install', (event) => console.log(`New service worker installed (waiting for activation)`))
+
+self.addEventListener('activate', (event) => {
+  console.log(`Service worker activated with version: ${VERSION}`)
+
+  // Take control of all clients immediately and clean up caches
+  event.waitUntil(
+    Promise.all([
+      // Force claim clients - important!
+      clients.claim(),
+
+      // Clear old caches
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            // Clean up PowerSync WASM caches
+            if (cacheName.includes('powersync-wasm-') && !cacheName.includes(`powersync-wasm-${POWERSYNC_WASM_VERSION}`)) {
+              console.log(`Deleting old cache: ${cacheName}`)
+              return caches.delete(cacheName)
+            }
+
+            // Clean up general app caches
+            if (cacheName.includes('outstanding-offline') && !cacheName.includes(CACHE_SUFFIX)) {
+              console.log(`Deleting old cache: ${cacheName}`)
+              return caches.delete(cacheName)
+            }
+            return Promise.resolve()
+          })
+        )
+      }),
+    ])
+  )
+
+  self.clients.matchAll().then((clients) => clients.forEach((client) => client.postMessage({ type: 'SW_UPDATED', version: VERSION })))
+})
+
+self.addEventListener('message', (event) => {
+  console.log('SW')
+  console.log(event)
+  if (event.data?.type === 'SKIP_WAITING') {
+    console.log('Skip waiting message received, activating immediately')
+    self.skipWaiting()
+  }
+})
+
+// Precache critical assets
+workbox.precaching.precacheAndRoute([
+  { url: '/', revision: VERSION },
+  { url: '/index.html', revision: VERSION },
+  { url: '/manifest.json', revision: VERSION },
+  { url: '/icons/512.png', revision: VERSION },
+  { url: '/favicon.ico', revision: VERSION },
+  // Add any other critical static assets
+])
+
+// Define route configurations
+const routes = [
+  // Root index route
+  {
+    match: ({ url }) => url.pathname === '/' || url.pathname === '/index.html',
+    strategy: 'NetworkFirst',
+    cacheName: 'index-cache',
+    options: {
+      maxEntries: 5,
+      maxAgeDays: 1,
+      plugins: [
+        {
+          handlerDidError: async () => {
+            const cachedResponse = await caches.match('/index.html')
+            if (cachedResponse) {
+              return new Response(await cachedResponse.text(), {
+                headers: {
+                  'Content-Type': 'text/html',
+                },
+              })
+            }
+          },
+        },
+      ],
+    },
+  },
+
+  {
+    match: ({ request, url }) => (request.destination === 'webassembly' || url.pathname.endsWith('.wasm')) && url.pathname.includes('sqlite'),
+    strategy: 'CacheFirst',
+    cacheName: `powersync-wasm-${POWERSYNC_WASM_VERSION}`,
+    options: {
+      maxEntries: 10,
+      maxAgeDays: 365, // Long-term caching
+      plugins: [
+        {
+          cacheDidUpdate: async ({ cacheName, request, response }) => {
+            console.log(`Cached PowerSync WASM file: ${request.url} in ${cacheName}`)
+          },
+          handlerDidError: async ({ request }) => {
+            console.error(`Failed to load PowerSync WASM file:`, request.url)
+            // Try to return from cache if available
+            const cache = await caches.open(`powersync-wasm-${POWERSYNC_WASM_VERSION}`)
+            const cachedResponse = await cache.match(request)
+            if (cachedResponse) return cachedResponse
+          },
+        },
+      ],
+    },
+  },
+
+  // Module scripts - CRITICAL: Handle these separately to prevent MIME type issues
+  {
+    match: ({ request, url }) => {
+      return request.destination === 'script' && (url.pathname.includes('.js') || url.pathname.includes('/_nuxt/'))
+    },
+    strategy: 'NetworkOnly', // Always go to network for module scripts
+    options: {
+      plugins: [
+        {
+          handlerDidError: async ({ request }) => {
+            console.error(`Failed to load module script:`, request.url)
+            // Don't cache failed module requests, let them fail naturally
+            throw new Error(`Module script failed to load: ${request.url}`)
+          },
+        },
+      ],
+    },
+  },
+
+  // SPA navigation requests - but exclude module scripts
+  {
+    match: ({ request, url }) => {
+      return request.mode === 'navigate' && !url.pathname.includes('.js') && !url.pathname.includes('/_nuxt/')
+    },
+    strategy: 'NetworkFirst',
+    cacheName: 'pages-cache',
+    options: {
+      maxEntries: 50,
+      maxAgeDays: 1,
+      plugins: [
+        {
+          cacheKeyWillBeUsed: async () => {
+            return new Request('/index.html')
+          },
+          handlerDidError: async () => {
+            const cachedResponse = await caches.match('/index.html')
+            if (cachedResponse) {
+              return new Response(await cachedResponse.text(), {
+                headers: {
+                  'Content-Type': 'text/html',
+                },
+              })
+            }
+          },
+        },
+      ],
+    },
+  },
+
+  // Static assets (CSS and other non-module scripts)
+  {
+    match: ({ request, url }) => {
+      return request.destination === 'style' || (request.destination === 'script' && !url.pathname.includes('/_nuxt/'))
+    },
+    strategy: 'StaleWhileRevalidate',
+    cacheName: 'static-assets',
+    options: {
+      maxEntries: 100,
+      maxAgeDays: 7,
+      plugins: [
+        {
+          handlerDidError: async ({ request }) => {
+            console.error(`Failed to load static asset:`, request.url)
+            return fetch(request)
+          },
+        },
+      ],
+    },
+  },
+
+  // Images
+  {
+    match: ({ request }) => request.destination === 'image',
+    strategy: 'CacheFirst',
+    cacheName: 'images',
+    options: {
+      maxEntries: 60,
+      maxAgeDays: 30,
+    },
+  },
+
+  // API requests
+  {
+    match: ({ url }) => url.pathname.includes('/api'),
+    strategy: 'NetworkFirst',
+    cacheName: 'api-cache',
+    options: {
+      maxEntries: 100,
+      maxAgeDays: 1,
+    },
+  },
+]
+
+// Register all routes
+routes.forEach((route) => workbox.routing.registerRoute(route.match, createCachingStrategy(route.strategy, route.cacheName, route.options)))
+
+// Set default handler
+workbox.routing.setDefaultHandler(createCachingStrategy('NetworkFirst', 'default-cache'))
