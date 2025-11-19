@@ -117,3 +117,5 @@ nativeRoute.params.stid // Then use like this
 - Refactor: localStorage replaced with Capacitor.Preferences to support devices, imported by usePreferences: 559.49kb
 - Fixes on PS Auth and SW: Parking for now with 1.3.0 version (Note Android Chorem doesnt support PS enableMultiTabs now, see notes): 559.75kb
 - Package updates (after a long break): 561.12kb
+- 2-3 Months break, back to development on 19/11/2025
+- With the packages updated and the powersync buffer errors resolved with vite-plugin-node-polyfills usage in nuxt.config.js: 367.27kb
