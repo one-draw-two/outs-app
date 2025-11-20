@@ -22,7 +22,7 @@ useViewportDims()
 await useUiTheme().setTheme(user.value?.settings?.ui?.theme || 'system')
 
 onMounted(async () => {
-  await useAppVersion().checkForUpdate()
-  await useServiceWorker().init()
+  // await useAppVersion().checkForUpdate()
+  // await useServiceWorker().init()
 })
 </script>
