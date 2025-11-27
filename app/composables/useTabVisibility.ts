@@ -14,6 +14,7 @@ export default function () {
       if (!useState<boolean>('network:powerSyncConnected').value) {
         const inactiveTime = Date.now() - (useState<number>('lastTabActiveTime').value || 0)
         if (inactiveTime > INACTIVE_TIME_LIMIT) {
+          if (DEBUG) console.log(`REFRESHING PS - ASD`)
           await refreshPowerSyncToken()
           await forceReconnect()
         }

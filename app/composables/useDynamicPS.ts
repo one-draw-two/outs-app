@@ -1,7 +1,7 @@
 import type { SyncStatus } from '@powersync/web'
 import { Connector } from '~/../powersync/Connector'
 
-const DEBUG = false
+const DEBUG = true
 const THROTTLE = 100
 
 let watchersInitialized = false
@@ -57,17 +57,6 @@ export default function (initialize?: boolean) {
       pendingConnectionTimeout.value = null
     }, THROTTLE)
   }
-
-  /*
-  async function refreshPowerSyncToken() {
-    if (DEBUG) console.log('Refreshing PowerSync token...')
-    const res = await useAuthRefresh()
-    if (res.success && res.data?.powerSyncToken) {
-      powerSyncToken.value = res.data.powerSyncToken
-      return res
-    }
-  }
-    */
 
   if (!watchersInitialized) {
     watchersInitialized = true
