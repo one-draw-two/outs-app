@@ -2,7 +2,11 @@ import { PowerSyncDatabase } from '@powersync/web'
 import { Network } from '@capacitor/network'
 import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
-import dayjs from 'dayjs'
+
+type DayHelpers = (date: string | Date | null | undefined) => {
+  format: (pattern: string) => string
+  fromNow: (withoutSuffix?: boolean) => string
+}
 
 declare module '#app' {
   interface NuxtApp {
@@ -17,7 +21,7 @@ declare module '#app' {
 
     $db: PowerSyncDatabase
 
-    $day: typeof dayjs
+    $day: DayHelpers
   }
 }
 
@@ -37,7 +41,7 @@ declare module '@vue/runtime-core' {
     $vfsPurge: () => void
     $vfsList: () => Promise<string[]>
 
-    $day: typeof dayjs
+    $day: DayHelpers
   }
 }
 

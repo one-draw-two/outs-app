@@ -120,3 +120,4 @@ nativeRoute.params.stid // Then use like this
 - 2-3 Months break, back to development on 19/11/2025
 - With the packages updated and the powersync buffer errors resolved with vite-plugin-node-polyfills usage in nuxt.config.js: 367.27kb
 - Pre: refactoring with CC: 380.73kb
+- Refactor: Dayjs replaced with customhelpers (useDateHelpers): 374.42kb
