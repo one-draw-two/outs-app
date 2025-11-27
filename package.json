@@ -33,7 +33,7 @@
     "@hugeicons/core-free-icons": "^2.0.0",
     "@hugeicons/vue": "^1.0.3",
     "@outs1x2/capacitor-liveactivities": "^0.2.6",
-    "@powersync/web": "^1.28.2",
+    "@powersync/web": "^1.29.1",
     "@tailwindcss/vite": "^4.1.17",
     "@tailwindplus/elements": "^1.0.19",
     "capacitor-plugin-safe-area": "^4.0.3",
@@ -41,7 +41,7 @@
     "jwt-decode": "^4.0.0",
     "nuxt": "^4.2.1",
     "tailwindcss": "^4.1.17",
-    "vue": "latest",
+    "vue": "3.5.25",
     "vue-router": "latest"
   },
   "devDependencies": {

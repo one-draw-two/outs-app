@@ -3,8 +3,12 @@ export default defineNuxtRouteMiddleware(async (to, _) => {
 
   if (useState('user').value || to.meta.isPublic) return
 
+  console.log('No user in state, checking stored auth...')
+
   try {
     const storedData = await authStorage.getStoredAuth() // Note: Clears auth in useAuthStorage if doesnt return successful
+
+    console.log('Stored auth data:', storedData)
 
     if (storedData) return useInitUser({ success: true, data: storedData })
 
