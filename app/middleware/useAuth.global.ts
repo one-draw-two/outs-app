@@ -26,7 +26,7 @@ export default defineNuxtRouteMiddleware(async (to, _) => {
       return navigateTo('/access/login', { replace: true })
     }
 
-    useInitUser(res, { isUsingOfflineAuth: true })
+    useInitUser(res, { isUsingOfflineAuth: true, isToSaveOffline: true }) // Note, isToSaveOffline: true is added while debugging 27/11/25
   } catch (error) {
     console.error('Authentication error:', error)
 
