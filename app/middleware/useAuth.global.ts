@@ -10,13 +10,7 @@ export default defineNuxtRouteMiddleware(async (to, _) => {
 
     console.log('Stored auth data:', storedData)
 
-    if (storedData) return useInitUser({ success: true, data: storedData })
-
-    /*
-    const storedRefreshToken = await authStorage.getRefreshToken()
-    if (!storedRefreshToken) return navigateTo('/access/login', { replace: true })
-    const res: AuthResponse = await useSecureFetch('refresh', 'auth', 'post', { refreshToken: storedRefreshToken })
-    */
+    if (storedData) return useInitUser({ success: true, data: storedData }, { isUsingOfflineAuth: true })
 
     const res = await useAuthRefresh()
 
@@ -26,7 +20,7 @@ export default defineNuxtRouteMiddleware(async (to, _) => {
       return navigateTo('/access/login', { replace: true })
     }
 
-    useInitUser(res, { isUsingOfflineAuth: true, isToSaveOffline: true }) // Note, isToSaveOffline: true is added while debugging 27/11/25
+    useInitUser(res, { isToSaveOffline: true }) // Note, isToSaveOffline: true is added while debugging 27/11/25
   } catch (error) {
     console.error('Authentication error:', error)
 
